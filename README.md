@@ -1,175 +1,251 @@
-# Dizident Multi-Client Dental HMS
+# Dizidental - Multi-Client HMS (Hospital Management System)
 
-**Separate Codebases Architecture** - Each client has independent code for maximum customization.
+A multi-tenant hospital/clinic management system with separate databases and subdomains for each client.
 
-## 🏗️ Structure
+## 🏗️ Architecture
+
+- **Backend:** Spring Boot 3.x (Java 21)
+- **Frontend:** React + Vite
+- **Database:** PostgreSQL 16 (Shared instance, separate databases per client)
+- **Deployment:** Docker + Nginx on VPS
+- **Domain:** https://dizidental.cloud
+
+## 📁 Project Structure
 
 ```
 dizidentmain/
-├── clientxyz/           # Client XYZ
-│   ├── backend/         # Spring Boot app
-│   ├── frontend/        # React + Vite
-│   ├── docker-compose.yml
-│   ├── .env             # Credentials
-│   └── uploads/
-├── clientabc/           # Client ABC (same structure)
-├── backend/             # Template for new clients
-├── frontend/            # Template for new clients
-└── scripts/             # Deployment tools
+├── clientxyz/                # Client XYZ
+│   ├── backend/              # Spring Boot backend
+│   ├── frontend/             # React frontend
+│   ├── docker-compose.prod.yml
+│   └── .env.prod             # Production config
+├── clientabc/                # Client ABC (same structure)
+├── scripts/
+│   ├── deploy-vps.sh         # VPS deployment script
+│   └── deploy-vps.ps1        # Windows deployment script
+├── README.md                 # This file
+└── VPS_COMMANDS.md          # Complete deployment guide
 ```
 
-## ✨ Key Benefits
+## ✨ Features
 
-✅ **Full Independence** - Each client = separate codebase  
-✅ **Custom Features** - Client-specific modifications  
-✅ **Different Domains** - Unique domain per client  
-✅ **Custom Branding** - Modify UI/UX independently  
-✅ **Isolated Data** - Separate databases  
+- Multi-client architecture with isolated databases
+- Patient management & appointment scheduling
+- Doctor management & treatment planning
+- Billing & prescription system
+- Odontogram (dental chart)
+- JWT authentication with role-based access control (ADMIN, DOCTOR, PATIENT)
+- Auto-seeding of admin user on first startup
 
-## 🚀 Quick Start
+## 🚀 Quick Deploy to VPS
 
-### 1. Setup Credentials
+### Prerequisites
+- VPS with Docker installed
+- Domain configured (dizidental.cloud)
+- PostgreSQL 16 installed on VPS
 
-```powershell
-cd clientxyz
-copy .env.example .env
-notepad .env  # Update DB_PASSWORD, JWT_SECRET, VITE_API_BASE
+### Deployment Steps
+
+```bash
+# 1. SSH into VPS
+ssh root@72.61.171.38
+
+# 2. Clone repository (first time only)
+cd /opt/apps
+git clone https://github.com/dsoul2710/dizidentmain.git
+cd dizidentmain
+
+# 3. Deploy Client XYZ
+./scripts/deploy-vps.sh clientxyz master
+
+# 4. Deploy Client ABC
+./scripts/deploy-vps.sh clientabc master
 ```
 
-### 2. Deploy
+### Access Applications
 
-```powershell
-# Windows
-.\scripts\deploy-client.ps1 clientxyz
+| Client | URL | Database |
+|--------|-----|----------|
+| Client XYZ | https://xyz.dizidental.cloud | clinic_hms_xyz |
+| Client ABC | https://abc.dizidental.cloud | clinic_hms_abc |
 
-# Linux
-./scripts/deploy-client.sh clientxyz
+## 🔐 Default Admin Credentials
+
+Auto-created on first startup:
+
+- **Mobile:** 9999999999
+- **Password:** admin123
+- **Role:** ADMIN
+
+⚠️ **Change these immediately after first login!**
+
+## 🔧 Local Development
+
+### Backend
+```bash
+cd clientxyz/backend
+./gradlew bootRun
+# Access: http://localhost:8080
 ```
 
-### 3. Access
-
-| Client | Frontend | Backend | Database |
-|--------|----------|---------|----------|
-| clientxyz | :3001 | :8081 | :5433 |
-| clientabc | :3002 | :8082 | :5434 |
-
-## 🎨 Add New Client
-
-```powershell
-# Copy existing client
-Copy-Item clientxyz clientnew -Recurse
-cd clientnew
-
-# Update .env (passwords, secrets, domain)
-# Update docker-compose.yml (ports, container names)
-
-# Deploy
-.\scripts\deploy-client.ps1 clientnew
+### Frontend
+```bash
+cd clientxyz/frontend
+npm install
+npm run dev
+# Access: http://localhost:5173
 ```
 
-## 🔧 Management
+## 🗄️ Database Configuration
 
-```powershell
-# Deploy all
-.\scripts\deploy-all.ps1
+**Shared PostgreSQL on VPS:**
+- Host: localhost (from VPS) or 72.61.171.38 (from outside)
+- Port: 5432
+- Username: appuser
+- Password: 9932
 
-# View logs
-cd clientxyz
-docker-compose logs -f
+**Databases:**
+- `clinic_hms_xyz` - Client XYZ
+- `clinic_hms_abc` - Client ABC
 
-# Stop
-docker-compose down
+Tables are created automatically by Hibernate on first run.
 
-# Rebuild after code changes
-docker-compose up -d --build
-```
+## 🐳 Docker Containers
 
-## 🌐 Production (Domains)
+Each client runs 2 containers:
 
-### 1. Update .env
+| Client | Frontend Port | Backend Port |
+|--------|--------------|-------------|
+| XYZ | 3001 | 8081 |
+| ABC | 3002 | 8082 |
+
+**Nginx** on VPS routes by subdomain:
+- `xyz.dizidental.cloud` → port 3001/8081
+- `abc.dizidental.cloud` → port 3002/8082
+
+## 📝 Environment Variables
+
+### Backend (.env.prod)
 ```env
-VITE_API_BASE=https://xyz.yourdomain.com
+SPRING_DATASOURCE_USERNAME=appuser
+SPRING_DATASOURCE_PASSWORD=9932
+JWT_SECRET=your_jwt_secret_min_32_chars
 ```
 
-### 2. Nginx Reverse Proxy
-```nginx
-server {
-    server_name xyz.yourdomain.com;
-    location / { proxy_pass http://localhost:3001; }
-    location /api { proxy_pass http://localhost:8081; }
-}
+### Frontend (.env.prod)
+```env
+VITE_API_BASE=https://xyz.dizidental.cloud/api
 ```
 
-### 3. SSL
+## 🛠️ Technologies
+
+**Backend:**
+- Spring Boot 3.2
+- Spring Security + JWT
+- Spring Data JPA
+- PostgreSQL Driver
+- Hibernate
+- Lombok
+
+**Frontend:**
+- React 18
+- Vite
+- Axios
+- React Router
+
+**Infrastructure:**
+- Docker & Docker Compose
+- Nginx (Reverse Proxy + SSL Termination)
+- Let's Encrypt SSL
+- PostgreSQL 16
+
+## 📡 API Endpoints
+
+```
+POST   /api/auth/login           # User login
+GET    /api/patients             # List patients
+POST   /api/patients             # Create patient
+GET    /api/patients/{id}        # Get patient
+PUT    /api/patients/{id}        # Update patient
+GET    /api/appointments         # List appointments
+POST   /api/appointments         # Create appointment
+GET    /actuator/health          # Health check
+```
+
+## 🔒 Security Features
+
+- JWT token-based authentication
+- HttpOnly cookies for token storage
+- Role-based access control (ADMIN, DOCTOR, PATIENT)
+- CORS configuration
+- SSL/TLS encryption (Let's Encrypt)
+- Separate databases per client
+- Password encryption (to be implemented)
+
+## 🌐 DNS & SSL Setup
+
+**DNS A Records:**
+```
+@ → 72.61.171.38
+xyz → 72.61.171.38
+abc → 72.61.171.38
+```
+
+**SSL Certificate:**
 ```bash
-certbot --nginx -d xyz.yourdomain.com
+sudo certbot --nginx -d dizidental.cloud -d xyz.dizidental.cloud -d abc.dizidental.cloud
 ```
 
-## 🎯 Customization
+Auto-renews every 90 days.
 
-**Backend**: Modify `clientxyz/backend/src/`
-- Custom controllers, services, entities
-- Client-specific business logic
+## 📚 Documentation
 
-**Frontend**: Modify `clientxyz/frontend/src/`  
-- Custom branding, components, pages
-- Different UI/UX per client
-- Custom image generation logic
-
-## 📦 Git Usage
-
-```bash
-# Initial setup
-git init
-git add .
-git commit -m "Multi-client HMS"
-git push
-
-# Update specific client
-git add clientxyz/
-git commit -m "Feature: Custom report for XYZ"
-git push
-
-# On VPS: pull and redeploy
-git pull
-cd clientxyz && docker-compose up -d --build
-```
-
-## 🔒 Security
-
-- Use strong, unique passwords per client
-- Generate JWT secrets: `openssl rand -base64 64`
-- `.env` files are git-ignored (credentials safe)
-- Enable HTTPS in production
-- Regular backups
-
-## 📚 Full Documentation
-
-- [QUICKSTART.md](QUICKSTART.md) - 5-minute setup
-- [STRUCTURE.md](STRUCTURE.md) - Architecture details
-- [VPS_DEPLOYMENT.md](VPS_DEPLOYMENT.md) - Production deployment
-- [GIT_SETUP.md](GIT_SETUP.md) - Git workflow
-- [COMMANDS.md](COMMANDS.md) - Command reference
+- **[VPS_COMMANDS.md](VPS_COMMANDS.md)** - Complete VPS deployment guide with troubleshooting
 
 ## 🐛 Troubleshooting
 
-```powershell
-# View logs
-cd clientxyz
-docker-compose logs
-
-# Reset client
-docker-compose down -v
-docker-compose up -d --build
-
-# Check ports
-netstat -ano | findstr :3001
+### Backend not starting
+```bash
+docker logs clientxyz-backend --tail=50
+# Check database connection and environment variables
 ```
 
-## ✅ Ready to Deploy!
+### Frontend 404 errors
+```bash
+# Check if backend is running
+curl http://localhost:8081/actuator/health
 
-Each client is a complete, independent application. Customize freely without affecting other clients.
+# Check Nginx configuration
+sudo nginx -t
+sudo systemctl status nginx
+```
+
+### Database connection issues
+```bash
+# Test PostgreSQL
+sudo -u postgres psql -d clinic_hms_xyz -c "SELECT 1;"
+
+# Check if PostgreSQL is listening
+sudo netstat -plnt | grep 5432
+```
+
+### Redeploy after code changes
+```bash
+cd /opt/apps/dizidentmain
+git pull origin master
+./scripts/deploy-vps.sh clientxyz master
+```
+
+## 📞 Support
+
+For detailed deployment instructions and troubleshooting, see **[VPS_COMMANDS.md](VPS_COMMANDS.md)**
 
 ---
 
-**Last Updated**: February 11, 2026
+**VPS Information:**
+- IP: 72.61.171.38
+- Domain: dizidental.cloud
+- PostgreSQL: localhost:5432
+- GitHub: https://github.com/dsoul2710/dizidentmain
+
+**Last Updated:** February 11, 2026
