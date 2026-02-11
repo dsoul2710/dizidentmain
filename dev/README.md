@@ -61,13 +61,13 @@ After developing features here, sync to specific clients:
 ## 🗄️ Database
 
 **Docker mode:** PostgreSQL runs in container
-- Database: clinic_hms_dev
+- Database: clinic_hms
 - Username: postgres  
-- Password: postgres
+- Password: root
 
 **Native mode:** Uses your local PostgreSQL
 - Make sure PostgreSQL is running on `localhost:5432`
-- Create database: `CREATE DATABASE clinic_hms_dev;`
+- Create database: `CREATE DATABASE clinic_hms;`
 - Update [.env](.env) if your password is different
 
 ## 🔐 Default Admin

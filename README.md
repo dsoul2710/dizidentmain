@@ -145,9 +145,9 @@ clientxyz/     → XYZ production code (client-specific customizations)
 **Local Development:**
 - Host: localhost
 - Port: 5432
-- Database: clinic_hms_dev
+- Database: clinic_hms
 - Username: postgres
-- Password: postgres
+- Password: root
 
 **Shared PostgreSQL on VPS:**
 - Host: localhost (from VPS) or 72.61.171.38 (from outside)
@@ -156,7 +156,7 @@ clientxyz/     → XYZ production code (client-specific customizations)
 - Password: 9932
 
 **Databases:**
-- `clinic_hms_dev` - Local Development
+- `clinic_hms` - Local Development
 - `clinic_hms_xyz` - Client XYZ Production
 - `clinic_hms_abc` - Client ABC Production
 

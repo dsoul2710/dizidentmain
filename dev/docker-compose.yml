@@ -7,9 +7,9 @@ services:
     container_name: dev-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: clinic_hms_dev
+      POSTGRES_DB: clinic_hms
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-root}
     ports:
       - "5432:5432"
     volumes:
@@ -32,9 +32,9 @@ services:
     restart: unless-stopped
     environment:
       SPRING_APPLICATION_NAME: clinic-hms-dev
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_hms_dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_hms
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
       SERVER_PORT: 8080
       JWT_SECRET: ${JWT_SECRET:-dev_local_jwt_secret_key_must_be_at_least_32_characters_long}
       FILE_UPLOAD_BASE_DIR: /app/uploads
