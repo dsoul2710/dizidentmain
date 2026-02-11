@@ -180,10 +180,19 @@ server {
     location /api {
         proxy_pass http://xyz_backend;
         proxy_http_version 1.1;
+        
+        # WebSocket support (required for /ws endpoint)
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Timeouts for WebSocket
+        proxy_read_timeout 86400;
+        proxy_send_timeout 86400;
     }
 }
 
@@ -212,10 +221,19 @@ server {
     location /api {
         proxy_pass http://abc_backend;
         proxy_http_version 1.1;
+        
+        # WebSocket support (required for /ws endpoint)
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Timeouts for WebSocket
+        proxy_read_timeout 86400;
+        proxy_send_timeout 86400;
     }
 }
 ```
@@ -735,7 +753,156 @@ sudo swapon /swapfile
 
 ---
 
-## 📞 Quick Reference
+## � Troubleshooting
+
+### WebSocket Connection Failures
+
+**Symptom:** `/ws/info` returns `ERR_CONNECTION_REFUSED`, chat not working
+
+**Solution:** Ensure Nginx has WebSocket support in `/api` location:
+```nginx
+location /api {
+    proxy_pass http://xyz_backend;
+    proxy_http_version 1.1;
+    
+    # Required for WebSocket
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    
+    proxy_read_timeout 86400;
+    proxy_send_timeout 86400;
+}
+```
+
+**Test:**
+```bash
+# Check if backend is accessible
+curl http://localhost:8081/ws/info
+
+# Reload Nginx
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+### Backend Container Not Running
+
+**Check status:**
+```bash
+docker ps -a | grep backend
+```
+
+**View logs:**
+```bash
+docker logs clientxyz-backend --tail=50
+docker logs clientabc-backend --tail=50
+```
+
+**Common causes:**
+- Database connection failure
+- Port already in use
+- Out of memory (check with `dmesg | grep -i oom`)
+
+**Restart:**
+```bash
+cd /opt/apps/dizidentmain
+docker-compose -f clientxyz/docker-compose.prod.yml restart
+```
+
+### Database Connection Errors
+
+**Test connection:**
+```bash
+psql -h localhost -U appuser -d clinic_hms_xyz
+```
+
+**Check if PostgreSQL is running:**
+```bash
+sudo systemctl status postgresql
+```
+
+**Check logs:**
+```bash
+sudo tail -f /var/log/postgresql/postgresql-16-main.log
+```
+
+### API Calls Failing
+
+**Check backend health:**
+```bash
+curl http://localhost:8081/actuator/health
+curl http://localhost:8082/actuator/health
+```
+
+**Check if containers can reach database:**
+```bash
+docker exec clientxyz-backend curl http://host.docker.internal:5432
+```
+
+**Check firewall:**
+```bash
+sudo ufw status
+# Should allow ports 80, 443, 22
+```
+
+### SSL Certificate Issues
+
+**Renew certificate:**
+```bash
+sudo certbot renew --dry-run
+sudo certbot renew
+```
+
+**Check certificate status:**
+```bash
+sudo certbot certificates
+```
+
+### Nginx Errors
+
+**Test configuration:**
+```bash
+sudo nginx -t
+```
+
+**Restart Nginx:**
+```bash
+sudo systemctl restart nginx
+```
+
+**Check logs:**
+```bash
+sudo tail -f /var/log/nginx/error.log
+sudo tail -f /var/log/nginx/access.log
+```
+
+### Full Reset (Last Resort)
+
+```bash
+# Stop all containers
+docker stop $(docker ps -aq)
+
+# Remove all containers
+docker rm $(docker ps -aq)
+
+# Remove images
+docker rmi $(docker images -q dizidentmain*)
+
+# Pull latest code
+cd /opt/apps/dizidentmain
+git pull
+
+# Redeploy
+./scripts/deploy-vps.sh clientxyz master
+./scripts/deploy-vps.sh clientabc master
+```
+
+---
+
+## �📞 Quick Reference
 
 ### Default Credentials
 
