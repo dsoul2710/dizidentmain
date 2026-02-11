@@ -2,12 +2,12 @@
 
 # VPS Deployment Script for Multi-Client HMS
 # Usage: ./deploy-vps.sh <client-name> [branch]
-# Example: ./deploy-vps.sh clientxyz main
+# Example: ./deploy-vps.sh clientxyz master
 
 set -e
 
 CLIENT=$1
-BRANCH="${2:-main}"
+BRANCH="${2:-master}"
 BASE_DIR="/opt/apps/dizidentmain"
 
 # Colors for output

@@ -1,13 +1,13 @@
 # @echo off
 # VPS Deployment Script for Multi-Client HMS
 # Usage: deploy-vps.ps1 -Client <client-name> -Branch <branch>
-# Example: deploy-vps.ps1 -Client clientxyz -Branch main
+# Example: deploy-vps.ps1 -Client clientxyz -Branch master
 
 param(
     [Parameter(Mandatory=$true)]
     [string]$Client,
     
-    [string]$Branch = "main"
+    [string]$Branch = "master"
 )
 
 $BaseDir = "D:\dizident\dizidentmain"
