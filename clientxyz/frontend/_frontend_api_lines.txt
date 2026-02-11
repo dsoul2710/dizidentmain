@@ -1,0 +1,122 @@
+﻿D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:5:import { API_BASE, API_BASE_URL } from "../../config";
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:77:      const data = await apiFetch(`${API_BASE_URL}/chat/unread/by-sender?userId=${currentUserId}`);
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:107:        let data = await apiFetch(`${API_BASE_URL}/patients${doctorParam}`);
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:116:          data = await apiFetch(`${API_BASE_URL}/patients`);
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:135:        const data = await apiFetch(`${API_BASE_URL}/doctors`);
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:155:        const data = await apiFetch(`${API_BASE_URL}/users?role=ADMIN`);
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:254:        `${API_BASE_URL}/events?userId=${currentUserId || ""}&role=${encodeURIComponent(roleTopic)}`
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:275:      await fetch(`${API_BASE_URL}/chat/threads/${threadId}/read?userId=${currentUserId}`, {
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:359:        const data = await apiFetch(`${API_BASE_URL}/chat/threads/resolve`, {
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:393:        const data = await apiFetch(`${API_BASE_URL}/chat/threads/${thread.id}/messages`);
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:494:        webSocketFactory: () => new SockJS(`${API_BASE}/ws`),
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:558:        const res = await fetch(`${API_BASE_URL}/chat/attachments/bulk`, {
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:587:        const res = await fetch(`${API_BASE_URL}/chat/threads/${thread.id}/messages`, {
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:952:                                href={`${API_BASE}${att.url}`}
+D:\react\clinic-frontend\src\pages\chat\ChatPage.jsx:964:                            href={`${API_BASE}${msg.attachment.url}`}
+D:\react\clinic-frontend\src\pages\dashboards\Dashboard.jsx:16:import { API_BASE_URL } from "../../config";
+D:\react\clinic-frontend\src\pages\dashboards\Dashboard.jsx:48:            fetch(`${API_BASE_URL}/appointments/day/${todayStr}`),
+D:\react\clinic-frontend\src\pages\dashboards\Dashboard.jsx:50:              `${API_BASE_URL}/reports/revenue/daywise?fromDate=${todayStr}&toDate=${todayStr}`
+D:\react\clinic-frontend\src\pages\dashboards\Dashboard.jsx:53:              `${API_BASE_URL}/reports/revenue/outstanding?fromDate=2000-01-01&toDate=${todayStr}`
+D:\react\clinic-frontend\src\pages\dashboards\Dashboard.jsx:55:            fetch(`${API_BASE_URL}/reports/inventory/low-stock`),
+D:\react\clinic-frontend\src\pages\dashboards\Dashboard.jsx:57:              `${API_BASE_URL}/appointments/range?from=${fmt(lastWeek)}&to=${todayStr}`
+D:\react\clinic-frontend\src\pages\dashboards\Dashboard.jsx:151:          fetch(`${API_BASE_URL}/chat/unread/by-sender?userId=${userId}`),
+D:\react\clinic-frontend\src\pages\dashboards\Dashboard.jsx:152:          fetch(`${API_BASE_URL}/patients`),
+D:\react\clinic-frontend\src\pages\dashboards\Dashboard.jsx:153:          fetch(`${API_BASE_URL}/doctors`)
+D:\react\clinic-frontend\src\pages\dashboards\Dashboard.jsx:264:              apiBaseUrl={API_BASE_URL}
+D:\react\clinic-frontend\src\pages\dashboards\Dashboard.jsx:274:              apiBaseUrl={API_BASE_URL}
+D:\react\clinic-frontend\src\pages\dashboards\DoctorDashboard.jsx:9:import { API_BASE_URL } from "../../config";
+D:\react\clinic-frontend\src\pages\dashboards\DoctorDashboard.jsx:51:        const res = await fetch(`${API_BASE_URL}/doctors`);
+D:\react\clinic-frontend\src\pages\dashboards\DoctorDashboard.jsx:106:          fetch(`${API_BASE_URL}/chat/unread/by-sender?userId=${userId}`),
+D:\react\clinic-frontend\src\pages\dashboards\DoctorDashboard.jsx:107:          fetch(`${API_BASE_URL}/patients`)
+D:\react\clinic-frontend\src\pages\dashboards\DoctorDashboard.jsx:182:      const res = await fetch(`${API_BASE_URL}/visits`, {
+D:\react\clinic-frontend\src\pages\dashboards\DoctorDashboard.jsx:249:                apiBaseUrl={API_BASE_URL}
+D:\react\clinic-frontend\src\pages\dashboards\DoctorDashboard.jsx:286:              apiBaseUrl={API_BASE_URL}
+D:\react\clinic-frontend\src\pages\dashboards\DoctorDashboard.jsx:296:              apiBaseUrl={API_BASE_URL}
+D:\react\clinic-frontend\src\pages\dashboards\DoctorDashboard.jsx:352:          fetch(`${API_BASE_URL}/appointments/day/${todayStr}`),
+D:\react\clinic-frontend\src\pages\dashboards\DoctorDashboard.jsx:353:          fetch(`${API_BASE_URL}/patients`),
+D:\react\clinic-frontend\src\pages\dashboards\DoctorDashboard.jsx:354:          fetch(`${API_BASE_URL}/bills`),
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:4:import { API_BASE_URL } from "../../config";
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:91:        const directRes = await fetch(`${API_BASE_URL}/patients/${currentUserId}`);
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:97:        const res = await fetch(`${API_BASE_URL}/patients`);
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:117:          fetch(`${API_BASE_URL}/chat/unread/by-sender?userId=${currentUserId}`),
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:118:          fetch(`${API_BASE_URL}/doctors`),
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:119:          fetch(`${API_BASE_URL}/users?role=ADMIN`)
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:171:        const res = await fetch(`${API_BASE_URL}/doctors`);
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:202:        const res = await fetch(`${API_BASE_URL}/patients/${currentUserId}/visits`);
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:229:          `${API_BASE_URL}/appointments/range?from=${fmt(from)}&to=${fmt(to)}`
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:257:          `${API_BASE_URL}/visits/${visitId}/prescriptions/latest`
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:290:              const res = await fetch(`${API_BASE_URL}/visits/${v.id}/exam-items`);
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:305:                `${API_BASE_URL}/visits/${v.id}/treatment-plan`
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:321:                `${API_BASE_URL}/visits/${v.id}/diagnosis-detail`
+D:\react\clinic-frontend\src\pages\dashboards\PatientDashboard.jsx:366:              const res = await fetch(`${API_BASE_URL}/billing/visits/${vid}`);
+D:\react\clinic-frontend\src\pages\patient\PatientDocumentsPage.jsx:2:import { API_BASE_URL } from "../../config";
+D:\react\clinic-frontend\src\pages\patient\PatientDocumentsPage.jsx:27:        const res = await fetch(`${API_BASE_URL}/visits/${visitId}/diagnosis-report-files`);
+D:\react\clinic-frontend\src\pages\patient\PatientDocumentsPage.jsx:55:        const visitsRes = await fetch(`${API_BASE_URL}/patients/${pid}/visits`);
+D:\react\clinic-frontend\src\pages\patient\PatientDocumentsPage.jsx:66:                `${API_BASE_URL}/visits/${v.id}/diagnosis-report-files`
+D:\react\clinic-frontend\src\pages\patient\PatientDocumentsPage.jsx:101:        const res = await fetch(`${API_BASE_URL}/patients/${pid}/reports-files`);
+D:\react\clinic-frontend\src\pages\patient\PatientDocumentsPage.jsx:122:        href: `${API_BASE_URL}/patients/${pid}/id-file`,
+D:\react\clinic-frontend\src\pages\patient\PatientDocumentsPage.jsx:129:          href: `${API_BASE_URL}/patients/${pid}/reports-file`,
+D:\react\clinic-frontend\src\pages\patient\PatientDocumentsPage.jsx:135:            href: `${API_BASE_URL}/patients/${pid}/reports-file?fileName=${encodeURIComponent(name)}`,
+D:\react\clinic-frontend\src\pages\patient\PatientDocumentsPage.jsx:144:          href: `${API_BASE_URL}/visits/${visitId}/diagnosis-report-file?fileName=${encodeURIComponent(name)}`,
+D:\react\clinic-frontend\src\pages\patient\PatientDocumentsPage.jsx:152:          href: `${API_BASE_URL}/visits/${entry.visitId}/diagnosis-report-file?fileName=${encodeURIComponent(entry.name)}`,
+D:\react\clinic-frontend\src\pages\BillingView.jsx:3:import { API_BASE } from "../config";
+D:\react\clinic-frontend\src\pages\BillingView.jsx:37:    fetch(`${API_BASE}/api/patients`)
+D:\react\clinic-frontend\src\pages\BillingView.jsx:51:    fetch(`${API_BASE}/api/patients/${patientId}/visits`)
+D:\react\clinic-frontend\src\pages\BillingView.jsx:67:        const billRes = await fetch(`${API_BASE}/api/billing/visits/${visitId}`);
+D:\react\clinic-frontend\src\pages\BillingView.jsx:74:        const data = await fetch(`${API_BASE}/api/billing/visits/${visitId}/items`).then((r) => r.ok ? r.json() : []);
+D:\react\clinic-frontend\src\pages\BillingView.jsx:205:    fetch(`${API_BASE}/api/billing`, {
+D:\react\clinic-frontend\src\pages\BillingView.jsx:741:                    `${API_BASE}/api/billing/${billId}/payments?amount=${Number(
+D:\react\clinic-frontend\src\pages\ConsentPostOpView.jsx:3:import { API_BASE } from "../config";
+D:\react\clinic-frontend\src\pages\ConsentPostOpView.jsx:37:    fetch(`${API_BASE}/api/patients`)
+D:\react\clinic-frontend\src\pages\ConsentPostOpView.jsx:58:    fetch(`${API_BASE}/api/patients/${patientId}/visits`)
+D:\react\clinic-frontend\src\pages\ConsentPostOpView.jsx:73:    fetch(`${API_BASE}/api/visits/${visitId}/treatment-plan/detail`)
+D:\react\clinic-frontend\src\pages\ConsentPostOpView.jsx:105:    fetch(`${API_BASE}/api/masters/treatments`)
+D:\react\clinic-frontend\src\pages\DiagnosisView.jsx:5:import { API_BASE } from "../config";
+D:\react\clinic-frontend\src\pages\DiagnosisView.jsx:149:        `${API_BASE}/api/patients/${pUserId}/visits/auto-create`,
+D:\react\clinic-frontend\src\pages\DiagnosisView.jsx:191:          `${API_BASE}/api/patients/${patientUserId}/visits`
+D:\react\clinic-frontend\src\pages\DiagnosisView.jsx:237:        const res = await fetch(`${API_BASE}/api/visits/${vid}/exam-items`);
+D:\react\clinic-frontend\src\pages\DiagnosisView.jsx:273:          `${API_BASE}/api/visits/${vid}/diagnosis-detail`
+D:\react\clinic-frontend\src\pages\DiagnosisView.jsx:312:          `${API_BASE}/api/visits/${vid}/diagnosis-report-files`
+D:\react\clinic-frontend\src\pages\DiagnosisView.jsx:352:      const diagRes = await fetch(`${API_BASE}/api/visits/diagnosis`, {
+D:\react\clinic-frontend\src\pages\DiagnosisView.jsx:368:          `${API_BASE}/api/visits/${numericVisitId}/diagnosis-report`,
+D:\react\clinic-frontend\src\pages\DiagnosisView.jsx:382:          `${API_BASE}/api/visits/${numericVisitId}/diagnosis-report-files`
+D:\react\clinic-frontend\src\pages\DiagnosisView.jsx:495:              `${API_BASE}/api/visits/${numericVisitId}/exam-items`,
+D:\react\clinic-frontend\src\pages\DiagnosisView.jsx:525:      const diagRes = await fetch(`${API_BASE}/api/visits/diagnosis`, {
+D:\react\clinic-frontend\src\pages\DiagnosisView.jsx:542:          `${API_BASE}/api/visits/${savedVisitId}/diagnosis-report`,
+D:\react\clinic-frontend\src\pages\DiagnosisView.jsx:759:                        href={`${API_BASE}/api/visits/${visitId}/diagnosis-report-file?fileName=${encodeURIComponent(
+D:\react\clinic-frontend\src\pages\InventoryView.jsx:3:import { API_BASE_URL } from "../config";
+D:\react\clinic-frontend\src\pages\InventoryView.jsx:148:      const res = await fetch(`${API_BASE_URL}/inventory/items`);
+D:\react\clinic-frontend\src\pages\InventoryView.jsx:162:      const res = await fetch(`${API_BASE_URL}/inventory/movements`);
+D:\react\clinic-frontend\src\pages\InventoryView.jsx:176:      const res = await fetch(`${API_BASE_URL}/inventory/treatment-templates`);
+D:\react\clinic-frontend\src\pages\InventoryView.jsx:206:      const res = await fetch(`${API_BASE_URL}/vendors`);
+D:\react\clinic-frontend\src\pages\InventoryView.jsx:306:      const res = await fetch(`${API_BASE_URL}/inventory/items`, {
+D:\react\clinic-frontend\src\pages\InventoryView.jsx:344:        `${API_BASE_URL}/inventory/items/${id}`,
+D:\react\clinic-frontend\src\pages\InventoryView.jsx:444:      const res = await fetch(`${API_BASE_URL}/inventory/movements`, {
+D:\react\clinic-frontend\src\pages\InventoryView.jsx:561:        `${API_BASE_URL}/inventory/treatment-templates/${templateId}`,
+D:\react\clinic-frontend\src\pages\InventoryView.jsx:617:      const res = await fetch(`${API_BASE_URL}/inventory/treatment-templates`, {
+D:\react\clinic-frontend\src\pages\InventoryView.jsx:733:      `${API_BASE_URL}/inventory/auto-adjustments`,
+D:\react\clinic-frontend\src\pages\PatientAdd.jsx:5:import { API_BASE_URL } from "../config";
+D:\react\clinic-frontend\src\pages\PatientEntry.jsx:4:import { API_BASE_URL } from "../config";
+D:\react\clinic-frontend\src\pages\PatientEntry.jsx:673:    const url = `${API_BASE_URL}/patients/${patient.userId}/id-file`;
+D:\react\clinic-frontend\src\pages\PatientEntry.jsx:684:        `${API_BASE_URL}/patients/${patient.userId}/reports-files`
+D:\react\clinic-frontend\src\pages\PatientEntry.jsx:694:        const url = `${API_BASE_URL}/patients/${patient.userId}/reports-file?fileName=${encodeURIComponent(
+D:\react\clinic-frontend\src\pages\PatientEntry.jsx:705:          const url = `${API_BASE_URL}/patients/${patient.userId}/reports-file?fileName=${encodeURIComponent(
+D:\react\clinic-frontend\src\pages\PatientEntry.jsx:711:        const firstUrl = `${API_BASE_URL}/patients/${patient.userId}/reports-file?fileName=${encodeURIComponent(
+D:\react\clinic-frontend\src\pages\ReportsView.jsx:3:import { API_BASE_URL } from "../config";
+D:\react\clinic-frontend\src\pages\ReportsView.jsx:79:    return `${API_BASE_URL}${path}${query ? `?${query}` : ""}`;
+D:\react\clinic-frontend\src\pages\ReportsView.jsx:167:          res = await fetch(`${API_BASE_URL}/reports/inventory/low-stock${qs.toString() ? `?${qs.toString()}` : ""}`);
+D:\react\clinic-frontend\src\pages\ReportsView.jsx:176:          res = await fetch(`${API_BASE_URL}/reports/inventory/consumption?${qs.toString()}`);
+D:\react\clinic-frontend\src\pages\ReportsView.jsx:185:          res = await fetch(`${API_BASE_URL}/reports/inventory/purchase?${qs.toString()}`);
+D:\react\clinic-frontend\src\pages\ReportsView.jsx:191:          res = await fetch(`${API_BASE_URL}/reports/inventory/valuation`);
+D:\react\clinic-frontend\src\pages\ReportsView.jsx:218:    fetch(`${API_BASE_URL}/masters/treatments`)
+D:\react\clinic-frontend\src\pages\ReportsView.jsx:691:    const url = `${API_BASE_URL}/reports/appointments/${endpoint}${qs.toString() ? `?${qs.toString()}` : ""}`;
+D:\react\clinic-frontend\src\pages\ReportsView.jsx:1129:    const url = `${API_BASE_URL}/reports/patients/${endpoint}${qs.toString() ? `?${qs.toString()}` : ""}`;
+D:\react\clinic-frontend\src\pages\TreatmentPlanView.jsx:9:import { API_BASE } from "../config";
+D:\react\clinic-frontend\src\pages\TreatmentPlanView.jsx:178:        const res = await fetch(`${API_BASE}/api/masters/treatments`);
+D:\react\clinic-frontend\src\pages\TreatmentPlanView.jsx:297:    fetch(`${API_BASE}/api/patients`)
+D:\react\clinic-frontend\src\pages\TreatmentPlanView.jsx:313:      const res = await fetch(`${API_BASE}/api/patients/${pUserId}/visits/auto-create`, {
+D:\react\clinic-frontend\src\pages\TreatmentPlanView.jsx:349:        const res = await fetch(`${API_BASE}/api/patients/${patientUserId}/visits`);
+D:\react\clinic-frontend\src\pages\TreatmentPlanView.jsx:380:        const res = await fetch(`${API_BASE}/api/visits/${visitId}/exam-items`);
+D:\react\clinic-frontend\src\pages\TreatmentPlanView.jsx:394:        const res = await fetch(`${API_BASE}/api/visits/${visitId}/treatment-plan`);
+D:\react\clinic-frontend\src\pages\TreatmentPlanView.jsx:436:        const res = await fetch(`${API_BASE}/api/visits/${visitId}/treatment-plan`);
+D:\react\clinic-frontend\src\pages\TreatmentPlanView.jsx:645:        `${API_BASE}/api/visits/${numericVisitId}/treatment-plan`,

@@ -1,0 +1,1054 @@
+{
+  "categories": [
+    {
+      "key": "conservative",
+      "title": "Conservative Dentistry & Restoration",
+      "displayOrder": 1,
+      "procedures": [
+        {
+          "name": "Composite fillings",
+          "consentText": "I consent to the Composite Filling procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Please avoid disturbing the area after your Composite fillings; gentle care helps proper healing. A slight discomfort is normal after restoring tooth structure; take prescribed medication if needed. Avoid hard, hot, or sticky foods that may interfere with healing after Composite fillings. Maintain gentle oral hygiene and avoid direct pressure on the treated tooth or area. Contact us immediately if swelling, severe pain, or unusual symptoms appear after Composite fillings.",
+          "displayOrder": 1
+        },
+        {
+          "name": "Glass ionomer fillings",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 2
+        },
+        {
+          "name": "Amalgam fillings",
+          "consentText": "I consent to the Amalgam Filling procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Please avoid disturbing the area after your Amalgam fillings; gentle care helps proper healing. A slight discomfort is normal after restoring tooth structure; take prescribed medication if needed. Avoid hard, hot, or sticky foods that may interfere with healing after Amalgam fillings. Maintain gentle oral hygiene and avoid direct pressure on the treated tooth or area. Contact us immediately if swelling, severe pain, or unusual symptoms appear after Amalgam fillings.",
+          "displayOrder": 3
+        },
+        {
+          "name": "Temporary fillings",
+          "consentText": "I consent to the Temporary Filling procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Temporary fillings are used to protect a tooth before permanent restoration. Avoid eating hard foods and maintain regular check-ups for long-term care.",
+          "displayOrder": 4
+        },
+        {
+          "name": "Core build-up",
+          "consentText": "I consent to the Core Build-Up procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Please avoid disturbing the area after your Core Build-Up; gentle care helps proper healing. A slight discomfort is normal after restoring tooth structure; take prescribed medication if needed. Avoid hard, hot, or sticky foods that may interfere with healing after Core Build-Up. Maintain gentle oral hygiene and avoid direct pressure on the treated tooth or area. Contact us immediately if swelling, severe pain, or unusual symptoms appear after Core Build-Up.",
+          "displayOrder": 5
+        },
+        {
+          "name": "Cosmetic bonding",
+          "consentText": "I consent to the Cosmetic Bonding procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Avoid biting down on hard objects immediately after your Cosmetic Bonding procedure. Avoid hot or cold foods that may cause discomfort for the first few days. Ensure you maintain good oral hygiene, but avoid direct pressure on the treated area. Be mindful of foods or beverages that may stain the bonding material. Contact us if you notice any discomfort, sensitivity, or cracking of the bonding material.",
+          "displayOrder": 6
+        },
+        {
+          "name": "Tooth contouring",
+          "consentText": "I consent to the Tooth Contouring procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Avoid eating hard foods immediately after tooth contouring to avoid discomfort or irritation. Maintain gentle brushing and avoid excessive pressure on the treated area. Watch for any sharp edges or sensitivity on the contoured tooth. Regular dental check-ups are advised to ensure the success of the contouring treatment. Contact us if you experience persistent pain, sensitivity, or issues with the treated tooth.",
+          "displayOrder": 7
+        },
+        {
+          "name": "Inlays",
+          "consentText": "I consent to the Inlay procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Avoid eating hard foods immediately after the Inlay procedure to avoid discomfort or irritation. Ensure you maintain good oral hygiene, but avoid direct pressure on the treated area. Watch for any sharp edges or discomfort around the inlay. Regular dental check-ups are advised to ensure the success of the inlay treatment. Contact us if you experience persistent pain, sensitivity, or issues with the inlay.",
+          "displayOrder": 8
+        },
+        {
+          "name": "Onlays",
+          "consentText": "I consent to the Onlay procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Avoid eating hard foods immediately after the Onlay procedure to avoid discomfort or irritation. Ensure you maintain good oral hygiene, but avoid direct pressure on the treated area. Watch for any sharp edges or discomfort around the onlay. Regular dental check-ups are advised to ensure the success of the onlay treatment. Contact us if you experience persistent pain, sensitivity, or issues with the onlay.",
+          "displayOrder": 9
+        },
+        {
+          "name": "GIC Filling",
+          "consentText": "I consent to the GIC Filling procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Please avoid disturbing the area after your GIC fillings; gentle care helps proper healing. A slight discomfort is normal after restoring tooth structure; take prescribed medication if needed. Avoid hard, hot, or sticky foods that may interfere with healing after GIC fillings. Maintain gentle oral hygiene and avoid direct pressure on the treated tooth or area. Contact us immediately if swelling, severe pain, or unusual symptoms appear after GIC fillings.",
+          "displayOrder": 11
+        }
+      ]
+    },
+    {
+      "key": "endodontics",
+      "title": "Endodontics (Root Canal Specialist)",
+      "displayOrder": 2,
+      "procedures": [
+        {
+          "name": "Root Canal",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 1
+        },
+        {
+          "name": "Single-visit RCT",
+          "consentText": "I consent to the Single-Visit RCT procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Avoid chewing on the treated tooth for the first few days. Mild discomfort is normal, and prescribed pain relievers should be taken as needed. Avoid hot or cold foods that may cause discomfort during healing. Maintain gentle brushing and avoid pressure on the treated tooth. Contact us if you experience severe pain, swelling, or unusual symptoms.",
+          "displayOrder": 2
+        },
+        {
+          "name": "Multi-visit RCT",
+          "consentText": "I consent to the Multi-Visit RCT procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Avoid chewing on the treated tooth for the first few days. Mild discomfort is normal, and prescribed pain relievers should be taken as needed. Maintain gentle oral hygiene, especially around the treated area. Follow-up appointments are necessary to complete the treatment process. Contact us if you experience persistent pain or swelling.",
+          "displayOrder": 3
+        },
+        {
+          "name": "Re-RCT (retreatment)",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 4
+        },
+        {
+          "name": "Pediatric RCT",
+          "consentText": "I consent to the Pediatric RCT procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Pediatric root canal treatment preserves the tooth by removing infected pulp. Expect mild discomfort and swelling, which should subside in a few days. Follow aftercare instructions closely to ensure proper healing.",
+          "displayOrder": 5
+        },
+        {
+          "name": "Pulpotomy",
+          "consentText": "I consent to the Pulpotomy procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "A pulpotomy involves removing the infected pulp tissue in the tooth to preserve it. After the procedure, the child may experience mild discomfort. Follow up with prescribed pain management and avoid hard foods for a few days.",
+          "displayOrder": 6
+        },
+        {
+          "name": "Pulpectomy",
+          "consentText": "I consent to the Pulpectomy procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "A pulpectomy is a deeper procedure where the entire pulp tissue is removed from the tooth. The child may experience swelling and discomfort, which can be managed with prescribed medication. Avoid chewing on the treated tooth until fully healed.",
+          "displayOrder": 7
+        },
+        {
+          "name": "Direct pulp capping",
+          "consentText": "I consent to the Direct Pulp Capping procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Avoid disturbing the treated tooth for the first few days. Expect mild discomfort during the healing process; prescribed pain medication may help. Avoid hot or cold foods that may irritate the area. Follow up with your dentist as instructed for optimal recovery. Contact us if you experience prolonged pain or symptoms.",
+          "displayOrder": 8
+        },
+        {
+          "name": "Indirect pulp capping",
+          "consentText": "I consent to the Indirect Pulp Capping procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Avoid chewing on the treated tooth for the first few days. Mild discomfort may occur during healing; use pain relief as needed. Avoid hot or cold foods to prevent sensitivity. Maintain proper oral hygiene and avoid direct pressure on the treated tooth. Contact us if you notice any unusual symptoms.",
+          "displayOrder": 9
+        },
+        {
+          "name": "Apicoectomy",
+          "consentText": "I consent to the Apicoectomy procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Expect mild discomfort and swelling post-surgery; use prescribed medication for relief. Avoid chewing on the treated area for several days to allow proper healing. Avoid hot or cold foods that may cause irritation. Keep the area clean but avoid direct pressure. Contact us immediately if there is significant pain or swelling.",
+          "displayOrder": 10
+        },
+        {
+          "name": "Hemisection",
+          "consentText": "I consent to the Hemisection procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After hemisection, avoid chewing on the treated area for several days. Mild discomfort or swelling is normal; use prescribed pain relief. Avoid hot or hard foods that may irritate the healing area. Maintain gentle oral hygiene and follow up as directed. Contact us if you experience unusual pain or discomfort.",
+          "displayOrder": 11
+        },
+        {
+          "name": "Radisection",
+          "consentText": "I consent to the Radisection procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Mild discomfort and swelling after radisection is normal; use prescribed medication. Avoid chewing on the treated area until it is fully restored. Maintain gentle brushing, and avoid pressure on the treated tooth. Follow up regularly to ensure proper healing. Contact us if there is significant pain or swelling.",
+          "displayOrder": 12
+        },
+        {
+          "name": "Apexogenesis",
+          "consentText": "I consent to the Apexogenesis procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Apexogenesis recovery may cause mild discomfort; use pain relievers as prescribed. Avoid chewing on the treated tooth until full recovery. Maintain good oral hygiene, but avoid direct pressure on the treated area. Regular follow-up visits are necessary to ensure the success of the treatment. Contact us if you experience any unusual symptoms.",
+          "displayOrder": 13
+        },
+        {
+          "name": "Apexification",
+          "consentText": "I consent to the Apexification procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After apexification, mild discomfort and sensitivity are common. Follow prescribed care and avoid hard or sticky foods. Keep the treated area clean but avoid direct pressure. Regular check-ups are essential for monitoring progress. Contact us immediately if you experience severe discomfort or complications.",
+          "displayOrder": 14
+        },
+        {
+          "name": "Re-RCT",
+          "consentText": "I consent to the Re-RCT procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "You may experience mild discomfort after Re-RCT treatment. Avoid chewing on the treated tooth until the restoration is complete. Follow the prescribed oral care routine and attend follow-up visits. Contact us immediately if you experience swelling, persistent pain, or discomfort beyond the normal recovery period.",
+          "displayOrder": 17
+        }
+      ]
+    },
+    {
+      "key": "periodontology",
+      "title": "Periodontology (Gum Specialist)",
+      "displayOrder": 3,
+      "procedures": [
+        {
+          "name": "Scaling & root planing (deep cleaning)",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 1
+        },
+        {
+          "name": "Periodontal maintenance therapy",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 2
+        },
+        {
+          "name": "Local drug delivery",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 3
+        },
+        {
+          "name": "Flap surgery",
+          "consentText": "I consent to the Flap Surgery procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Following flap surgery, expect some discomfort and swelling. Use prescribed pain relievers as necessary, and avoid chewing on the surgical area for a few days. Keep the area clean with gentle brushing, but avoid direct pressure on the treated gums. It's normal to have mild bleeding during the first few days. Regular follow-ups are necessary for optimal healing. If you notice excessive pain, persistent bleeding, or other complications, contact us immediately.",
+          "displayOrder": 4
+        },
+        {
+          "name": "Gingivectomy",
+          "consentText": "I consent to the Gingivectomy procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After gingivectomy, avoid eating hard or spicy foods for the first few days. Mild discomfort and swelling are expected; take pain relief as prescribed. Keep the surgical site clean with gentle brushing, but avoid direct contact with the gums. Avoid smoking and alcohol as they may delay healing. Follow-up visits are important to assess healing. Contact us if you experience excessive pain, swelling, or any unusual symptoms.",
+          "displayOrder": 5
+        },
+        {
+          "name": "Gingivoplasty",
+          "consentText": "I consent to the Gingivoplasty procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After gingivoplasty, you may experience mild swelling and discomfort. Use pain relievers as needed, and avoid eating foods that may irritate the treated area. Gentle brushing and flossing around the gums are encouraged. Avoid aggressive cleaning of the treated area to allow proper healing. Regular follow-ups are essential to ensure the treatment’s success. Contact us if you experience any complications such as infection or excessive bleeding.",
+          "displayOrder": 6
+        },
+        {
+          "name": "Crown lengthening",
+          "consentText": "I consent to the Crown Lengthening procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Post-surgery, avoid chewing on the treated area for a few days to allow proper healing. Mild discomfort and swelling are common, and pain relievers can be taken as needed. Keep the treated area clean with gentle brushing, and avoid pressure on the gums. Avoid hard or sticky foods that may irritate the area. If swelling, pain, or bleeding persist, contact us immediately for further evaluation.",
+          "displayOrder": 7
+        },
+        {
+          "name": "Frenectomy",
+          "consentText": "I consent to the Frenectomy procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After frenectomy, expect mild swelling and discomfort. Avoid chewing on the treated area until fully healed. Follow prescribed care instructions and keep the area clean with gentle brushing. Avoid activities that may put pressure on the treated area. Regular check-ups are essential to monitor the healing process. Contact us if you notice unusual pain or swelling that doesn’t subside.",
+          "displayOrder": 8
+        },
+        {
+          "name": "Soft tissue grafting",
+          "consentText": "I consent to the Soft Tissue Grafting procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After soft tissue grafting, mild discomfort and swelling are expected. Avoid hard, crunchy, or sticky foods for a few days. Follow prescribed pain relief and maintain good oral hygiene while avoiding direct pressure on the grafted area. Stay away from smoking and alcohol, as they may delay healing. Regular follow-ups are crucial to ensure proper graft integration. Contact us if swelling or pain persists.",
+          "displayOrder": 9
+        },
+        {
+          "name": "Ridge preservation",
+          "consentText": "I consent to the Ridge Preservation procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After ridge preservation, avoid chewing on the treated area for a few days. Mild swelling or discomfort is normal, and prescribed medications should be taken as directed. Maintain gentle brushing, but avoid disturbing the area directly. Avoid hot or hard foods that may irritate the treated site. Regular follow-up appointments are essential to monitor the healing process. Contact us if you experience prolonged pain or any unusual symptoms.",
+          "displayOrder": 10
+        },
+        {
+          "name": "Perio-regenerative procedures (GTR)",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 11
+        },
+        {
+          "name": "Laser gum surgeries",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 12
+        },
+        {
+          "name": "Scaling & Root Planing",
+          "consentText": "I consent to the Scaling & Root Planing procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After Scaling & Root Planing, it’s important to avoid hard or sticky foods for the first few days to prevent irritation. Mild discomfort and sensitivity are common; pain relievers can be used as needed. Maintain gentle brushing around the treated areas, and avoid aggressive flossing until your gums heal. Follow-up visits are essential for monitoring your healing progress. Contact us if you experience excessive bleeding, severe pain, or swelling.",
+          "displayOrder": 13
+        },
+        {
+          "name": "Laser Gum Surgery",
+          "consentText": "I consent to the Laser Gum Surgery procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After laser gum surgery, expect mild discomfort or swelling. Use prescribed pain relievers, and avoid chewing on the treated area for a few days. Follow proper oral hygiene, but avoid direct pressure on the treated gums. Stay away from hot or hard foods during recovery. Regular follow-ups are important to track your healing. Contact us if you notice any complications such as increased swelling or bleeding.",
+          "displayOrder": 21
+        },
+        {
+          "name": "Periodontal Maintenance",
+          "consentText": "I consent to the Periodontal Maintenance procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After periodontal maintenance, it’s normal to experience mild discomfort or swelling. Maintain good oral hygiene and follow up with regular cleanings and visits to ensure the longevity of the treatment. Avoid hard, sticky foods that may interfere with healing. If discomfort persists or you notice any unusual symptoms, contact us for further assistance.",
+          "displayOrder": 22
+        }
+      ]
+    },
+    {
+      "key": "prosthodontics",
+      "title": "Prosthodontics (Crowns, Bridges & Dentures)",
+      "displayOrder": 4,
+      "procedures": [
+        {
+          "name": "Zirconia crown",
+          "consentText": "I consent to the Zirconia Crown procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After your Zirconia Crown procedure, avoid chewing on hard foods for a few days. Mild discomfort or sensitivity may occur; use prescribed pain relief if necessary. Brush and floss gently, taking care around the treated tooth. Follow-up visits are crucial to ensure proper placement and function of the crown. Contact us if you experience excessive pain, sensitivity, or notice any issues with the crown.",
+          "displayOrder": 1
+        },
+        {
+          "name": "E-max crown",
+          "consentText": "I consent to the E-max Crown procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Avoid eating hard or sticky foods for the first few days after receiving an E-max crown to prevent stress on the restoration. Mild discomfort and sensitivity are common initially. Practice good oral hygiene, but avoid direct pressure on the crown. Keep all follow-up appointments to ensure optimal results. Contact us immediately if the crown feels loose, if you notice any discomfort, or if the area feels sensitive.",
+          "displayOrder": 2
+        },
+        {
+          "name": "PFM crown",
+          "consentText": "I consent to the PFM Crown procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After receiving a PFM crown, avoid biting down on hard foods. Expect mild sensitivity in the treated area; pain relief can be used as prescribed. Maintain oral hygiene with gentle brushing and avoid unnecessary pressure on the crown. Ensure you attend all follow-up appointments for proper monitoring of the crown. If you experience prolonged discomfort or the crown becomes loose, please contact us.",
+          "displayOrder": 3
+        },
+        {
+          "name": "Full metal crown",
+          "consentText": "I consent to the Full Metal Crown procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After the Full Metal Crown procedure, avoid biting into hard foods for the first few days. Sensitivity is common and should subside with time. Brush gently around the crown to prevent irritation. Avoid excessive pressure or grinding. Regular check-ups are important for monitoring your crown. Contact us if the crown feels loose or if you experience significant discomfort.",
+          "displayOrder": 4
+        },
+        {
+          "name": "Temporary crown",
+          "consentText": "I consent to the Temporary Crown procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "With your temporary crown in place, avoid hard or sticky foods that may dislodge it. Keep the area clean but avoid excessive pressure on the temporary crown. Temporary crowns are not as durable as permanent ones, so be cautious. Maintain good oral hygiene but avoid flossing directly near the crown to prevent it from becoming loose. Return for your follow-up appointment to replace it with a permanent crown.",
+          "displayOrder": 5
+        },
+        {
+          "name": "Conventional bridge (FPD)",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 6
+        },
+        {
+          "name": "Cantilever bridge",
+          "consentText": "I consent to the Cantilever Bridge procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After your cantilever bridge is placed, be sure to avoid chewing on hard foods that might cause strain on the bridge. Sensitivity or discomfort is normal for a short time. Practice gentle oral hygiene to keep the area around the bridge clean. Regular visits are necessary for maintenance. If you notice any changes in the bridge’s fit or discomfort, contact us promptly.",
+          "displayOrder": 7
+        },
+        {
+          "name": "Maryland bridge",
+          "consentText": "I consent to the Maryland Bridge procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After your Maryland bridge procedure, avoid hard or sticky foods that could loosen the bridge. Mild discomfort or sensitivity is normal but should subside over time. Ensure you brush and floss around the bridge, but be gentle near the bonding areas. Keep all scheduled follow-up appointments to check the bridge’s stability. If the bridge becomes loose or you notice discomfort, contact us right away.",
+          "displayOrder": 8
+        },
+        {
+          "name": "Implant-supported bridge",
+          "consentText": "I consent to the Implant-Supported Bridge procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Following your implant-supported bridge placement, avoid biting directly on hard foods that may place stress on the implants. You may experience mild discomfort or swelling, which can be managed with pain relievers. Maintain excellent oral hygiene but avoid aggressive brushing or flossing around the implants. Regular follow-up visits are critical to monitor the success of the implants. Contact us if you experience prolonged discomfort or issues with the bridge.",
+          "displayOrder": 9
+        },
+        {
+          "name": "Complete dentures",
+          "consentText": "I consent to the Complete Denture procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After getting your complete dentures, avoid chewing hard foods immediately. Expect some discomfort as your mouth adjusts to the new dentures. Maintain good hygiene by cleaning your dentures regularly and brushing your gums. It’s important to follow up with your dentist for adjustments to improve comfort and fit. Contact us if your dentures become loose or cause irritation.",
+          "displayOrder": 10
+        },
+        {
+          "name": "Partial dentures",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 11
+        },
+        {
+          "name": "Flexible dentures",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 12
+        },
+        {
+          "name": "Cast partial dentures",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 13
+        },
+        {
+          "name": "Immediate dentures",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 14
+        },
+        {
+          "name": "Overdentures",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 15
+        },
+        {
+          "name": "Implant-supported overdentures",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 16
+        },
+        {
+          "name": "Bite guards",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 17
+        },
+        {
+          "name": "Occlusal splints",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 18
+        },
+        {
+          "name": "Conventional Bridge",
+          "consentText": "I consent to the Conventional Bridge procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After receiving your conventional bridge, be mindful to avoid chewing on hard objects for a few days. Mild sensitivity may occur, but this should improve with time. Keep up with good oral hygiene around the bridge, and avoid putting too much pressure on it. Visit us regularly to ensure the bridge stays in place and functions properly. Contact us if you notice any looseness, discomfort, or issues with the bridge.",
+          "displayOrder": 24
+        }
+      ]
+    },
+    {
+      "key": "orthodontics",
+      "title": "Orthodontics (Braces & Aligners)",
+      "displayOrder": 5,
+      "procedures": [
+        {
+          "name": "Metal braces",
+          "consentText": "I consent to the Metal Braces procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After getting Metal Braces, avoid eating hard, sticky, or chewy foods. It is normal to experience some discomfort and irritation in the first few days after the braces are placed. Brush and floss carefully around the braces, and attend regular adjustments as scheduled. If you experience severe pain, damage to the braces, or a wire poking out, contact us immediately for assistance.",
+          "displayOrder": 1
+        },
+        {
+          "name": "Ceramic braces",
+          "consentText": "I consent to the Ceramic Braces procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Ceramic braces are more discreet, but you should still avoid hard, sticky, or colored foods that could stain or damage the brackets. Mild discomfort is expected, especially after adjustments. Keep the area clean by brushing gently around the braces and using floss or interdental brushes. For any discomfort or problems, such as broken brackets or wires, contact our office immediately.",
+          "displayOrder": 2
+        },
+        {
+          "name": "Self-ligating braces",
+          "consentText": "I consent to the Self-Ligating Braces procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Self-ligating braces are designed to reduce friction and may require fewer adjustments. It is important to follow all aftercare instructions carefully, including gentle brushing around the braces. If you feel discomfort, take over-the-counter pain medication as prescribed. Avoid chewing on hard foods or objects that may affect the brackets or wires.",
+          "displayOrder": 3
+        },
+        {
+          "name": "Damon braces",
+          "consentText": "I consent to the Damon Braces procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Damon braces are self-ligating and often reduce the number of adjustments needed. You may experience mild discomfort after adjustments, and it’s important to follow good oral hygiene practices to keep the braces clean. Avoid eating hard or sticky foods that could affect the brackets, and attend follow-up visits to ensure the braces are performing optimally.",
+          "displayOrder": 4
+        },
+        {
+          "name": "Lingual braces",
+          "consentText": "I consent to the Lingual Braces procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Lingual braces are placed on the inside of your teeth, making them less visible but requiring more care. Avoid eating hard or sticky foods to prevent damage. It is common to experience some irritation to the tongue, especially in the initial phase. Maintain a careful cleaning routine to avoid plaque buildup and ensure the braces function properly.",
+          "displayOrder": 5
+        },
+        {
+          "name": "Invisalign",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 6
+        },
+        {
+          "name": "Angel / ClearCorrect",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 7
+        },
+        {
+          "name": "Custom clear aligners",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 8
+        },
+        {
+          "name": "Space maintainers",
+          "consentText": "I consent to the Space Maintainer procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Space maintainers are used to preserve space for permanent teeth when a primary tooth is lost prematurely. Ensure the child avoids chewing on the maintainer, as it can affect its placement. Regular check-ups are necessary to monitor the appliance.",
+          "displayOrder": 9
+        },
+        {
+          "name": "Habit-breaking appliances",
+          "consentText": "I consent to the Habit-Breaking Appliance procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Habit-breaking appliances help prevent thumb-sucking or other oral habits. The child may feel discomfort initially, and some speech adjustments may occur. Consistent use and follow-up are key to success.",
+          "displayOrder": 10
+        },
+        {
+          "name": "Palatal expanders",
+          "consentText": "I consent to the Palatal Expander procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "During the use of a palatal expander, you may experience mild discomfort and pressure on your upper jaw. This is normal, but if the pain is severe or if the appliance causes sores in your mouth, let us know immediately. Maintain good oral hygiene and avoid foods that could damage the expander.",
+          "displayOrder": 11
+        },
+        {
+          "name": "Growth modification appliances",
+          "consentText": "I consent to the Growth Modification Appliance procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "The growth modification appliance is designed to guide the development of the jaw. It is important to wear the appliance as instructed, and avoid hard foods that might cause discomfort or interfere with the device. Contact us if the appliance causes irritation or does not fit properly.",
+          "displayOrder": 12
+        },
+        {
+          "name": "Retainers (Hawley)",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 13
+        },
+        {
+          "name": "Retainers (Essix)",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 14
+        },
+        {
+          "name": "Fixed retainers",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 15
+        },
+        {
+          "name": "Clear Aligners",
+          "consentText": "I consent to the Clear Aligners procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Clear aligners are discreet and comfortable but must be worn for 20-22 hours a day for optimal results. Clean your aligners and teeth regularly, and avoid drinking sugary or hot beverages with the aligners in place. Schedule regular follow-up visits to ensure the treatment is progressing as planned. Contact us if the aligners cause discomfort, or if you experience issues with the fit.",
+          "displayOrder": 21
+        },
+        {
+          "name": "Retainers",
+          "consentText": "I consent to the Retainers procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Retainers are essential for maintaining the results of your orthodontic treatment. Wear them as instructed, usually at night, to prevent shifting of the teeth. Clean your retainer regularly to avoid plaque buildup. If it becomes damaged or uncomfortable, contact us for adjustments.",
+          "displayOrder": 26
+        }
+      ]
+    },
+    {
+      "key": "oms",
+      "title": "Oral & Maxillofacial Surgery",
+      "displayOrder": 6,
+      "procedures": [
+        {
+          "name": "Simple extraction",
+          "consentText": "I consent to the Simple Extraction procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Following a simple extraction, avoid sucking, spitting, or drinking through a straw for 24 hours to prevent dislodging the clot. Apply an ice pack to reduce swelling, and follow prescribed pain medication schedules. Be sure to keep the extraction site clean but avoid brushing directly on it for a few days.",
+          "displayOrder": 1
+        },
+        {
+          "name": "Surgical extraction",
+          "consentText": "I consent to the Surgical Extraction procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Surgical extractions may require stitches, and you will likely experience some swelling or bruising. Take prescribed antibiotics to prevent infection and pain relievers for discomfort. Keep your head elevated while resting, and follow the post-operative care instructions carefully for optimal healing.",
+          "displayOrder": 2
+        },
+        {
+          "name": "Root piece removal",
+          "consentText": "I consent to the Root Piece Removal procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After root piece removal, there may be mild discomfort, swelling, or bruising. Take pain medication as directed, and maintain a soft food diet. Avoid any vigorous rinsing or spitting to prevent dislodging the clot. Keep the extraction site clean with warm saltwater rinses once your dentist permits.",
+          "displayOrder": 3
+        },
+        {
+          "name": "Retained tooth extraction",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 4
+        },
+        {
+          "name": "Partial bony impaction",
+          "consentText": "I consent to the Partial Bony Impaction procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After a partial bony impaction removal, it is important to follow a strict regimen of rest and prescribed medications. Swelling and discomfort are common and can be minimized by applying ice packs. Avoid strenuous activities, and maintain oral hygiene with gentle saltwater rinses.",
+          "displayOrder": 5
+        },
+        {
+          "name": "Full bony impaction",
+          "consentText": "I consent to the Full Bony Impaction procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Full bony impaction procedures require more extensive care and may result in significant swelling and discomfort. Use ice packs, take prescribed medications, and keep the extraction site clean as instructed. Follow-up visits are necessary to monitor healing and adjust post-operative care.",
+          "displayOrder": 6
+        },
+        {
+          "name": "Soft tissue impaction",
+          "consentText": "I consent to the Soft Tissue Impaction procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After soft tissue impaction removal, you may experience some swelling and discomfort. It's important to avoid eating hard foods and follow the prescribed medication and oral hygiene regimen. Keep your follow-up appointments to monitor your recovery.",
+          "displayOrder": 7
+        },
+        {
+          "name": "Frenectomy",
+          "consentText": "I consent to the Frenectomy procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After frenectomy, expect mild swelling and discomfort. Avoid chewing on the treated area until fully healed. Follow prescribed care instructions and keep the area clean with gentle brushing. Avoid activities that may put pressure on the treated area. Regular check-ups are essential to monitor the healing process. Contact us if you notice unusual pain or swelling that doesn’t subside.",
+          "displayOrder": 8
+        },
+        {
+          "name": "Biopsy",
+          "consentText": "I consent to the Biopsy procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Following a biopsy, there may be slight discomfort and swelling. Follow the post-procedure care instructions to ensure proper healing. You will need to avoid any irritating foods or drinks until the area is fully healed, and attend follow-up appointments for the results of the biopsy.",
+          "displayOrder": 9
+        },
+        {
+          "name": "Cyst removal",
+          "consentText": "I consent to the Cyst Removal procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After cyst removal, you may experience discomfort or mild swelling. Follow your dentist's instructions carefully, including taking any prescribed medications and attending follow-up visits. Avoid any strenuous activities to promote proper healing.",
+          "displayOrder": 10
+        },
+        {
+          "name": "Abscess drainage",
+          "consentText": "I consent to the Abscess Drainage procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Abscess drainage is used to remove pus and relieve pressure caused by infection. You may need antibiotics and follow-up visits to ensure complete healing.",
+          "displayOrder": 11
+        },
+        {
+          "name": "Alveoloplasty",
+          "consentText": "I consent to the Alveoloplasty procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Alveoloplasty is often performed in conjunction with extractions. Expect some discomfort and swelling post-operation. Follow care instructions closely to avoid infection, and avoid strenuous activities during the healing process.",
+          "displayOrder": 12
+        },
+        {
+          "name": "Bone grafting",
+          "consentText": "I consent to the Bone Grafting procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Bone grafting is essential for creating a stable foundation for implants. Expect swelling, discomfort, and a period of limited mobility. Careful adherence to post-operative instructions is essential to ensure successful grafting and healing.",
+          "displayOrder": 13
+        },
+        {
+          "name": "Ridge augmentation",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 14
+        },
+        {
+          "name": "Sinus lift (open)",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 15
+        },
+        {
+          "name": "Sinus lift (closed)",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 16
+        },
+        {
+          "name": "TMJ surgery",
+          "consentText": "I consent to the TMJ Surgery procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "TMJ surgery is typically considered when other treatments fail. It may require a longer recovery time and follow-up care to ensure the best outcome.",
+          "displayOrder": 17
+        },
+        {
+          "name": "Jaw fracture management",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 18
+        },
+        {
+          "name": "Orthognathic surgery (jaw correction)",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 19
+        },
+        {
+          "name": "Impacted Tooth Removal",
+          "consentText": "I consent to the Impacted Tooth Removal procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Impacted tooth removal is more complex, and post-surgical care is crucial. Expect some swelling and discomfort post-operation. Follow instructions for rest, medication, and limiting physical activity for the first few days to support healing.",
+          "displayOrder": 23
+        },
+        {
+          "name": "Orthognathic Surgery",
+          "consentText": "I consent to the Orthognathic Surgery procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Orthognathic surgery requires an extended recovery period. You may experience significant swelling, discomfort, and bruising. Follow your post-operative care instructions closely, take medications as prescribed, and attend all follow-up visits to ensure proper healing.",
+          "displayOrder": 32
+        }
+      ]
+    },
+    {
+      "key": "implantology",
+      "title": "Implantology",
+      "displayOrder": 7,
+      "procedures": [
+        {
+          "name": "Single implant",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 1
+        },
+        {
+          "name": "Multiple implants",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 2
+        },
+        {
+          "name": "Full-arch implants (All-on-4 / All-on-6)",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 3
+        },
+        {
+          "name": "Zygomatic implants",
+          "consentText": "I consent to the Zygomatic Implant procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Zygomatic implants are often used for patients with insufficient bone in the upper jaw. You may experience more swelling and discomfort than with traditional implants. Follow care instructions closely, including avoiding chewing hard foods and keeping the area clean.",
+          "displayOrder": 4
+        },
+        {
+          "name": "Pterygoid implants",
+          "consentText": "I consent to the Pterygoid Implant procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Pterygoid implants are placed in the upper jaw and are a solution for patients with significant bone loss. Swelling and discomfort are common. Strict post-operative care and regular check-ups are essential for optimal healing and implant integration.",
+          "displayOrder": 5
+        },
+        {
+          "name": "Mini implants",
+          "consentText": "I consent to the Mini Implant procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Mini implants offer a less invasive alternative with a quicker recovery time. Expect some discomfort and swelling, which should subside after a few days. Follow oral hygiene recommendations and attend follow-up visits to ensure the implants are successful.",
+          "displayOrder": 6
+        },
+        {
+          "name": "Immediate implants",
+          "consentText": "I consent to the Immediate Implant procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Immediate implants are placed at the time of tooth extraction. Post-operative care is crucial. Avoid hard foods for a few weeks and follow your dentist’s recommendations for pain management and healing support.",
+          "displayOrder": 7
+        },
+        {
+          "name": "Immediate loading implants",
+          "consentText": "I consent to the Immediate Loading Implant procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Immediate loading implants allow for a quicker recovery and function. Post-operative care includes following medication schedules and maintaining proper oral hygiene. Avoid chewing on the implant site during the initial healing phase.",
+          "displayOrder": 8
+        },
+        {
+          "name": "Bone grafting",
+          "consentText": "I consent to the Bone Grafting procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Bone grafting is essential for creating a stable foundation for implants. Expect swelling, discomfort, and a period of limited mobility. Careful adherence to post-operative instructions is essential to ensure successful grafting and healing.",
+          "displayOrder": 9
+        },
+        {
+          "name": "Sinus lift",
+          "consentText": "I consent to the Sinus Lift procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "A sinus lift is performed to enhance bone growth for implant placement. Swelling and discomfort are common post-surgery. Follow all aftercare instructions, including avoiding blowing your nose and taking pain medications as prescribed.",
+          "displayOrder": 10
+        },
+        {
+          "name": "Ridge expansion",
+          "consentText": "I consent to the Ridge Expansion procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Ridge expansion may be necessary if there is insufficient bone for implant placement. Expect swelling and discomfort in the initial days. Follow prescribed post-operative care and attend follow-up appointments for assessment.",
+          "displayOrder": 11
+        },
+        {
+          "name": "Socket preservation",
+          "consentText": "I consent to the Socket Preservation procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Socket preservation is performed to preserve bone after tooth extraction. You may experience mild swelling and discomfort post-surgery. Follow your dentist’s instructions for oral hygiene and healing, and avoid any direct pressure on the socket.",
+          "displayOrder": 12
+        },
+        {
+          "name": "PRF/PRP-assisted healing",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 13
+        },
+        {
+          "name": "Peri-implantitis treatment",
+          "consentText": "I consent to the Peri-implantitis Treatment procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Peri-implantitis treatment aims to address infection around implants. Expect some discomfort and follow strict aftercare instructions, including regular cleaning and medication. Additional treatments may be needed to ensure the implant remains healthy.",
+          "displayOrder": 14
+        },
+        {
+          "name": "Single Dental Implant",
+          "consentText": "I consent to the Single Dental Implant procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After the placement of a single dental implant, avoid chewing on the implant site for a few days. Swelling and mild discomfort are common. Follow your dentist’s instructions for post-operative care, including medication and hygiene practices to promote healing.",
+          "displayOrder": 15
+        },
+        {
+          "name": "Multiple Dental Implants",
+          "consentText": "I consent to the Multiple Dental Implants procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Multiple dental implants may require a longer recovery time. You may experience swelling, discomfort, and possible bruising. Follow a soft diet and take prescribed medications as directed. Follow-up appointments are important to check for implant stability and healing.",
+          "displayOrder": 16
+        },
+        {
+          "name": "All-on-4 Implants",
+          "consentText": "I consent to the All-on-4 Implants procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "All-on-4 implants provide a full set of teeth on just four implants. Swelling and discomfort are normal post-surgery. Follow your dentist’s care plan, avoid chewing on the implants for a few days, and attend follow-up visits to ensure the implants are stable.",
+          "displayOrder": 17
+        },
+        {
+          "name": "All-on-6 Implants",
+          "consentText": "I consent to the All-on-6 Implants procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "After All-on-6 implants, it's important to follow the prescribed oral hygiene regimen and take pain medications as needed. Avoid strenuous activities for a few weeks to support the healing process. Regular follow-up appointments will ensure proper integration of the implants.",
+          "displayOrder": 18
+        }
+      ]
+    },
+    {
+      "key": "pediatric",
+      "title": "Pediatric Dentistry (Children’s Dentistry)",
+      "displayOrder": 8,
+      "procedures": [
+        {
+          "name": "Fluoride application",
+          "consentText": "I consent to the Fluoride Application procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Fluoride treatment helps prevent cavities and strengthen enamel. The child may experience mild discomfort, but the procedure is non-invasive. After the application, avoid eating or drinking for at least 30 minutes to allow the fluoride to work effectively.",
+          "displayOrder": 1
+        },
+        {
+          "name": "Sealants",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 2
+        },
+        {
+          "name": "Pulpotomy",
+          "consentText": "I consent to the Pulpotomy procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "A pulpotomy involves removing the infected pulp tissue in the tooth to preserve it. After the procedure, the child may experience mild discomfort. Follow up with prescribed pain management and avoid hard foods for a few days.",
+          "displayOrder": 3
+        },
+        {
+          "name": "Pulpectomy",
+          "consentText": "I consent to the Pulpectomy procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "A pulpectomy is a deeper procedure where the entire pulp tissue is removed from the tooth. The child may experience swelling and discomfort, which can be managed with prescribed medication. Avoid chewing on the treated tooth until fully healed.",
+          "displayOrder": 4
+        },
+        {
+          "name": "Stainless steel crowns",
+          "consentText": "I consent to the Stainless Steel Crown procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "A stainless steel crown is used to restore and protect decayed or damaged teeth. It may feel different initially, but this discomfort usually subsides. Keep the child’s mouth clean and avoid sticky or hard foods to prevent damaging the crown.",
+          "displayOrder": 5
+        },
+        {
+          "name": "Strip crowns",
+          "consentText": "I consent to the Strip Crown procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Strip crowns are used to restore decayed front teeth. They are aesthetically pleasing and blend well with natural teeth. Maintain proper oral hygiene and avoid biting into hard objects to protect the crown.",
+          "displayOrder": 6
+        },
+        {
+          "name": "Space maintainers",
+          "consentText": "I consent to the Space Maintainer procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Space maintainers are used to preserve space for permanent teeth when a primary tooth is lost prematurely. Ensure the child avoids chewing on the maintainer, as it can affect its placement. Regular check-ups are necessary to monitor the appliance.",
+          "displayOrder": 7
+        },
+        {
+          "name": "Tooth extraction (primary teeth)",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 8
+        },
+        {
+          "name": "Habit-breaking appliances",
+          "consentText": "I consent to the Habit-Breaking Appliance procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Habit-breaking appliances help prevent thumb-sucking or other oral habits. The child may feel discomfort initially, and some speech adjustments may occur. Consistent use and follow-up are key to success.",
+          "displayOrder": 9
+        },
+        {
+          "name": "Trauma management",
+          "consentText": "I consent to the Trauma Management procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "In cases of dental trauma, prompt treatment is essential. The child may experience pain or swelling, but this is usually temporary. Regular follow-ups are important to monitor tooth stability and recovery.",
+          "displayOrder": 10
+        },
+        {
+          "name": "Interceptive orthodontics",
+          "consentText": "I consent to the Interceptive Orthodontics procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Interceptive orthodontics helps address developing dental issues early. The child may experience some discomfort from braces or appliances. Regular visits are needed to adjust the treatment as the teeth develop.",
+          "displayOrder": 11
+        },
+        {
+          "name": "Pediatric RCT",
+          "consentText": "I consent to the Pediatric RCT procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Pediatric root canal treatment preserves the tooth by removing infected pulp. Expect mild discomfort and swelling, which should subside in a few days. Follow aftercare instructions closely to ensure proper healing.",
+          "displayOrder": 12
+        },
+        {
+          "name": "Pit & Fissure Sealants",
+          "consentText": "I consent to the Pit & Fissure Sealants procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Sealants are applied to the chewing surfaces of back teeth to prevent cavities. The child may feel slight pressure during the application, but there is no discomfort. Encourage regular brushing and avoid sticky foods for the first few hours.",
+          "displayOrder": 14
+        },
+        {
+          "name": "Child Extraction",
+          "consentText": "I consent to the Child Extraction procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Tooth extractions may cause temporary discomfort and swelling. Follow pain management instructions and keep the extraction site clean to prevent infection. Avoid hard, crunchy foods during healing.",
+          "displayOrder": 20
+        }
+      ]
+    },
+    {
+      "key": "cosmetic",
+      "title": "Cosmetic / Aesthetic Dentistry",
+      "displayOrder": 9,
+      "procedures": [
+        {
+          "name": "Teeth whitening (office)",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 1
+        },
+        {
+          "name": "Teeth whitening (home)",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 2
+        },
+        {
+          "name": "Porcelain veneers",
+          "consentText": "I consent to the Porcelain Veneers procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Porcelain veneers provide a natural, durable solution for teeth imperfections. After application, avoid biting hard foods and maintain regular oral hygiene.",
+          "displayOrder": 3
+        },
+        {
+          "name": "Composite veneers",
+          "consentText": "I consent to the Composite Veneers procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Composite veneers are a more affordable option for correcting chipped, stained, or misaligned teeth. They may require more frequent touch-ups and avoid hard or sticky foods to prevent damage.",
+          "displayOrder": 4
+        },
+        {
+          "name": "Smile designing",
+          "consentText": "I consent to the Smile Designing procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Smile designing enhances the appearance of your teeth and gums through a customized approach. Follow care guidelines carefully, including avoiding staining foods and drinks immediately after treatment.",
+          "displayOrder": 5
+        },
+        {
+          "name": "Digital smile design",
+          "consentText": "I consent to the Digital Smile Design procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Digital smile design allows for precise planning using digital imaging to simulate your ideal smile. Be sure to follow any aftercare instructions to ensure the longevity of the design.",
+          "displayOrder": 6
+        },
+        {
+          "name": "Cosmetic contouring",
+          "consentText": "I consent to the Cosmetic Contouring procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Cosmetic contouring reshapes teeth for a more uniform appearance. The procedure is non-invasive, but some mild discomfort may be experienced, especially if reshaping is significant.",
+          "displayOrder": 7
+        },
+        {
+          "name": "Gum depigmentation",
+          "consentText": "I consent to the Gum Depigmentation procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Gum depigmentation lightens dark spots on the gums to improve their appearance. There may be slight discomfort during healing, and it's important to avoid hot or spicy foods.",
+          "displayOrder": 8
+        },
+        {
+          "name": "Cosmetic bonding",
+          "consentText": "I consent to the Cosmetic Bonding procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Avoid biting down on hard objects immediately after your Cosmetic Bonding procedure. Avoid hot or cold foods that may cause discomfort for the first few days. Ensure you maintain good oral hygiene, but avoid direct pressure on the treated area. Be mindful of foods or beverages that may stain the bonding material. Contact us if you notice any discomfort, sensitivity, or cracking of the bonding material.",
+          "displayOrder": 9
+        },
+        {
+          "name": "Laser whitening",
+          "consentText": "I consent to the Laser Whitening procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Laser whitening uses focused light to speed up the whitening process. Expect temporary sensitivity after treatment, which can be alleviated with recommended pain relief.",
+          "displayOrder": 10
+        },
+        {
+          "name": "Tooth jewelry",
+          "consentText": "I consent to the Tooth Jewelry procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Tooth jewelry provides a temporary decorative option for your teeth. The jewel is affixed without drilling, but may cause some initial discomfort. Ensure proper care to prevent irritation or damage to surrounding teeth.",
+          "displayOrder": 11
+        },
+        {
+          "name": "Teeth Whitening",
+          "consentText": "I consent to the Teeth Whitening procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Teeth whitening helps to lighten teeth and remove stains. Temporary sensitivity may occur, and it's important to avoid staining foods and drinks immediately after treatment.",
+          "displayOrder": 12
+        }
+      ]
+    },
+    {
+      "key": "tmj",
+      "title": "TMJ & Orofacial Pain",
+      "displayOrder": 10,
+      "procedures": [
+        {
+          "name": "Night guards",
+          "consentText": "I consent to the Night Guard procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Night guards help alleviate discomfort from teeth grinding or jaw clenching. Be sure to clean your night guard regularly to prevent buildup.",
+          "displayOrder": 1
+        },
+        {
+          "name": "TMJ splints",
+          "consentText": "I consent to the TMJ Splint procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "TMJ splints are used to manage temporomandibular joint pain. Regular adjustment and maintenance are required to ensure optimal function and comfort.",
+          "displayOrder": 2
+        },
+        {
+          "name": "Trigger point therapy",
+          "consentText": "I consent to the Trigger Point Therapy procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Trigger point therapy involves targeting muscle knots that may be causing jaw pain. Follow up as recommended to monitor progress and ensure effective pain management.",
+          "displayOrder": 3
+        },
+        {
+          "name": "Muscle relaxant therapy",
+          "consentText": "I consent to the Muscle Relaxant Therapy procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Muscle relaxant therapy helps alleviate pain caused by muscle spasms around the TMJ. There may be temporary side effects such as muscle weakness.",
+          "displayOrder": 4
+        },
+        {
+          "name": "Botox for TMJ",
+          "consentText": "I consent to the Botox for TMJ procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Botox injections can help relieve muscle tension and pain caused by TMJ disorders. Side effects are rare but may include temporary swelling or bruising.",
+          "displayOrder": 5
+        },
+        {
+          "name": "Occlusal equilibration",
+          "consentText": "I consent to the Occlusal Equilibration procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Occlusal equilibration adjusts the bite to ensure proper jaw alignment. Temporary discomfort is possible, but it helps with long-term relief of jaw tension.",
+          "displayOrder": 6
+        },
+        {
+          "name": "TMJ arthrocentesis",
+          "consentText": "I consent to the TMJ Arthrocentesis procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "TMJ arthrocentesis is a minimally invasive procedure to flush out the TMJ and reduce inflammation. Some swelling and discomfort are expected during recovery.",
+          "displayOrder": 7
+        },
+        {
+          "name": "TMJ surgery",
+          "consentText": "I consent to the TMJ Surgery procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "TMJ surgery is typically considered when other treatments fail. It may require a longer recovery time and follow-up care to ensure the best outcome.",
+          "displayOrder": 8
+        }
+      ]
+    },
+    {
+      "key": "emergency",
+      "title": "Dental Emergency Care",
+      "displayOrder": 11,
+      "procedures": [
+        {
+          "name": "Severe pain management",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 1
+        },
+        {
+          "name": "Dental abscess drainage",
+          "consentText": null,
+          "guidelineText": null,
+          "displayOrder": 2
+        },
+        {
+          "name": "Fractured tooth repair",
+          "consentText": "I consent to the Fractured Tooth Repair procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Fractured teeth may be repaired with fillings, crowns, or other restorative options depending on the severity. Follow up to ensure proper healing and avoid complications.",
+          "displayOrder": 3
+        },
+        {
+          "name": "Knocked-out tooth reimplantation",
+          "consentText": "I consent to the Knocked-Out Tooth Reimplantation procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Reimplanting a knocked-out tooth is time-sensitive. You may need a splint and follow-up care to ensure successful healing and avoid tooth loss.",
+          "displayOrder": 4
+        },
+        {
+          "name": "Emergency RCT",
+          "consentText": "I consent to the Emergency RCT procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Emergency root canal therapy (RCT) may be necessary for severe infections or pain. You may need further follow-up appointments for complete recovery.",
+          "displayOrder": 5
+        },
+        {
+          "name": "Bleeding control",
+          "consentText": "I consent to the Bleeding Control procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Bleeding control may involve the application of gauze, pressure, or other techniques to stop excessive bleeding following a dental injury. Follow-up care may be necessary.",
+          "displayOrder": 6
+        },
+        {
+          "name": "Soft tissue injury repair",
+          "consentText": "I consent to the Soft Tissue Injury Repair procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Soft tissue injury repair may involve suturing or other methods to treat cuts or tears in the gums or lips. Proper aftercare is essential to ensure proper healing.",
+          "displayOrder": 7
+        },
+        {
+          "name": "Temporary filling",
+          "consentText": "I consent to the Temporary Filling procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Temporary fillings are used to protect a tooth before permanent restoration. Avoid eating hard foods and maintain regular check-ups for long-term care.",
+          "displayOrder": 8
+        },
+        {
+          "name": "Trauma stabilization",
+          "consentText": "I consent to the Trauma Stabilization procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Trauma stabilization helps to secure a displaced tooth or restore stability following an injury. Follow-up appointments are necessary for healing and restoration.",
+          "displayOrder": 9
+        },
+        {
+          "name": "Pain Management",
+          "consentText": "I consent to the Pain Management procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Pain management may include medications or techniques to alleviate discomfort following a dental emergency. Be sure to follow your dentist's aftercare instructions.",
+          "displayOrder": 10
+        },
+        {
+          "name": "Abscess Drainage",
+          "consentText": "I consent to the Abscess Drainage procedure as recommended by my dentist for my specific dental condition. I understand the purpose of this treatment, the expected benefits, and the possible risks such as post-operative discomfort, sensitivity, healing variations, or the need for additional procedures. I acknowledge that outcomes may depend on the condition of the tooth, my oral hygiene, and compliance with after-care instructions. I am aware that follow-up visits, adjustments, or supplementary treatment may be required to achieve optimal results. I authorize my dentist to modify or extend the treatment plan if unexpected findings occur during the procedure, acting in my best clinical interest.",
+          "guidelineText": "Abscess drainage is used to remove pus and relieve pressure caused by infection. You may need antibiotics and follow-up visits to ensure complete healing.",
+          "displayOrder": 11
+        }
+      ]
+    },
+    {
+      "key": "others",
+      "title": "Others",
+      "displayOrder": 12,
+      "procedures": [
+        {
+          "name": "General Dental Treatment",
+          "consentText": "I hereby provide my full and informed consent for all general dental treatments including examinations, diagnostic procedures, X‑rays, cleaning, fillings, preventive care, and any other routine procedures deemed necessary by my dentist. I understand that dentistry is not an exact science and that treatment outcomes can vary depending on individual healing patterns, oral hygiene practices, and the condition of my teeth and gums. I acknowledge that certain procedures may involve temporary discomfort, sensitivity, gum irritation, or the need for follow-up visits. I authorize my dentist to perform additional procedures if unexpected conditions are discovered during treatment, provided they are in my best interest. I also understand my responsibility to follow all post‑treatment instructions, attend recommended follow-up appointments, and disclose accurate medical history to support safe and effective care. By signing, I confirm that all my questions have been answered to my satisfaction and that I fully understand the nature, purpose, potential risks, benefits, and alternatives of routine dental care.",
+          "guidelineText": "Follow the prescribed medicines exactly to ensure smooth healing. Maintain gentle oral hygiene, avoiding aggressive brushing. For the first 24 hours, avoid extreme hot, cold, or hard foods. Use warm salt-water rinses twice daily to reduce inflammation and attend scheduled follow-up visits for optimal recovery. If you experience severe pain, swelling, bleeding, or fever, report it immediately.",
+          "displayOrder": 1
+        }
+      ]
+    }
+  ]
+}

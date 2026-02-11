@@ -1,0 +1,929 @@
+/* Shared print layout for invoice / consent / guide */
+:root {
+  --primary-blue: #0f3b82;
+  --accent-blue: #2563eb;
+  --light-blue: #e5f0ff;
+  --border-grey: #d1d5db;
+  --bg-grey: #e5edf8;
+  --text-main: #0f172a;
+  --text-muted: #4b5563;
+}
+
+.ed-wrapper {
+  padding: 24px;
+  background: var(--bg-grey);
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ed-print-btn {
+  align-self: flex-start;
+  margin-bottom: 16px;
+  padding: 8px 22px;
+  border-radius: 24px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--accent-blue);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+.ed-page {
+  width: 760px;
+  min-height: auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.2), 0 0 0 1px rgba(148, 163, 184, 0.4);
+  padding: 22px 26px;
+  box-sizing: border-box;
+  color: var(--text-main);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.ed-top-bar {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary-blue), var(--accent-blue));
+  margin-bottom: 18px;
+}
+
+.ed-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 18px;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-grey);
+}
+
+.ed-logo-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 999px;
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.3), 0 0 0 3px rgba(37, 99, 235, 0.45);
+}
+
+.ed-logo-img {
+  max-width: 64px;
+  max-height: 64px;
+  object-fit: contain;
+}
+
+.ed-header-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ed-hospital-name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary-blue);
+  white-space: nowrap;
+}
+
+.ed-tagline {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-blue);
+}
+
+.ed-contact {
+  margin: 0;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.ed-title-row {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.ed-title-left h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-main);
+  white-space: nowrap;
+  position: relative;
+  padding-left: 18px;
+}
+
+.ed-title-left h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #0f3b82;
+  transform: translateY(-50%);
+}
+
+.ed-subtitle {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 600;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: var(--light-blue);
+  border: 1px solid #bfdbfe;
+  color: var(--accent-blue);
+}
+
+.ed-divider {
+  height: 1px;
+  margin: 14px 0 8px;
+  background: linear-gradient(90deg, var(--accent-blue), #e5e7eb);
+}
+
+.ed-section {
+  margin-top: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-grey);
+  overflow: hidden;
+}
+
+.ed-section-header {
+  padding: 6px 12px;
+  background: linear-gradient(90deg, var(--primary-blue), var(--accent-blue));
+}
+
+.ed-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #ffffff;
+  white-space: nowrap;
+  position: relative;
+  padding-left: 18px;
+}
+
+.ed-section-title::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #ffffff;
+  transform: translateY(-50%);
+}
+
+.ed-section-body {
+  padding: 8px 12px 10px;
+  background: #ffffff;
+  font-size: 12.5px;
+}
+
+.ed-grid {
+  display: grid;
+  gap: 8px 16px;
+}
+
+.ed-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ed-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ed-label {
+  position: relative;
+  padding-left: 18px;
+  display: inline-block;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  line-height: 1.3;
+}
+
+.ed-label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  background: #2563eb;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.ed-value {
+  padding-left: 18px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #0f172a;
+  line-height: 1.45;
+  margin-top: 2px;
+}
+
+.ed-multiline {
+  padding-left: 18px;
+  white-space: pre-line;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #0f172a;
+  line-height: 1.45;
+  margin-top: 2px;
+}
+
+.ed-sign-block {
+  margin-top: 24px;
+  text-align: right;
+  padding-left: 450px;
+}
+
+.ed-sign-line {
+  width: 230px;
+  border-bottom: 1px solid var(--accent-blue);
+  margin-bottom: 4px;
+}
+
+.ed-sign-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary-blue);
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .print-surface,
+  .print-surface * {
+    visibility: visible;
+  }
+
+  .print-surface {
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    z-index: 9999;
+    padding: 0;
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .ed-wrapper {
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .ed-page {
+    box-shadow: none;
+    border-radius: 0;
+    width: 100%;
+    min-height: auto;
+    padding: 10mm 12mm;
+  }
+
+  .ed-section {
+    page-break-inside: auto;
+    break-inside: auto;
+    margin-top: 8px;
+  }
+
+  .ed-section:not(:first-of-type) {
+    padding-top: 0 !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 8mm 10mm;
+  }
+}
+
+.bill-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.bill-table thead tr {
+  background: linear-gradient(90deg, var(--primary-blue), var(--accent-blue));
+  color: #ffffff;
+}
+
+.bill-table th,
+.bill-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.bill-table th:nth-child(1),
+.bill-table td:nth-child(1),
+.bill-table th:nth-child(3),
+.bill-table td:nth-child(3),
+.bill-table th:nth-child(4),
+.bill-table td:nth-child(4),
+.bill-table th:nth-child(5),
+.bill-table td:nth-child(5) {
+  text-align: right;
+}
+
+.bill-table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+.bill-summary-grid {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr;
+  gap: 12px;
+}
+
+.bill-summary-left .ed-field {
+  margin-bottom: 8px;
+}
+
+.bill-summary-right {
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  padding: 6px 8px;
+}
+
+.bill-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  padding: 3px 0;
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.bill-summary-row:last-child {
+  border-bottom: none;
+}
+
+.bill-summary-label {
+  color: #4b5563;
+}
+
+.bill-summary-value {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.bill-summary-total {
+  font-weight: 700;
+  border-top: 1px solid #d1d5db;
+  margin-top: 4px;
+  padding-top: 6px;
+}
+
+/* Consent compact extras */
+.ed-page-consent {
+  padding: 20px 26px;
+}
+
+.consent-compact-body {
+  padding: 6px 10px;
+}
+
+.consent-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 4px;
+  font-size: 11.5px;
+}
+
+.consent-field-line {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.consent-field-full {
+  grid-column: 1 / -1;
+}
+
+.consent-field-label {
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.consent-field-value {
+  flex: 1;
+  border-bottom: 1px dotted #9ca3af;
+  padding-bottom: 2px;
+  color: #111827;
+}
+
+.consent-summary-section .ed-section-body {
+  padding: 10px 14px;
+}
+
+.consent-summary-section .ed-multiline {
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.consent-place-row {
+  display: flex;
+  gap: 24px;
+  margin-top: 10px;
+  font-size: 11.5px;
+}
+
+.consent-place-label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.consent-place-value {
+  border-bottom: 1px dotted #9ca3af;
+}
+
+.consent-signature-row {
+  display: flex;
+  gap: 24px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.consent-signature-block {
+  flex: 1;
+  min-width: 180px;
+  text-align: center;
+}
+
+.consent-sign-line {
+  border-bottom: 1px solid #9ca3af;
+  margin: 0 auto 4px;
+  width: 100%;
+  max-width: 220px;
+}
+
+.consent-sign-label {
+  font-size: 10.5px;
+  color: #4b5563;
+}
+
+.consent-note {
+  margin-top: 10px;
+  font-size: 10.5px;
+  color: #6b7280;
+}
+
+/* Post-op guide */
+.post-op-guide {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.guide-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.guide-icon {
+  font-size: 24px;
+  min-width: 26px;
+}
+
+.guide-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.55;
+  letter-spacing: 0.005em;
+  display: block;
+}
+
+/* ---------- Rx table tweaks ---------- */
+.rx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin-top: 4px;
+}
+
+.rx-table thead tr {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.rx-table th,
+.rx-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: top;
+}
+
+.rx-col-sr {
+  width: 36px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.rx-table thead th:nth-child(3),
+.rx-table td:nth-child(3),
+.rx-table thead th:nth-child(4),
+.rx-table td:nth-child(4),
+.rx-table thead th:nth-child(5),
+.rx-table td:nth-child(5) {
+  text-align: center;
+}
+
+.rx-drug-name {
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: #111827;
+}
+
+.rx-drug-strength {
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.rx-drug-note {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.rx-freq-main {
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  font-size: 12.5px;
+}
+
+.rx-freq-note {
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.rx-duration-main,
+.rx-qty-main {
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+/* ========== MOBILE RESPONSIVE STYLES ========== */
+@media (max-width: 768px) {
+  .ed-wrapper {
+    padding: 12px;
+    min-height: auto;
+  }
+
+  .ed-print-btn {
+    align-self: center;
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+
+  .ed-page {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px 14px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+  }
+
+  .ed-top-bar {
+    margin-bottom: 14px;
+  }
+
+  .ed-header {
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    padding-bottom: 12px;
+  }
+
+  .ed-logo-wrap {
+    width: 60px;
+    height: 60px;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2), 0 0 0 2px rgba(37, 99, 235, 0.3);
+  }
+
+  .ed-logo-img {
+    max-width: 50px;
+    max-height: 50px;
+  }
+
+  .ed-header-main {
+    gap: 2px;
+  }
+
+  .ed-hospital-name {
+    font-size: 16px;
+    letter-spacing: 0.05em;
+    white-space: normal;
+  }
+
+  .ed-tagline {
+    font-size: 11px;
+  }
+
+  .ed-contact {
+    font-size: 10px;
+  }
+
+  .ed-title-row {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    margin-top: 12px;
+  }
+
+  .ed-title-left h2 {
+    font-size: 14px;
+    padding-left: 16px;
+  }
+
+  .ed-title-left h2::before {
+    width: 6px;
+    height: 6px;
+  }
+
+  .ed-subtitle {
+    font-size: 10px;
+    padding: 2px 8px;
+  }
+
+  .ed-divider {
+    margin: 10px 0 6px;
+  }
+
+  .ed-section {
+    margin-top: 10px;
+    border-radius: 6px;
+  }
+
+  .ed-section-header {
+    padding: 5px 10px;
+  }
+
+  .ed-section-title {
+    font-size: 11px;
+    padding-left: 16px;
+  }
+
+  .ed-section-body {
+    padding: 6px 10px 8px;
+    font-size: 12px;
+  }
+
+  .ed-grid {
+    gap: 6px 12px;
+  }
+
+  .ed-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .ed-label {
+    font-size: 10px;
+    padding-left: 16px;
+  }
+
+  .ed-value,
+  .ed-multiline {
+    font-size: 12px;
+    padding-left: 16px;
+  }
+
+  .ed-sign-block {
+    margin-top: 16px;
+    text-align: center;
+    padding-left: 0;
+  }
+
+  .ed-sign-line {
+    width: 150px;
+    margin: 0 auto 3px;
+  }
+
+  .ed-sign-text {
+    font-size: 11px;
+  }
+
+  /* Consent specific mobile */
+  .ed-page-consent {
+    padding: 14px 12px;
+  }
+
+  .consent-compact-body {
+    padding: 4px 8px;
+  }
+
+  .consent-field-grid {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+    row-gap: 3px;
+    font-size: 11px;
+  }
+
+  .consent-field-line {
+    gap: 3px;
+  }
+
+  .consent-signature-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .consent-signature-block {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+
+  .consent-place-row {
+    flex-direction: column;
+    gap: 12px;
+    font-size: 11px;
+  }
+
+  /* Post-op guide mobile */
+  .post-op-guide {
+    gap: 10px;
+  }
+
+  .guide-line {
+    gap: 8px;
+    padding: 3px 0;
+  }
+
+  .guide-icon {
+    font-size: 20px;
+    min-width: 22px;
+  }
+
+  .guide-text {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  /* Tables mobile */
+  .bill-table,
+  .rx-table {
+    font-size: 11px;
+  }
+
+  .bill-table th,
+  .bill-table td,
+  .rx-table th,
+  .rx-table td {
+    padding: 5px 6px;
+  }
+
+  .bill-summary-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .bill-summary-right {
+    padding: 5px 6px;
+  }
+
+  .bill-summary-row {
+    font-size: 11px;
+    padding: 2px 0;
+  }
+
+  .rx-drug-name {
+    font-size: 12px;
+  }
+
+  .rx-drug-strength,
+  .rx-drug-note {
+    font-size: 11px;
+  }
+
+  .rx-freq-main {
+    font-size: 11.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ed-wrapper {
+    padding: 8px;
+  }
+
+  .ed-page {
+    padding: 12px 10px;
+    border-radius: 4px;
+  }
+
+  .ed-header {
+    gap: 10px;
+    padding-bottom: 10px;
+  }
+
+  .ed-logo-wrap {
+    width: 50px;
+    height: 50px;
+  }
+
+  .ed-logo-img {
+    max-width: 44px;
+    max-height: 44px;
+  }
+
+  .ed-hospital-name {
+    font-size: 14px;
+  }
+
+  .ed-tagline {
+    font-size: 10px;
+  }
+
+  .ed-contact {
+    font-size: 9px;
+  }
+
+  .ed-title-left h2 {
+    font-size: 13px;
+  }
+
+  .ed-section-body {
+    font-size: 11.5px;
+  }
+
+  .ed-value,
+  .ed-multiline {
+    font-size: 11.5px;
+  }
+
+  .consent-field-grid {
+    font-size: 10px;
+  }
+
+  .guide-text {
+    font-size: 11.5px;
+  }
+
+  .bill-table,
+  .rx-table {
+    font-size: 10px;
+  }
+
+  .bill-table th,
+  .bill-table td,
+  .rx-table th,
+  .rx-table td {
+    padding: 4px 4px;
+  }
+}
+
+/* Mobile responsive for preview containers in TreatmentPlanView */
+@media (max-width: 768px) {
+  .print-surface {
+    padding: 0;
+    margin: 10px 0 0 0 !important;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+}

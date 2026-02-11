@@ -1,0 +1,193 @@
+.appointment-chat .schedule-list {
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.appointment-chat .schedule-list-section {
+  padding: 8px 0 12px;
+}
+
+.appointment-chat .schedule-list-label {
+  padding: 8px 16px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary-light, #64748b);
+}
+
+.appointment-chat .schedule-list-empty {
+  padding: 0 16px 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary-light, #64748b);
+}
+
+.appointment-chat .schedule-header {
+  gap: 16px;
+}
+
+.appointment-chat .schedule-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.appointment-chat .schedule-message-list {
+  gap: 18px;
+}
+
+.appointment-chat .chat-message-list.schedule-message-list {
+  min-height: 180px;
+  padding: 10px 12px;
+}
+
+.appointment-chat .schedule-calendar-card {
+  background: #ffffff;
+  border: 1px solid var(--neutral-200, #e2e8f0);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.06);
+}
+
+.appointment-chat .schedule-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.appointment-chat .schedule-calendar-header .month-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.appointment-chat .schedule-detail-card {
+  background: #ffffff;
+  border: 1px solid var(--neutral-200, #e2e8f0);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.06);
+  display: grid;
+  gap: 8px;
+}
+
+.appointment-chat .schedule-detail-empty {
+  color: var(--text-secondary-light, #64748b);
+}
+
+.appointment-chat .schedule-detail-header {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary-light, #64748b);
+}
+
+.appointment-chat .schedule-detail-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary, #0f172a);
+}
+
+.appointment-chat .schedule-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.82rem;
+  color: var(--text-secondary-light, #64748b);
+}
+
+.appointment-chat .schedule-detail-body {
+  font-size: 0.88rem;
+  color: var(--text-primary, #0f172a);
+}
+
+.appointment-chat .schedule-detail-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.appointment-chat .schedule-day-list {
+  display: grid;
+  gap: 12px;
+}
+
+.appointment-chat .schedule-day-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary, #0f172a);
+  padding: 2px 0;
+  line-height: 1.2;
+}
+
+.appointment-chat .schedule-message {
+  cursor: pointer;
+}
+
+.appointment-chat .schedule-message.selected .chat-message-content {
+  outline: 2px solid var(--brand, #4f83ff);
+}
+
+.appointment-chat .chat-single-message {
+  width: 100%;
+}
+
+.appointment-chat .chat-single-message .chat-message-content {
+  width: 100%;
+}
+
+
+.appointment-chat .schedule-composer {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.appointment-chat .schedule-composer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.appointment-chat .schedule-field {
+  display: grid;
+  gap: 6px;
+}
+
+.appointment-chat .schedule-field label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary-light, #64748b);
+}
+
+.appointment-chat .schedule-field input,
+.appointment-chat .schedule-field select {
+  width: 100%;
+  border: 1px solid var(--neutral-200, #e2e8f0);
+  border-radius: 10px;
+  padding: 8px 12px;
+  background: #ffffff;
+  font-size: 0.9rem;
+}
+
+.appointment-chat .schedule-field .btn {
+  width: 100%;
+}
+
+.appointment-chat .schedule-field--full {
+  grid-column: 1 / -1;
+}
+
+.appointment-chat .schedule-composer-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+  .appointment-chat .schedule-header {
+    align-items: flex-start;
+  }
+}
