@@ -24,7 +24,6 @@ services:
       
       # Server
       SERVER_PORT: 8080
-      SERVER_SERVLET_CONTEXT_PATH: /api
     ports:
       - "8081:8080"
     extra_hosts:
@@ -33,7 +32,7 @@ services:
       - hms-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 3
