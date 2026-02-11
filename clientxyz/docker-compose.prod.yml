@@ -27,6 +27,8 @@ services:
       SERVER_SERVLET_CONTEXT_PATH: /api
     ports:
       - "8081:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - hms-network
     restart: unless-stopped
