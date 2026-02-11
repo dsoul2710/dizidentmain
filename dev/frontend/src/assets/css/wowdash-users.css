@@ -1,0 +1,522 @@
+.wowdash-users {
+  --wow-primary-600: #487FFF;
+  --wow-neutral-50: #F5F6FA;
+  --wow-neutral-200: #EBECEF;
+  --wow-neutral-600: #4B5563;
+  --wow-neutral-900: #111827;
+  --wow-border-color: #d1d5db80;
+  --wow-input-form-light: #E5E7EB;
+  --wow-white: #ffffff;
+  --wow-text-primary-light: var(--wow-neutral-900);
+  --wow-text-secondary-light: var(--wow-neutral-600);
+  --wow-font-md: 1rem;
+  --wow-font-sm: 0.875rem;
+  --wow-font-lg: 1.125rem;
+}
+
+.wowdash-users .bg-base {
+  background-color: var(--wow-white) !important;
+}
+
+.wowdash-users .text-md {
+  font-size: var(--wow-font-md) !important;
+}
+
+.wowdash-users .text-sm {
+  font-size: var(--wow-font-sm) !important;
+}
+
+.wowdash-users .text-lg {
+  font-size: var(--wow-font-lg) !important;
+}
+
+.wowdash-users .text-primary-light {
+  color: var(--wow-text-primary-light) !important;
+}
+
+.wowdash-users .text-secondary-light {
+  color: var(--wow-text-secondary-light) !important;
+}
+
+.wowdash-users .fw-medium {
+  font-weight: 500;
+}
+
+.wowdash-users .fw-semibold {
+  font-weight: 600;
+}
+
+.wowdash-users .border {
+  border: 1px solid var(--wow-border-color) !important;
+}
+
+.wowdash-users .border-bottom {
+  border-bottom: 1px solid var(--wow-border-color) !important;
+}
+
+.wowdash-users .radius-8 {
+  border-radius: 0.5rem;
+}
+
+.wowdash-users .radius-12 {
+  border-radius: 0.75rem;
+}
+
+.wowdash-users .d-flex {
+  display: flex;
+}
+
+.wowdash-users .align-items-center {
+  align-items: center;
+}
+
+.wowdash-users .justify-content-between {
+  justify-content: space-between;
+}
+
+.wowdash-users .flex-wrap {
+  flex-wrap: wrap;
+}
+
+.wowdash-users .gap-2 {
+  gap: 0.5rem;
+}
+
+.wowdash-users .gap-3 {
+  gap: 0.75rem;
+}
+
+.wowdash-users .w-auto {
+  width: auto;
+}
+
+.wowdash-users .h-40-px {
+  height: 40px;
+}
+
+.wowdash-users .px-12 {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.wowdash-users .ps-12 {
+  padding-left: 12px;
+}
+
+.wowdash-users .py-6 {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.wowdash-users .px-24 {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.wowdash-users .p-24 {
+  padding: 24px;
+}
+
+.wowdash-users .py-12 {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.wowdash-users .py-16 {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.wowdash-users .mb-0 {
+  margin-bottom: 0;
+}
+
+.wowdash-users .card {
+  background-color: var(--wow-white);
+  border-radius: 8px;
+  box-shadow: 0 0.25rem 1.875rem rgba(46, 45, 116, 0.05);
+  border: none;
+  color: var(--wow-text-secondary-light);
+}
+
+.wowdash-users .card .card-header {
+  background-color: var(--wow-white);
+  padding: 0.875rem 1.5rem;
+  border-color: var(--wow-border-color);
+  color: var(--wow-text-secondary-light);
+}
+
+.wowdash-users .card .card-body {
+  padding: 0.875rem 1.5rem;
+  color: var(--wow-text-secondary-light);
+}
+
+.wowdash-users .btn {
+  padding: 0.5625rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  background: transparent;
+}
+
+.wowdash-users .btn.btn-sm {
+  padding: 0.5rem 0.875rem;
+  font-size: 0.875rem;
+}
+
+.wowdash-users .btn-primary {
+  background-color: var(--wow-primary-600);
+  color: #fff;
+  border-color: var(--wow-primary-600);
+}
+
+.wowdash-users .btn-primary:hover,
+.wowdash-users .btn-primary:active,
+.wowdash-users .btn-primary:focus {
+  background-color: var(--wow-primary-600);
+  color: #fff;
+  border-color: var(--wow-primary-600);
+}
+
+.wowdash-users .form-select,
+.wowdash-users .form-control,
+.wowdash-users textarea {
+  border: 1px solid var(--wow-input-form-light);
+  color: var(--wow-text-primary-light) !important;
+  background-color: var(--wow-white);
+  padding: 0.5625rem 1.25rem;
+  border-radius: 0.5rem;
+}
+
+.wowdash-users .form-select::placeholder,
+.wowdash-users .form-control::placeholder,
+.wowdash-users textarea::placeholder {
+  color: var(--wow-text-secondary-light);
+  font-size: 1rem !important;
+}
+
+.wowdash-users .form-select:focus,
+.wowdash-users .form-select:active,
+.wowdash-users .form-control:focus,
+.wowdash-users .form-control:active,
+.wowdash-users textarea:focus,
+.wowdash-users textarea:active {
+  box-shadow: none;
+  border-color: var(--wow-primary-600) !important;
+  background-color: transparent;
+}
+
+.wowdash-users .form-select {
+  padding: 0.5625rem 1.875rem 0.5625rem 0.9375rem;
+}
+
+.wowdash-users .form-select.form-select-sm {
+  height: 40px;
+  font-size: 0.875rem;
+}
+
+.wowdash-users .form-select,
+.wowdash-users .form-control:not(textarea) {
+  height: 2.75rem;
+}
+
+.wowdash-users .form-label {
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.wowdash-users .table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.wowdash-users .table {
+  width: 100%;
+  margin-bottom: 0;
+  color: var(--wow-text-secondary-light);
+  border-collapse: separate;
+}
+
+.wowdash-users .bordered-table {
+  border-spacing: 0;
+  border-collapse: separate;
+  border: 1px solid var(--wow-neutral-200);
+  border-radius: 8px;
+  min-width: max-content;
+  vertical-align: middle;
+}
+
+.wowdash-users .bordered-table thead tr th {
+  background-color: var(--wow-neutral-50) !important;
+  border-bottom: 1px solid var(--wow-neutral-200) !important;
+  color: var(--wow-text-primary-light) !important;
+  padding: 16px !important;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.wowdash-users .bordered-table thead tr th:first-child {
+  border-start-start-radius: 8px;
+}
+
+.wowdash-users .bordered-table thead tr th:last-child {
+  border-start-end-radius: 8px;
+}
+
+.wowdash-users .bordered-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.wowdash-users .bordered-table tbody tr:last-child td:first-child {
+  border-end-start-radius: 8px;
+}
+
+.wowdash-users .bordered-table tbody tr:last-child td:last-child {
+  border-end-end-radius: 8px;
+}
+
+.wowdash-users .bordered-table tbody tr td {
+  color: var(--wow-text-secondary-light);
+  padding: 16px !important;
+  border-bottom: 1px solid var(--wow-neutral-200);
+  background-color: var(--wow-white);
+  vertical-align: middle;
+}
+
+.wowdash-users .sm-table thead tr th,
+.wowdash-users .sm-table thead tr td,
+.wowdash-users .sm-table tbody tr th,
+.wowdash-users .sm-table tbody tr td {
+  padding: 10px 16px !important;
+}
+
+.wowdash-users .scroll-sm::-webkit-scrollbar {
+  width: 4px !important;
+  height: 4px !important;
+  border-radius: 40px;
+}
+
+.wowdash-users .scroll-sm::-webkit-scrollbar-thumb {
+  background-color: #b1b3b8;
+  border-radius: 40px;
+}
+
+.wowdash-users .scroll-sm::-webkit-scrollbar-thumb:hover {
+  background-color: #939393;
+}
+
+.wowdash-users .scroll-sm::-webkit-scrollbar-track {
+  background-color: #d6d9de;
+  border-radius: 40px;
+}
+
+.wowdash-users .navbar-search {
+  position: relative;
+}
+
+.wowdash-users .navbar-search input {
+  width: 24.25rem;
+  height: 2.5rem;
+  background-color: var(--wow-neutral-50);
+  border: 1px solid var(--wow-input-form-light);
+  border-radius: 0.5rem;
+  padding-block: 0.3125rem;
+  padding-inline-start: 0.875rem;
+  padding-inline-end: 1.25rem;
+  color: var(--wow-text-primary-light);
+}
+
+.wowdash-users .navbar-search input:focus {
+  border-color: var(--wow-primary-600);
+}
+
+.wowdash-users .modal-card {
+  background: var(--wow-white);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
+}
+
+.wowdash-users .wow-modal {
+  padding: 24px;
+  align-items: center;
+}
+
+.wowdash-users .wow-modal-card {
+  width: min(760px, 92vw);
+  max-height: 82vh;
+  overflow: auto;
+  padding: 20px 24px 18px;
+}
+
+.wowdash-users .wow-modal-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--wow-neutral-200);
+  margin-bottom: 12px;
+}
+
+.wowdash-users .wow-modal-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--wow-text-primary-light);
+  margin: 0 0 4px;
+}
+
+.wowdash-users .wow-modal-subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--wow-text-secondary-light);
+}
+
+.wowdash-users .wow-modal-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.wowdash-users .wow-modal-form .colspan {
+  grid-column: span 2;
+}
+
+.wowdash-users .wow-modal-form .form-control,
+.wowdash-users .wow-modal-form .form-select,
+.wowdash-users .wow-modal-form textarea {
+  height: 44px;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+.wowdash-users .wow-modal-form textarea {
+  height: auto;
+  min-height: 72px;
+  resize: vertical;
+}
+
+.wowdash-users .wow-modal-actions {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.wowdash-users .btn.btn-outline {
+  border: 1px solid var(--wow-neutral-200);
+  color: var(--wow-text-secondary-light);
+  background: #fff;
+}
+
+.wowdash-users .btn.btn-outline:hover {
+  border-color: var(--wow-primary-600);
+  color: var(--wow-primary-600);
+}
+
+.wowdash-users .justify-content-center {
+  justify-content: center;
+}
+
+.wowdash-users .mt-24 {
+  margin-top: 24px;
+}
+
+.wowdash-users .w-32-px {
+  width: 32px;
+}
+
+.wowdash-users .h-32-px {
+  height: 32px;
+}
+
+.wowdash-users .border-0 {
+  border: 0 !important;
+}
+
+.wowdash-users .text-white {
+  color: #fff !important;
+}
+
+.wowdash-users .bg-neutral-300 {
+  background-color: #d1d5db !important;
+}
+
+.wowdash-users .bg-primary-600 {
+  background-color: var(--wow-primary-600) !important;
+}
+
+.wowdash-users .pagination {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.wowdash-users .page-item {
+  display: inline-flex;
+}
+
+.wowdash-users .page-link {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.wowdash-users .page-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wowdash-users .wow-add-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.wowdash-users .wow-add-card {
+  width: min(920px, 95%);
+}
+
+.wowdash-users .wow-add-form {
+  display: block;
+}
+
+.wowdash-users .wow-add-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+}
+
+.wowdash-users .wow-colspan {
+  grid-column: span 2;
+}
+
+.wowdash-users .wow-upload {
+  border: 1px dashed #cbd5f5;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #f7f9ff;
+}
+
+.wowdash-users .wow-upload input[type="file"] {
+  width: 100%;
+}
+
+.wowdash-users .wow-upload-hint {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 6px;
+}
+
+.wowdash-users .wow-file-note {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #2f3b52;
+}
+
+.wowdash-users .wow-add-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}

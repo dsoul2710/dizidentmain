@@ -14,17 +14,25 @@ A multi-tenant hospital/clinic management system with separate databases and sub
 
 ```
 dizidentmain/
-├── clientxyz/                # Client XYZ
+├── dev/                      # 🆕 Local development environment
 │   ├── backend/              # Spring Boot backend
 │   ├── frontend/             # React frontend
+│   ├── docker-compose.yml    # Local docker setup
+│   └── .env                  # Local config
+├── clientxyz/                # Client XYZ (Production)
+│   ├── backend/
+│   ├── frontend/
 │   ├── docker-compose.prod.yml
-│   └── .env.prod             # Production config
-├── clientabc/                # Client ABC (same structure)
+│   └── .env.prod
+├── clientabc/                # Client ABC (Production)
+│   └── ... (same structure as clientxyz)
 ├── scripts/
-│   ├── deploy-vps.sh         # VPS deployment script
-│   └── deploy-vps.ps1        # Windows deployment script
+│   ├── dev-local.sh          # Start dev environment
+│   ├── sync-to-client.sh     # Sync dev to clients
+│   ├── deploy-vps.sh         # VPS deployment
+│   └── deploy-vps.ps1        # Windows deployment
 ├── README.md                 # This file
-└── VPS_COMMANDS.md          # Complete deployment guide
+└── VPS_SETUP_GUIDE.md       # Complete deployment guide
 ```
 
 ## ✨ Features
@@ -81,22 +89,65 @@ Auto-created on first startup:
 
 ## 🔧 Local Development
 
-### Backend
+### Quick Start (Recommended)
 ```bash
-cd clientxyz/backend
-./gradlew bootRun
-# Access: http://localhost:8080
-```
+# Windows
+.\scripts\dev-local.ps1 docker
 
-### Frontend
+# Linux/Mac
+./scripts/dev-local.sh docker
+```
+This starts:
+- 📦 Backend: http://localhost:8080
+- 🎨 Frontend: http://localhost:3000
+- 🗄️ PostgreSQL: localhost:5432
+
+### Native Development (Without Docker)
 ```bash
-cd clientxyz/frontend
+# Terminal 1 - Backend
+cd dev/backend
+./gradlew bootRun           # Windows: .\gradlew.bat bootRun
+
+# Terminal 2 - Frontend
+cd dev/frontend
 npm install
 npm run dev
-# Access: http://localhost:5173
 ```
 
+### Sync Changes to Clients
+```bash
+# Sync specific file
+.\scripts\sync-to-client.ps1 abc backend/src/service/BillingService.java
+
+# Sync entire folder
+.\scripts\sync-to-client.ps1 xyz frontend/src/pages/
+
+# Common bug fix to all clients
+.\scripts\sync-to-client.ps1 abc backend/src/util/Helper.java
+.\scripts\sync-to-client.ps1 xyz backend/src/util/Helper.java
+```
+
+## 📁 Development Workflow
+
+```
+dev/           → Your main local development (work here)
+clientabc/     → ABC production code (client-specific customizations)
+clientxyz/     → XYZ production code (client-specific customizations)
+```
+
+1. **Develop locally** in `dev/` folder
+2. **Test changes** thoroughly
+3. **Sync to clients** using sync scripts
+4. **Deploy to VPS** when ready
+
 ## 🗄️ Database Configuration
+
+**Local Development:**
+- Host: localhost
+- Port: 5432
+- Database: clinic_hms_dev
+- Username: postgres
+- Password: postgres
 
 **Shared PostgreSQL on VPS:**
 - Host: localhost (from VPS) or 72.61.171.38 (from outside)
@@ -105,14 +156,20 @@ npm run dev
 - Password: 9932
 
 **Databases:**
-- `clinic_hms_xyz` - Client XYZ
-- `clinic_hms_abc` - Client ABC
+- `clinic_hms_dev` - Local Development
+- `clinic_hms_xyz` - Client XYZ Production
+- `clinic_hms_abc` - Client ABC Production
 
 Tables are created automatically by Hibernate on first run.
 
 ## 🐳 Docker Containers
 
-Each client runs 2 containers:
+**Development:**
+- Frontend: Port 3000
+- Backend: Port 8080
+- PostgreSQL: Port 5432
+
+**Production (Each client runs 2 containers):**
 
 | Client | Frontend Port | Backend Port |
 |--------|--------------|-------------|
