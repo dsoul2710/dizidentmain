@@ -98,8 +98,8 @@ echo "Logs:"
 docker-compose -f docker-compose.prod.yml logs --tail=10
 
 echo ""
-echo -e "${GREEN}Access at: https://${CLIENT}.srv1358942.hstgr.cloud${NC}"
-echo -e "${GREEN}API at: https://${CLIENT}.srv1358942.hstgr.cloud/api${NC}"
+echo -e "${GREEN}Access at: https://${CLIENT}.dizidental.cloud${NC}"
+echo -e "${GREEN}API at: https://${CLIENT}.dizidental.cloud/api${NC}"
 
 echo ""
 echo "View logs (realtime):"

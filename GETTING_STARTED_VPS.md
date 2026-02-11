@@ -21,7 +21,7 @@ Your multi-client HMS project is **ready for VPS deployment**!
 ## 📋 What You Need Before Starting
 
 1. **Hostinger KVM VPS Account**
-   - Domain: `srv1358942.hstgr.cloud`
+   - Domain: `dizidental.cloud`
    - VPS IP address (from Hostinger panel)
    - Root SSH access
 
@@ -50,7 +50,7 @@ git push -u origin main
 ### Step 2: VPS Initial Setup (5 minutes)
 ```bash
 # SSH to VPS
-ssh root@srv1358942.hstgr.cloud
+ssh root@dizidental.cloud
 
 # Copy and paste entire script:
 apt update && apt upgrade -y
@@ -94,12 +94,12 @@ cp clientabc/.env.prod.example clientabc/.env.prod
 nano clientxyz/.env.prod
 # SPRING_DATASOURCE_PASSWORD=your_secure_password_here
 # JWT_SECRET=xyz_secret_key_32_chars_minimum_needed_okay
-# VITE_API_BASE=https://xyz.srv1358942.hstgr.cloud/api
+# VITE_API_BASE=https://xyz.dizidental.cloud/api
 
 nano clientabc/.env.prod
 # SPRING_DATASOURCE_PASSWORD=your_secure_password_here
 # JWT_SECRET=abc_secret_key_32_chars_minimum_needed_okay
-# VITE_API_BASE=https://abc.srv1358942.hstgr.cloud/api
+# VITE_API_BASE=https://abc.dizidental.cloud/api
 
 # Make scripts executable
 chmod +x scripts/*.sh
@@ -125,7 +125,7 @@ upstream xyz_backend { server 127.0.0.1:8081; }
 upstream xyz_frontend { server 127.0.0.1:3001; }
 
 server {
-    server_name xyz.srv1358942.hstgr.cloud;
+    server_name xyz.dizidental.cloud;
     location /api/ {
         proxy_pass http://xyz_backend;
         proxy_set_header Host $host;
@@ -144,7 +144,7 @@ upstream abc_backend { server 127.0.0.1:8082; }
 upstream abc_frontend { server 127.0.0.1:3002; }
 
 server {
-    server_name abc.srv1358942.hstgr.cloud;
+    server_name abc.dizidental.cloud;
     location /api/ {
         proxy_pass http://abc_backend;
         proxy_set_header Host $host;
@@ -169,7 +169,7 @@ sudo systemctl reload nginx
 ### Step 7: Get SSL Certificates (2 minutes)
 ```bash
 # Get certificates for both subdomains
-sudo certbot --nginx -d xyz.srv1358942.hstgr.cloud -d abc.srv1358942.hstgr.cloud
+sudo certbot --nginx -d xyz.dizidental.cloud -d abc.dizidental.cloud
 
 # Follow prompts:
 # - Enter email
@@ -192,12 +192,12 @@ sudo certbot --nginx -d xyz.srv1358942.hstgr.cloud -d abc.srv1358942.hstgr.cloud
 
 ```bash
 # Test frontend (should return HTML)
-curl https://xyz.srv1358942.hstgr.cloud
-curl https://abc.srv1358942.hstgr.cloud
+curl https://xyz.dizidental.cloud
+curl https://abc.dizidental.cloud
 
 # Test API endpoint
-curl https://xyz.srv1358942.hstgr.cloud/api/health
-curl https://abc.srv1358942.hstgr.cloud/api/health
+curl https://xyz.dizidental.cloud/api/health
+curl https://abc.dizidental.cloud/api/health
 
 # Check containers
 docker ps
@@ -222,12 +222,12 @@ All share single PostgreSQL on `localhost:5432`
 
 ## 🔗 Access Your Deployment
 
-After DNS propagates (check with `nslookup xyz.srv1358942.hstgr.cloud`):
+After DNS propagates (check with `nslookup xyz.dizidental.cloud`):
 
-- **Client XYZ Frontend**: https://xyz.srv1358942.hstgr.cloud
-- **Client XYZ API**: https://xyz.srv1358942.hstgr.cloud/api
-- **Client ABC Frontend**: https://abc.srv1358942.hstgr.cloud
-- **Client ABC API**: https://abc.srv1358942.hstgr.cloud/api
+- **Client XYZ Frontend**: https://xyz.dizidental.cloud
+- **Client XYZ API**: https://xyz.dizidental.cloud/api
+- **Client ABC Frontend**: https://abc.dizidental.cloud
+- **Client ABC API**: https://abc.dizidental.cloud/api
 
 ---
 
@@ -272,7 +272,7 @@ SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/clinic_hms_xy
 ### DNS not resolving
 ```bash
 # Check DNS from local machine
-nslookup xyz.srv1358942.hstgr.cloud
+nslookup xyz.dizidental.cloud
 
 # Wait 24 hours for propagation
 # Or check propagation: https://mxtoolbox.com/
@@ -369,7 +369,7 @@ Databases:
   - clinic_hms_abc
 
 VPS SSH:
-  Host: srv1358942.hstgr.cloud
+  Host: dizidental.cloud
   User: root
   Password: [YOUR_VPS_PASSWORD]
 
@@ -378,8 +378,8 @@ JWT Secrets:
   ABC: [YOUR_JWT_SECRET_ABC]
 
 API Base URLs:
-  XYZ: https://xyz.srv1358942.hstgr.cloud/api
-  ABC: https://abc.srv1358942.hstgr.cloud/api
+  XYZ: https://xyz.dizidental.cloud/api
+  ABC: https://abc.dizidental.cloud/api
 ```
 
 ---

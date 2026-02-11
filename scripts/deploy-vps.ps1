@@ -93,8 +93,8 @@ Write-Host "Recent Logs:" -ForegroundColor $WarningColor
 docker-compose -f docker-compose.prod.yml logs --tail=10
 
 Write-Host ""
-Write-Host "Access at: https://$Client.srv1358942.hstgr.cloud" -ForegroundColor $SuccessColor
-Write-Host "API at: https://$Client.srv1358942.hstgr.cloud/api" -ForegroundColor $SuccessColor
+Write-Host "Access at: https://$Client.dizidental.cloud" -ForegroundColor $SuccessColor
+Write-Host "API at: https://$Client.dizidental.cloud/api" -ForegroundColor $SuccessColor
 
 Write-Host ""
 Write-Host "View logs (realtime):"

@@ -3,24 +3,24 @@
 ## 🎯 Architecture Overview
 
 ```
-Hostinger KVM VPS (srv1358942.hstgr.cloud)
+Hostinger KVM VPS (dizidental.cloud)
 │
 ├── Shared PostgreSQL (Port 5432)
 │   ├── Database: clinic_hms_xyz
 │   ├── Database: clinic_hms_abc
 │   └── Database: clinic_hms_def
 │
-├── Client XYZ (Subdomain: xyz.srv1358942.hstgr.cloud)
+├── Client XYZ (Subdomain: xyz.dizidental.cloud)
 │   ├── Frontend (Port 3001) → Nginx
 │   ├── Backend (Port 8081) → Spring Boot
 │   └── Database: clinic_hms_xyz (shared Postgres)
 │
-├── Client ABC (Subdomain: abc.srv1358942.hstgr.cloud)
+├── Client ABC (Subdomain: abc.dizidental.cloud)
 │   ├── Frontend (Port 3002) → Nginx
 │   ├── Backend (Port 8082) → Spring Boot
 │   └── Database: clinic_hms_abc (shared Postgres)
 │
-└── Client DEF (Subdomain: def.srv1358942.hstgr.cloud)
+└── Client DEF (Subdomain: def.dizidental.cloud)
     ├── Frontend (Port 3003) → Nginx
     ├── Backend (Port 8083) → Spring Boot
     └── Database: clinic_hms_def (shared Postgres)
@@ -30,7 +30,7 @@ Hostinger KVM VPS (srv1358942.hstgr.cloud)
 
 ### 1.1 SSH into VPS
 ```bash
-ssh root@srv1358942.hstgr.cloud
+ssh root@dizidental.cloud
 # Or use your VPS IP address
 ssh root@your-vps-ip
 ```
@@ -164,7 +164,7 @@ SPRING_DATASOURCE_PASSWORD=your_secure_password
 JWT_SECRET=xyz_secret_key_min_32_chars_please
 
 # API Base URL
-VITE_API_BASE=https://xyz.srv1358942.hstgr.cloud/api
+VITE_API_BASE=https://xyz.dizidental.cloud/api
 
 # Server Port
 SERVER_PORT=8081
@@ -242,7 +242,7 @@ upstream xyz_frontend {
 }
 
 server {
-    server_name xyz.srv1358942.hstgr.cloud;
+    server_name xyz.dizidental.cloud;
 
     location /api/ {
         proxy_pass http://xyz_backend;
@@ -271,7 +271,7 @@ upstream abc_frontend {
 }
 
 server {
-    server_name abc.srv1358942.hstgr.cloud;
+    server_name abc.dizidental.cloud;
 
     location /api/ {
         proxy_pass http://abc_backend;
@@ -300,7 +300,7 @@ upstream def_frontend {
 }
 
 server {
-    server_name def.srv1358942.hstgr.cloud;
+    server_name def.dizidental.cloud;
 
     location /api/ {
         proxy_pass http://def_backend;
@@ -334,15 +334,15 @@ sudo systemctl reload nginx
 ```bash
 # Get SSL for all subdomains
 sudo certbot certonly --nginx \
-  -d srv1358942.hstgr.cloud \
-  -d xyz.srv1358942.hstgr.cloud \
-  -d abc.srv1358942.hstgr.cloud \
-  -d def.srv1358942.hstgr.cloud
+  -d dizidental.cloud \
+  -d xyz.dizidental.cloud \
+  -d abc.dizidental.cloud \
+  -d def.dizidental.cloud
 
 # Update Nginx config with SSL
-sudo certbot --nginx -d xyz.srv1358942.hstgr.cloud \
-                     -d abc.srv1358942.hstgr.cloud \
-                     -d def.srv1358942.hstgr.cloud
+sudo certbot --nginx -d xyz.dizidental.cloud \
+                     -d abc.dizidental.cloud \
+                     -d def.dizidental.cloud
 ```
 
 This will automatically update Nginx configuration with SSL redirects.
@@ -353,7 +353,7 @@ This will automatically update Nginx configuration with SSL redirects.
 
 ### On Hostinger Control Panel:
 
-1. Go to **DNS Settings** for `srv1358942.hstgr.cloud`
+1. Go to **DNS Settings** for `dizidental.cloud`
 2. Add **A Records**:
    ```
    xyz        A  your-vps-ip
@@ -477,7 +477,7 @@ sudo tail -f /var/log/nginx/error.log
 ### DNS not resolving
 ```bash
 # Test from your local machine
-nslookup xyz.srv1358942.hstgr.cloud
+nslookup xyz.dizidental.cloud
 
 # Wait 24 hours for DNS propagation
 # Or check nameserver propagation:

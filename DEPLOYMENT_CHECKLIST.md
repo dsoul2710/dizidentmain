@@ -33,7 +33,7 @@ docker-compose down
 
 ### SSH Connection
 - [ ] SSH access obtained from Hostinger control panel
-- [ ] Can connect: `ssh root@srv1358942.hstgr.cloud`
+- [ ] Can connect: `ssh root@dizidental.cloud`
 - [ ] Root password changed
 
 ### System Updates
@@ -154,7 +154,7 @@ upstream xyz_backend { server 127.0.0.1:8081; }
 upstream xyz_frontend { server 127.0.0.1:3001; }
 
 server {
-    server_name xyz.srv1358942.hstgr.cloud;
+    server_name xyz.dizidental.cloud;
     
     location /api/ {
         proxy_pass http://xyz_backend;
@@ -177,7 +177,7 @@ upstream abc_backend { server 127.0.0.1:8082; }
 upstream abc_frontend { server 127.0.0.1:3002; }
 
 server {
-    server_name abc.srv1358942.hstgr.cloud;
+    server_name abc.dizidental.cloud;
     
     location /api/ {
         proxy_pass http://abc_backend;
@@ -213,7 +213,7 @@ sudo systemctl reload nginx
 
 ### Get Certificates
 ```bash
-sudo certbot --nginx -d xyz.srv1358942.hstgr.cloud -d abc.srv1358942.hstgr.cloud
+sudo certbot --nginx -d xyz.dizidental.cloud -d abc.dizidental.cloud
 ```
 - [ ] Certificates obtained
 - [ ] Let's Encrypt email configured
@@ -222,8 +222,8 @@ sudo certbot --nginx -d xyz.srv1358942.hstgr.cloud -d abc.srv1358942.hstgr.cloud
 ### Verify SSL
 ```bash
 # Test HTTPS
-curl -I https://xyz.srv1358942.hstgr.cloud
-curl -I https://abc.srv1358942.hstgr.cloud
+curl -I https://xyz.dizidental.cloud
+curl -I https://abc.dizidental.cloud
 ```
 - [ ] SSL working for xyz
 - [ ] SSL working for abc
@@ -250,8 +250,8 @@ A       abc     your-vps-ip         3600
 ### Verify DNS
 ```bash
 # From local machine
-nslookup xyz.srv1358942.hstgr.cloud
-nslookup abc.srv1358942.hstgr.cloud
+nslookup xyz.dizidental.cloud
+nslookup abc.dizidental.cloud
 
 # Should resolve to your VPS IP
 ```
@@ -276,8 +276,8 @@ psql -h localhost -U appuser -d clinic_hms_xyz -c "\dt"
 sudo systemctl status nginx
 
 # Test endpoints
-curl https://xyz.srv1358942.hstgr.cloud
-curl https://abc.srv1358942.hstgr.cloud
+curl https://xyz.dizidental.cloud
+curl https://abc.dizidental.cloud
 ```
 
 - [ ] All containers running
@@ -389,7 +389,7 @@ JWT Secret (ABC): [YOUR_JWT_SECRET]
 
 VPS SSH User: root
 VPS IP: [YOUR_VPS_IP]
-VPS Domain: srv1358942.hstgr.cloud
+VPS Domain: dizidental.cloud
 ```
 
 ⚠️ **NEVER commit `.env.prod` files to Git!**

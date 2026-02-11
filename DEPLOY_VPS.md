@@ -37,7 +37,7 @@ git push origin main
 
 ```bash
 # SSH into your Hostinger VPS
-ssh root@srv1358942.hstgr.cloud
+ssh root@dizidental.cloud
 
 # Update system
 apt update && apt upgrade -y
@@ -131,7 +131,7 @@ upstream xyz_backend { server 127.0.0.1:8081; }
 upstream xyz_frontend { server 127.0.0.1:3001; }
 
 server {
-    server_name xyz.srv1358942.hstgr.cloud;
+    server_name xyz.dizidental.cloud;
     
     location /api/ {
         proxy_pass http://xyz_backend;
@@ -154,7 +154,7 @@ upstream abc_backend { server 127.0.0.1:8082; }
 upstream abc_frontend { server 127.0.0.1:3002; }
 
 server {
-    server_name abc.srv1358942.hstgr.cloud;
+    server_name abc.dizidental.cloud;
     
     location /api/ {
         proxy_pass http://abc_backend;
@@ -179,7 +179,7 @@ sudo nginx -t
 sudo systemctl reload nginx
 
 # Get SSL Certificates
-sudo certbot --nginx -d xyz.srv1358942.hstgr.cloud -d abc.srv1358942.hstgr.cloud
+sudo certbot --nginx -d xyz.dizidental.cloud -d abc.dizidental.cloud
 ```
 
 ---
@@ -204,8 +204,8 @@ psql -h localhost -U appuser -d clinic_hms_xyz -c "SELECT version();"
 ### Test Frontend Access
 ```bash
 # From your local machine
-curl -I http://xyz.srv1358942.hstgr.cloud
-curl -I http://abc.srv1358942.hstgr.cloud
+curl -I http://xyz.dizidental.cloud
+curl -I http://abc.dizidental.cloud
 
 # Should get 200 OK responses
 ```
@@ -261,7 +261,7 @@ Then on VPS:
 
 ```bash
 # SSH to VPS
-ssh root@srv1358942.hstgr.cloud
+ssh root@dizidental.cloud
 cd /opt/apps/dizidentmain
 
 # Redeploy client

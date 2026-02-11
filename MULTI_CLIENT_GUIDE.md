@@ -14,7 +14,7 @@ Your project is set up to run multiple independent clients on a single VPS using
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│         Hostinger KVM VPS (srv1358942.hstgr.cloud)     │
+│         Hostinger KVM VPS (dizidental.cloud)     │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
 │  ┌─────────────────────────────────────────────────┐   │
@@ -36,8 +36,8 @@ Your project is set up to run multiple independent clients on a single VPS using
 │                                                         │
 │  ┌─────────────────────────────────────────────────┐   │
 │  │  Nginx Reverse Proxy (Port 80, 443)             │   │
-│  │  xyz.srv1358942.hstgr.cloud  → XYZ containers   │   │
-│  │  abc.srv1358942.hstgr.cloud  → ABC containers   │   │
+│  │  xyz.dizidental.cloud  → XYZ containers   │   │
+│  │  abc.dizidental.cloud  → ABC containers   │   │
 │  └─────────────────────────────────────────────────┘   │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
@@ -82,7 +82,7 @@ Your project is set up to run multiple independent clients on a single VPS using
 
 ```bash
 # SSH to VPS
-ssh root@srv1358942.hstgr.cloud
+ssh root@dizidental.cloud
 cd /opt/apps/dizidentmain
 
 # Deploy specific client
@@ -122,7 +122,7 @@ git push origin main
 #### Step B: On VPS
 ```bash
 # SSH to VPS
-ssh root@srv1358942.hstgr.cloud
+ssh root@dizidental.cloud
 cd /opt/apps/dizidentmain
 
 # Pull latest code
@@ -142,7 +142,7 @@ EOF
 
 # Add to Nginx config
 sudo nano /etc/nginx/sites-available/hms
-# Add block for clientnew (ports 3003, 8083, subdomain new.srv1358942.hstgr.cloud)
+# Add block for clientnew (ports 3003, 8083, subdomain new.dizidental.cloud)
 
 sudo nginx -t
 sudo systemctl reload nginx
@@ -229,7 +229,7 @@ docker-compose -f docker-compose.prod.yml restart backend
 nano /opt/apps/dizidentmain/clientxyz/.env.prod
 
 # Update VITE_API_BASE
-VITE_API_BASE=https://xyz.srv1358942.hstgr.cloud/api
+VITE_API_BASE=https://xyz.dizidental.cloud/api
 
 # Rebuild frontend
 cd /opt/apps/dizidentmain/clientxyz
