@@ -11,7 +11,7 @@ services:
       # PostgreSQL Connection (Shared on VPS host)
       SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/clinic_hms_abc
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-appuser}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-9932}
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
       
       # JPA/Hibernate
@@ -19,7 +19,7 @@ services:
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
       
       # JWT
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:-abc_jwt_secret_key_must_be_at_least_32_characters_long}
       JWT_EXPIRATION: 86400000
       
       # Server
