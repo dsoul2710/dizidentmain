@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  backend:
+    image: dizidentmain-abc-backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: clientabc-backend
+    environment:
+      # PostgreSQL Connection (Shared on VPS host)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/clinic_hms_abc
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-appuser}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      
+      # JPA/Hibernate
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      
+      # JWT
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: 86400000
+      
+      # Server
+      SERVER_PORT: 8080
+      SERVER_SERVLET_CONTEXT_PATH: /api
+    ports:
+      - "8082:8080"
+    networks:
+      - hms-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - frontend
+
+  frontend:
+    image: dizidentmain-abc-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: clientabc-frontend
+    environment:
+      VITE_API_BASE: ${VITE_API_BASE:-https://abc.srv1358942.hstgr.cloud/api}
+    ports:
+      - "3002:80"
+    networks:
+      - hms-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  hms-network:
+    driver: bridge
