@@ -22,11 +22,6 @@ public class JwtUtil {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + EXPIRATION_MS);
 
-    public String generateToken(Long userId, String role, String mobile) {
-        Key key = Keys.hmacShaKeyFor(secret.getBytes());
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + EXPIRATION_MS);
-
         return Jwts.builder()
                 .setSubject(mobile)              // username = mobile
                 .claim("userId", userId)
