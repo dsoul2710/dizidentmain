@@ -3,11 +3,6 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Build arguments for environment configuration
-ARG VITE_API_BASE
-ARG VITE_CLIENT_ID
-ARG VITE_CLIENT_NAME
-
 # Copy package files
 COPY package.json package-lock.json* ./
 
@@ -17,13 +12,7 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Create .env file for build
-RUN echo "VITE_API_BASE=${VITE_API_BASE}" > .env && \
-    echo "VITE_API_BASE_URL=${VITE_API_BASE}/api" >> .env && \
-    echo "VITE_CLIENT_ID=${VITE_CLIENT_ID}" >> .env && \
-    echo "VITE_CLIENT_NAME=${VITE_CLIENT_NAME}" >> .env
-
-# Build the application
+# Build the application (uses relative paths, no env vars needed)
 RUN npm run build
 
 # Runtime stage with nginx

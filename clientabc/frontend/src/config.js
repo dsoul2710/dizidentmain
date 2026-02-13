@@ -1,10 +1,5 @@
-const normalizeUrl = (url) =>
-  typeof url === "string" ? url.replace(/\/+$/, "") : "";
-
-const API_BASE =
-  normalizeUrl(import.meta.env.VITE_API_BASE) || "http://localhost:8080";
-
-const API_BASE_URL =
-  normalizeUrl(import.meta.env.VITE_API_BASE_URL) || `${API_BASE}/api`;
+// Use relative paths - Nginx/Vite proxy handles routing
+const API_BASE = ""; // Empty for same-origin requests
+const API_BASE_URL = "/api"; // Relative path
 
 export { API_BASE, API_BASE_URL };
