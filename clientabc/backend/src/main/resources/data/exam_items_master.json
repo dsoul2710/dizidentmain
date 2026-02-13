@@ -1,0 +1,114 @@
+[
+  {
+    "itemKey": "caries",
+    "title": "Dental Caries Examination",
+    "defaultText": "All teeth are free from carious lesions. No visible discoloration, cavitation, or soft spots detected.",
+    "displayOrder": 1,
+    "isActive": true
+  },
+  {
+    "itemKey": "gingiva",
+    "title": "Gingival Examination",
+    "defaultText": "Gingiva is pink, firm, and stippled with no bleeding or swelling. Margins are well contoured.",
+    "displayOrder": 2,
+    "isActive": true
+  },
+  {
+    "itemKey": "plaque",
+    "title": "Plaque and Calculus Assessment",
+    "defaultText": "Minimal plaque present; no visible calculus or deposits on tooth surfaces. Oral hygiene appears satisfactory.",
+    "displayOrder": 3,
+    "isActive": true
+  },
+  {
+    "itemKey": "mobility",
+    "title": "Tooth Mobility Test",
+    "defaultText": "All teeth are firm with no abnormal mobility detected on palpation.",
+    "displayOrder": 4,
+    "isActive": true
+  },
+  {
+    "itemKey": "occlusion",
+    "title": "Occlusion and Alignment Check",
+    "defaultText": "Normal Class I occlusion. No crossbite, open bite, or crowding observed. Midlines are coincident.",
+    "displayOrder": 5,
+    "isActive": true
+  },
+  {
+    "itemKey": "vitality",
+    "title": "Tooth Vitality Test",
+    "defaultText": "All tested teeth respond normally to thermal and electric pulp tests. No delayed or absent responses.",
+    "displayOrder": 6,
+    "isActive": true
+  },
+  {
+    "itemKey": "tmj",
+    "title": "Temporomandibular Joint (TMJ) Examination",
+    "defaultText": "Smooth opening and closing of mouth. No clicking, deviation, or tenderness on palpation.",
+    "displayOrder": 7,
+    "isActive": true
+  },
+  {
+    "itemKey": "mucosa",
+    "title": "Oral Mucosa Examination",
+    "defaultText": "Mucosa appears pink, moist, and intact with no ulcers, lesions, or white/red patches.",
+    "displayOrder": 8,
+    "isActive": true
+  },
+  {
+    "itemKey": "tongue",
+    "title": "Tongue Examination",
+    "defaultText": "Tongue is moist, well-papillated, and freely movable. No coating, fissures, or lesions noted.",
+    "displayOrder": 9,
+    "isActive": true
+  },
+  {
+    "itemKey": "pockets",
+    "title": "Periodontal Pocket Measurement",
+    "defaultText": "Probing depth within normal limits (1-3 mm). No bleeding on probing or attachment loss observed.",
+    "displayOrder": 10,
+    "isActive": true
+  },
+  {
+    "itemKey": "radiograph",
+    "title": "Radiographic Examination",
+    "defaultText": "Radiographs show healthy bone levels and intact lamina dura. No evidence of decay or periapical pathology.",
+    "displayOrder": 11,
+    "isActive": true
+  },
+  {
+    "itemKey": "wear",
+    "title": "Attrition, Abrasion and Erosion Check",
+    "defaultText": "Tooth surfaces are smooth with no pathological wear facets, cervical abrasion, or erosion signs.",
+    "displayOrder": 12,
+    "isActive": true
+  },
+  {
+    "itemKey": "restorations",
+    "title": "Restoration and Filling Evaluation",
+    "defaultText": "Existing restorations (if any) are intact, well contoured, and free from marginal leakage.",
+    "displayOrder": 13,
+    "isActive": true
+  },
+  {
+    "itemKey": "stains",
+    "title": "Discoloration and Stain Assessment",
+    "defaultText": "Teeth appear clean and naturally shaded. No extrinsic or intrinsic stains observed.",
+    "displayOrder": 14,
+    "isActive": true
+  },
+  {
+    "itemKey": "saliva",
+    "title": "Salivary Gland and Flow Assessment",
+    "defaultText": "Saliva is clear and adequate in quantity. Duct openings are patent with normal flow on palpation.",
+    "displayOrder": 15,
+    "isActive": true
+  },
+  {
+    "itemKey": "other",
+    "title": "Other (Specify)",
+    "defaultText": "",
+    "displayOrder": 16,
+    "isActive": true
+  }
+]
