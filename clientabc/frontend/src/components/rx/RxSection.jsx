@@ -1,5 +1,5 @@
 // src/components/RxSection.jsx
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import Prescription from "../print/Prescription.jsx";
 import PatientSelect from "../common/PatientSelect";
 import { formatDateDMY } from "../../utils/dateFormat";
@@ -15,10 +15,19 @@ const toAgeSex = (p) =>
 const formatDose = (dose) => {
   if (!dose) return "";
   const lowered = String(dose).toLowerCase();
+  
+  // Handle new specific timing options
+  if (lowered.includes("once") && lowered.includes("morning")) return "1 – 0 – 0";
+  if (lowered.includes("once") && lowered.includes("afternoon")) return "0 – 1 – 0";
+  if (lowered.includes("once") && lowered.includes("evening")) return "0 – 0 – 1";
+  
+  // Handle generic options
   if (lowered.includes("once")) return "1 – 0 – 0";
   if (lowered.includes("twice")) return "1 – 1 – 0";
   if (lowered.includes("thrice") || lowered.includes("3")) return "1 – 1 – 1";
   if (lowered.includes("stat")) return "STAT";
+  
+  // Handle manual format
   const parts = String(dose)
     .split(/[-–]/)
     .map((p) => p.trim())
@@ -44,6 +53,9 @@ export default function RxSection({
   onUseTemplate,
 }) {
   const [tab, setTab] = useState("new"); // 'new' | 'default'
+
+  // Ref for print surface (for auto-scroll)
+  const printSurfaceRef = useRef(null);
 
   // Patients (ADMIN only)
   const [patients, setPatients] = useState([]);
@@ -260,6 +272,15 @@ export default function RxSection({
     fetchTemplates();
   }, [apiBaseUrl, panelType, doctorUserId]);
 
+  // Auto-scroll to print surface when preview is shown
+  useEffect(() => {
+    if (showPreview && printSurfaceRef.current) {
+      setTimeout(() => {
+        printSurfaceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  }, [showPreview]);
+
   // ---------- Helpers ----------
 
   const handleItemChange = (index, field, value) => {
@@ -447,6 +468,14 @@ export default function RxSection({
     const rxDate = loadedRx.rxDate || visit?.visitDate || todayKey;
     const items = Array.isArray(loadedRx.items) ? loadedRx.items : [];
 
+    // Get doctor name - prioritize from prescription (has full doctor info)
+    const doctorName =
+      loadedRx?.doctorName ||        // From backend PrescriptionResponse (BEST SOURCE)
+      visit?.doctorName ||           // From backend VisitResponse
+      visit?.doctorFullName ||       // Alternative from visit
+      visit?.doctor?.name ||         // If doctor is an object
+      "Doctor";                      // Fallback
+
     const rxList = items.map((it, idx) => {
       const freqMain = formatDose(it.dose || it.timings || "");
       const freqNote =
@@ -493,6 +522,7 @@ export default function RxSection({
         ageSex: ageSex || "",
         visitDate: formatDateDMY(rxDate),
         contactNo: patientInfo?.mobile || "",
+        doctorName: doctorName,
       },
       rxList,
       advice: {
@@ -693,7 +723,9 @@ export default function RxSection({
                         }
                       >
                         <option value="">-- Select --</option>
-                        <option value="Once a day">Once a day</option>
+                        <option value="Once a day morning">Once a day morning</option>
+                        <option value="Once a day afternoon">Once a day afternoon</option>
+                        <option value="Once a day evening">Once a day evening</option>
                         <option value="Twice a day">Twice a day</option>
                         <option value="Thrice a day">Thrice a day</option>
                       </select>
@@ -935,7 +967,7 @@ export default function RxSection({
       </div>
     </section>
     {showPreview && loadedRx && buildPrintData() && (
-      <div className="print-surface" style={{ marginTop: 12 }}>
+      <div className="print-surface" style={{ marginTop: 12 }} ref={printSurfaceRef}>
         <Prescription data={buildPrintData()} />
       </div>
     )}

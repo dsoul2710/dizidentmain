@@ -401,10 +401,14 @@ export default function ClinicalExam({
           ...prev,
           [key]: finalTextForSave,
         }));
+        
+        // Update valueByKeyRef with the saved ID so isPersistedKey works correctly
         valueByKeyRef.current = {
           ...valueByKeyRef.current,
           [key]: {
             ...(valueByKeyRef.current[key] || {}),
+            id: saved.id || saved.visitExamItemId,
+            visitExamItemId: saved.id || saved.visitExamItemId,
             text: finalTextForSave,
             selectedTeeth: [...(selectedTeeth || [])],
             odontogramMode,

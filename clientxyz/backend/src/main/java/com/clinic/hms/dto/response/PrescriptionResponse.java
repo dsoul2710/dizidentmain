@@ -22,6 +22,7 @@ public class PrescriptionResponse {
 
     // Doctor
     private Long doctorUserId;
+    private String doctorName;
 
     // Items
     private List<PrescriptionItemResponse> items;

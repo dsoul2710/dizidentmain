@@ -144,6 +144,16 @@ public class PrescriptionService {
         dto.setVisitId(p.getVisit() != null ? p.getVisit().getId() : null);
         dto.setPatientUserId(p.getPatient() != null ? p.getPatient().getId() : null);
         dto.setDoctorUserId(p.getDoctor() != null ? p.getDoctor().getId() : null);
+        
+        // Get doctor name from UserDetails
+        if (p.getDoctor() != null) {
+            UserDetails doctorDetails = userDetailsRepository
+                    .findFirstByUser_Id(p.getDoctor().getId())
+                    .orElse(null);
+            if (doctorDetails != null) {
+                dto.setDoctorName(doctorDetails.getFullName());
+            }
+        }
 
         dto.setItems(
                 items.stream()

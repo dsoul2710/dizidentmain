@@ -17,10 +17,19 @@ const formatDate = (value) => {
 const formatDose = (dose) => {
   if (!dose) return "";
   const lowered = String(dose).toLowerCase();
+  
+  // Handle new specific timing options
+  if (lowered.includes("once") && lowered.includes("morning")) return "1 - 0 - 0";
+  if (lowered.includes("once") && lowered.includes("afternoon")) return "0 - 1 - 0";
+  if (lowered.includes("once") && lowered.includes("evening")) return "0 - 0 - 1";
+  
+  // Handle generic options
   if (lowered.includes("once")) return "1 - 0 - 0";
   if (lowered.includes("twice")) return "1 - 1 - 0";
   if (lowered.includes("thrice") || lowered.includes("3")) return "1 - 1 - 1";
   if (lowered.includes("stat")) return "STAT";
+  
+  // Handle manual format
   const parts = String(dose)
     .split(/[x\-]/)
     .map((p) => p.trim())

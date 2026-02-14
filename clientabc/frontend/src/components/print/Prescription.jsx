@@ -21,6 +21,7 @@ const defaultRxData = {
     ageSex: "30 | M",
     visitDate: formatDateDMY(new Date()),
     contactNo: "",
+    doctorName: "Dr. John Doe",
   },
   rxList: [
     {
@@ -123,6 +124,10 @@ export default function Prescription({ data }) {
             <div>
               <span className="rx-patient-label">Contact No.: </span>
               <span className="rx-patient-value">{d.patientDetails.contactNo}</span>
+            </div>
+            <div>
+              <span className="rx-patient-label">Doctor Name: </span>
+              <span className="rx-patient-value">{d.patientDetails.doctorName || "-"}</span>
             </div>
           </div>
         </section>

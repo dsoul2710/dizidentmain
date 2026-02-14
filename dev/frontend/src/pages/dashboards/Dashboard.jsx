@@ -232,8 +232,7 @@ export default function Dashboard({ user, onLogout }) {
             onClick={() => setNotificationPanelOpen(!notificationPanelOpen)}
           />
           <div className="d-flex flex-column text-end">
-            <span className="text-sm text-secondary-light">Welcome</span>
-            <span className="fw-semibold">{user?.name || "Admin"}</span>
+            <span className="fw-semibold">Welcome Admin</span>
           </div>
         </>
       }

@@ -58,9 +58,24 @@ export default function App() {
     localStorage.setItem("hms_user", JSON.stringify(normalized));
   };
   const handleLogout = () => {
+    // Clear user state
     setUser(null);
-    localStorage.removeItem("hms_user");
-    // later you can also call Spring Boot /auth/logout here
+
+    // Clear localStorage
+    localStorage.clear();
+
+    // Clear all cookies
+    document.cookie.split(";").forEach((c) => {
+      const eqPos = c.indexOf("=");
+      const name = eqPos > -1 ? c.substr(0, eqPos).trim() : c.trim();
+      if (name) {
+        // Set expiry to past date to delete the cookie
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+      }
+    });
+
+    // Call Spring Boot logout endpoint if available
+    // await fetch(`${API_BASE_URL}/auth/logout`, { method: 'POST' });
   };
 
   // Helper to send logged-in user to correct dashboard

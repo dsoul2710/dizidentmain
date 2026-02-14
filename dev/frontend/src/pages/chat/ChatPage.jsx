@@ -738,7 +738,7 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
               <div className="chat-avatar">{initialsFor(currentUser?.name || role || "User")}</div>
             </div>
             <div className="info">
-              <h6 className="text-md mb-0">{currentUser?.name || "User"}</h6>
+              <h6 className="text-md mb-0">{isAdmin ? "Welcome Admin" : currentUser?.name || "User"}</h6>
               <p className="mb-0">{role || "User"}</p>
             </div>
             <div className="action text-end">

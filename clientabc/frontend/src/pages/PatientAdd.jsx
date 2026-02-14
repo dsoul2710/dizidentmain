@@ -19,6 +19,7 @@ export default function PatientAdd() {
   const [idFileSelected, setIdFileSelected] = useState(null);
   const [reportFilesSelected, setReportFilesSelected] = useState([]);
   const [doctorsList, setDoctorsList] = useState([]);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [patientForm, setPatientForm] = useState({
     name: "",
@@ -284,16 +285,35 @@ export default function PatientAdd() {
 
                   <div>
                     <label className="form-label fw-semibold text-sm text-primary-light">Password</label>
-                    <input
-                      name="password"
-                      type="password"
-                      required={!editId}
-                      className="form-control radius-8"
-                      value={patientForm.password || ""}
-                      onChange={(e) =>
-                        setPatientForm((prev) => ({ ...prev, password: e.target.value }))
-                      }
-                    />
+                    <div className="password-input-wrapper" style={{ position: "relative" }}>
+                      <input
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        required={!editId}
+                        className="form-control radius-8"
+                        value={patientForm.password || ""}
+                        onChange={(e) =>
+                          setPatientForm((prev) => ({ ...prev, password: e.target.value }))
+                        }
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          top: "50%",
+                          transform: "translateY(-50%)",
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          color: "#999",
+                          padding: "5px",
+                        }}
+                      >
+                        <i className={showPassword ? "ri-eye-line" : "ri-eye-off-line"}></i>
+                      </button>
+                    </div>
                   </div>
 
                   <div>

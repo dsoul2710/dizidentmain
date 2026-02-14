@@ -83,6 +83,19 @@ export default function ScheduleView({
   const [showSlotModal, setShowSlotModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [appointmentSearch, setAppointmentSearch] = useState("");
+  
+  // Date range filter
+  const [filterType, setFilterType] = useState("thisweek"); // "thisweek", "custom", or "all"
+  const [filterStartDate, setFilterStartDate] = useState(() => {
+    const start = new Date(TODAY);
+    start.setDate(start.getDate() - start.getDay()); // Sunday of current week
+    return start;
+  });
+  const [filterEndDate, setFilterEndDate] = useState(() => {
+    const end = new Date(TODAY);
+    end.setDate(end.getDate() + (6 - end.getDay())); // Saturday of current week
+    return end;
+  });
 
   // Appointments for all dates (we will filter)
   const [meetings, setMeetings] = useState([]);
@@ -356,14 +369,28 @@ export default function ScheduleView({
   }, [meetings]);
 
   const filteredMeetings = useMemo(() => {
+    let result = meetings;
+    
+    // Apply date range filter
+    if (filterType === "thisweek" || filterType === "custom") {
+      const startKey = dateKey(filterStartDate);
+      const endKey = dateKey(filterEndDate);
+      result = result.filter((m) => {
+        const mDate = m.dateKey || m.date;
+        return mDate >= startKey && mDate <= endKey;
+      });
+    }
+    // If filterType === "all", no date filtering
+    
+    // Apply search filter
     const query = (appointmentSearch || "").trim().toLowerCase();
-    if (!query) return meetings;
-    return meetings.filter((m) => {
+    if (!query) return result;
+    return result.filter((m) => {
       const name = (m.patientName || "").toLowerCase();
       const mobile = String(m.patientMobile || "");
       return name.includes(query) || mobile.includes(query);
     });
-  }, [meetings, appointmentSearch]);
+  }, [meetings, appointmentSearch, filterType, filterStartDate, filterEndDate]);
 
   const meetingsForSelectedDateFiltered = useMemo(() => {
     const key = dateKey(selectedDate);
@@ -682,6 +709,104 @@ export default function ScheduleView({
             />
           </div>
 
+          {/* Date Range Filter */}
+          <div style={{
+            padding: "12px 16px",
+            borderBottom: "1px solid #e5e7eb",
+            backgroundColor: "#f9fafb"
+          }}>
+            <div style={{ marginBottom: "8px", fontSize: "12px", fontWeight: "600", color: "#6b7280" }}>Filter by Date</div>
+            <div style={{ display: "flex", gap: "8px", marginBottom: "10px", flexWrap: "wrap" }}>
+              <button
+                onClick={() => {
+                  setFilterType("thisweek");
+                  const start = new Date(TODAY);
+                  start.setDate(start.getDate() - start.getDay());
+                  const end = new Date(TODAY);
+                  end.setDate(end.getDate() + (6 - end.getDay()));
+                  setFilterStartDate(start);
+                  setFilterEndDate(end);
+                }}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "6px",
+                  border: filterType === "thisweek" ? "2px solid #3b82f6" : "1px solid #d1d5db",
+                  backgroundColor: filterType === "thisweek" ? "#eff6ff" : "#fff",
+                  color: filterType === "thisweek" ? "#1f2937" : "#6b7280",
+                  cursor: "pointer",
+                  fontSize: "13px",
+                  fontWeight: filterType === "thisweek" ? "600" : "500"
+                }}
+              >
+                This Week
+              </button>
+              <button
+                onClick={() => setFilterType("custom")}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "6px",
+                  border: filterType === "custom" ? "2px solid #3b82f6" : "1px solid #d1d5db",
+                  backgroundColor: filterType === "custom" ? "#eff6ff" : "#fff",
+                  color: filterType === "custom" ? "#1f2937" : "#6b7280",
+                  cursor: "pointer",
+                  fontSize: "13px",
+                  fontWeight: filterType === "custom" ? "600" : "500"
+                }}
+              >
+                Custom
+              </button>
+              <button
+                onClick={() => setFilterType("all")}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: "6px",
+                  border: filterType === "all" ? "2px solid #3b82f6" : "1px solid #d1d5db",
+                  backgroundColor: filterType === "all" ? "#eff6ff" : "#fff",
+                  color: filterType === "all" ? "#1f2937" : "#6b7280",
+                  cursor: "pointer",
+                  fontSize: "13px",
+                  fontWeight: filterType === "all" ? "600" : "500"
+                }}
+              >
+                All
+              </button>
+            </div>
+            {(filterType === "custom" || filterType === "thisweek") && (
+              <div style={{ display: "flex", gap: "8px", alignItems: "center", fontSize: "13px" }}>
+                <div style={{ flex: "1", minWidth: "120px" }}>
+                  <label style={{ display: "block", fontSize: "11px", color: "#6b7280", marginBottom: "4px" }}>From</label>
+                  <input
+                    type="date"
+                    value={filterStartDate.toISOString().split("T")[0]}
+                    onChange={(e) => setFilterStartDate(new Date(e.target.value))}
+                    style={{
+                      width: "100%",
+                      padding: "6px 8px",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "4px",
+                      fontSize: "13px"
+                    }}
+                  />
+                </div>
+                <div style={{ flex: "1", minWidth: "120px" }}>
+                  <label style={{ display: "block", fontSize: "11px", color: "#6b7280", marginBottom: "4px" }}>To</label>
+                  <input
+                    type="date"
+                    value={filterEndDate.toISOString().split("T")[0]}
+                    onChange={(e) => setFilterEndDate(new Date(e.target.value))}
+                    style={{
+                      width: "100%",
+                      padding: "6px 8px",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "4px",
+                      fontSize: "13px"
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="chat-all-list schedule-list">
             {panelType === "DOCTOR" && effectivePatientId && (
               <>
@@ -852,8 +977,8 @@ export default function ScheduleView({
             <div className="info">
               <h6 className="text-md mb-0">{formatDateDMY(selectedDate)}</h6>
               <p className="mb-0">
-                {meetingsForSelectedDateFiltered.length} appointment
-                {meetingsForSelectedDateFiltered.length === 1 ? "" : "s"}
+                {meetingsForSelectedDate.length} appointment
+                {meetingsForSelectedDate.length === 1 ? "" : "s"}
               </p>
             </div>
             <div className="action schedule-header-actions">
@@ -964,10 +1089,10 @@ export default function ScheduleView({
                   Add Appointment
                 </button>
               </div>
-              {meetingsForSelectedDateFiltered.length === 0 && (
+              {meetingsForSelectedDate.length === 0 && (
                 <div className="chat-hint">No appointment booked for this date.</div>
               )}
-              {meetingsForSelectedDateFiltered.map((meeting) => {
+              {meetingsForSelectedDate.map((meeting) => {
                 const dateLabel = meeting.dateKey || meeting.date || "";
                 const isActive = selectedMeetingId === meeting.id;
                 return (
