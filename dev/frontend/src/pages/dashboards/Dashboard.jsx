@@ -29,6 +29,7 @@ export default function Dashboard({ user, onLogout }) {
   const [overviewLoading, setOverviewLoading] = useState(false);
   const [notificationPanelOpen, setNotificationPanelOpen] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState([]);
+  const [unreadEvents, setUnreadEvents] = useState([]);
 
   const formatValue = (val) =>
     typeof val === "number" ? val.toLocaleString("en-IN") : val;
@@ -191,11 +192,43 @@ export default function Dashboard({ user, onLogout }) {
       }
     };
 
+    const loadUnreadEvents = async () => {
+      const userId = user?.id ?? user?.userId;
+      const role = user?.role || "ADMIN";
+      if (!userId) return;
+
+      try {
+        const eventsResponse = await fetch(
+          `${API_BASE_URL}/events?userId=${userId}&role=${encodeURIComponent(role)}`
+        );
+
+        if (!eventsResponse.ok) return;
+
+        const eventsData = await eventsResponse.json();
+        
+        // Get last seen timestamp from localStorage
+        const lastSeenKey = `hms_events_last_seen_${userId}`;
+        const lastSeen = localStorage.getItem(lastSeenKey) || "";
+
+        // Filter events that are newer than last seen
+        const list = Array.isArray(eventsData) ? eventsData : [];
+        const unreadEventsList = list.filter((item) => {
+          if (!item?.timestamp || item.timestamp <= lastSeen) return false;
+          if (String(item?.actorUserId) === String(userId)) return false;
+          return true;
+        });
+        setUnreadEvents(unreadEventsList);
+      } catch (err) {
+        console.error("Failed to load unread events", err);
+      }
+    };
+
     // Only load when notification panel is opened
     if (notificationPanelOpen) {
       loadUnreadMessages();
+      loadUnreadEvents();
     }
-  }, [notificationPanelOpen, user?.id, user?.userId]);
+  }, [notificationPanelOpen, user?.id, user?.userId, user?.role]);
 
 
 
@@ -286,6 +319,7 @@ export default function Dashboard({ user, onLogout }) {
       </Routes>
       <NotificationPanel
         unreadMessages={unreadMessages}
+        unreadEvents={unreadEvents}
         isOpen={notificationPanelOpen}
         onClose={() => setNotificationPanelOpen(false)}
         userId={user?.id ?? user?.userId}

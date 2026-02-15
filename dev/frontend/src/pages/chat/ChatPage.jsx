@@ -1013,6 +1013,16 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
                         setAttachmentFiles([]);
                         return;
                       }
+                      // Check file sizes (5MB max per file)
+                      const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+                      const oversizedFiles = files.filter((f) => f.size > MAX_SIZE);
+                      if (oversizedFiles.length > 0) {
+                        const names = oversizedFiles.map((f) => f.name).join(", ");
+                        alert(`File size must be less than 5MB. Oversized: ${names}`);
+                        e.target.value = "";
+                        setAttachmentFiles([]);
+                        return;
+                      }
                       setAttachmentFiles(files);
                     }}
                     style={{ display: "none" }}

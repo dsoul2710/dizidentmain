@@ -637,12 +637,30 @@ useEffect(() => {
       setReportFilesSelected([]);
       return;
     }
+    // Check file sizes (5MB max per file)
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    const oversizedFiles = list.filter((f) => f.size > MAX_SIZE);
+    if (oversizedFiles.length > 0) {
+      const names = oversizedFiles.map((f) => f.name).join(", ");
+      alert(`File size must be less than 5MB. Oversized: ${names}`);
+      if (reportFileRef.current) reportFileRef.current.value = "";
+      setReportFilesSelected([]);
+      return;
+    }
     setReportFilesSelected(list);
   };
 
   const handleIdFileSelect = (files) => {
     const file = Array.from(files || [])[0] || null;
     if (!file) {
+      setIdFileSelected(null);
+      return;
+    }
+    // Check file size (5MB max)
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    if (file.size > MAX_SIZE) {
+      alert(`File size must be less than 5MB. File: ${file.name}`);
+      if (idFileRef.current) idFileRef.current.value = "";
       setIdFileSelected(null);
       return;
     }
