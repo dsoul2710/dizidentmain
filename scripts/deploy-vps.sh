@@ -98,8 +98,8 @@ echo "Logs:"
 docker-compose -f docker-compose.prod.yml logs --tail=10
 
 echo ""
-echo -e "${GREEN}Access at: https://${CLIENT}.dizidental.cloud${NC}"
-echo -e "${GREEN}API at: https://${CLIENT}.dizidental.cloud/api${NC}"
+echo -e "${GREEN}Access at: https://${CLIENT}.doctor32.in${NC}"
+echo -e "${GREEN}API at: https://${CLIENT}.doctor32.in/api${NC}"
 
 echo ""
 echo "View logs (realtime):"
@@ -113,3 +113,4 @@ echo "  docker-compose -f docker-compose.prod.yml restart"
 echo ""
 echo "Stop containers:"
 echo "  docker-compose -f docker-compose.prod.yml down"
+

@@ -23,7 +23,7 @@ Follow these steps when setting up on a brand new VPS.
 ### Prerequisites
 - Fresh Ubuntu 20.04/22.04 VPS
 - Root SSH access
-- Domain name (e.g., dizidental.cloud)
+- Domain name (e.g., doctor32.in)
 - Minimum 2GB RAM, 2 CPU cores
 
 ### Step 1: Initial VPS Setup
@@ -166,7 +166,7 @@ upstream xyz_frontend {
 
 server {
     listen 80;
-    server_name xyz.dizidental.cloud;
+    server_name xyz.doctor32.in;
     
     location / {
         proxy_pass http://xyz_frontend;
@@ -207,7 +207,7 @@ upstream abc_frontend {
 
 server {
     listen 80;
-    server_name abc.dizidental.cloud;
+    server_name abc.doctor32.in;
     
     location / {
         proxy_pass http://abc_frontend;
@@ -313,7 +313,7 @@ docker logs clientxyz-frontend --tail=50
 
 # Test API
 curl http://localhost:8081/actuator/health
-curl http://xyz.dizidental.cloud/api/actuator/health
+curl http://xyz.doctor32.in/api/actuator/health
 ```
 
 ---
@@ -344,14 +344,14 @@ SPRING_DATASOURCE_PASSWORD=9932
 JWT_SECRET=def_jwt_secret_key_must_be_at_least_32_characters_long
 
 # API Base URL
-VITE_API_BASE=https://def.dizidental.cloud/api
+VITE_API_BASE=https://def.doctor32.in/api
 ```
 
 **clientdef/docker-compose.prod.yml:**
 ```yaml
 # Update these values:
 - SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/clinic_hms_def
-- VITE_API_BASE: ${VITE_API_BASE:-https://def.dizidental.cloud/api}
+- VITE_API_BASE: ${VITE_API_BASE:-https://def.doctor32.in/api}
 - container_name: clientdef-backend
 - container_name: clientdef-frontend
 - ports: "8083:8080"  # Backend port
@@ -393,7 +393,7 @@ upstream def_frontend {
 
 server {
     listen 80;
-    server_name def.dizidental.cloud;
+    server_name def.doctor32.in;
     
     location / {
         proxy_pass http://def_frontend;
@@ -459,17 +459,17 @@ Add DNS A record:
 
 ```bash
 # After DNS propagates
-sudo certbot --nginx -d def.dizidental.cloud
+sudo certbot --nginx -d def.doctor32.in
 
 # Or add to existing certificate
-sudo certbot --nginx -d dizidental.cloud -d xyz.dizidental.cloud -d abc.dizidental.cloud -d def.dizidental.cloud
+sudo certbot --nginx -d doctor32.in -d xyz.doctor32.in -d abc.doctor32.in -d def.doctor32.in
 ```
 
 ### Step 9: Test New Client
 
 ```bash
 # Test health endpoint
-curl https://def.dizidental.cloud/api/actuator/health
+curl https://def.doctor32.in/api/actuator/health
 
 # Login with default admin
 # Mobile: 9999999999
@@ -499,8 +499,8 @@ curl https://def.dizidental.cloud/api/actuator/health
 
 ```bash
 # From any computer
-nslookup xyz.dizidental.cloud
-nslookup abc.dizidental.cloud
+nslookup xyz.doctor32.in
+nslookup abc.doctor32.in
 
 # Should return YOUR_VPS_IP
 ```
@@ -519,10 +519,10 @@ ssh root@YOUR_VPS_IP
 
 # Install certificates (after DNS propagates)
 sudo certbot --nginx \
-  -d dizidental.cloud \
-  -d xyz.dizidental.cloud \
-  -d abc.dizidental.cloud \
-  -d def.dizidental.cloud
+  -d doctor32.in \
+  -d xyz.doctor32.in \
+  -d abc.doctor32.in \
+  -d def.doctor32.in
 
 # Follow prompts:
 # 1. Enter email address
@@ -542,7 +542,7 @@ sudo certbot renew --dry-run
 ### Verify SSL
 
 ```bash
-curl -I https://xyz.dizidental.cloud
+curl -I https://xyz.doctor32.in
 # Should show: HTTP/2 200
 ```
 
@@ -998,3 +998,4 @@ docker stats
 **Last Updated:** February 11, 2026
 
 **Repository:** https://github.com/dsoul2710/dizidentmain
+

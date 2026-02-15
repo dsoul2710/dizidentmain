@@ -8,7 +8,7 @@ A multi-tenant hospital/clinic management system with separate databases and sub
 - **Frontend:** React + Vite
 - **Database:** PostgreSQL 16 (Shared instance, separate databases per client)
 - **Deployment:** Docker + Nginx on VPS
-- **Domain:** https://dizidental.cloud
+- **Domain:** https://doctor32.in
 
 ## 📁 Project Structure
 
@@ -49,7 +49,7 @@ dizidentmain/
 
 ### Prerequisites
 - VPS with Docker installed
-- Domain configured (dizidental.cloud)
+- Domain configured (doctor32.in)
 - PostgreSQL 16 installed on VPS
 
 ### Deployment Steps
@@ -74,8 +74,8 @@ cd dizidentmain
 
 | Client | URL | Database |
 |--------|-----|----------|
-| Client XYZ | https://xyz.dizidental.cloud | clinic_hms_xyz |
-| Client ABC | https://abc.dizidental.cloud | clinic_hms_abc |
+| Client XYZ | https://xyz.doctor32.in | clinic_hms_xyz |
+| Client ABC | https://abc.doctor32.in | clinic_hms_abc |
 
 ## 🔐 Default Admin Credentials
 
@@ -177,8 +177,8 @@ Tables are created automatically by Hibernate on first run.
 | ABC | 3002 | 8082 |
 
 **Nginx** on VPS routes by subdomain:
-- `xyz.dizidental.cloud` → port 3001/8081
-- `abc.dizidental.cloud` → port 3002/8082
+- `xyz.doctor32.in` → port 3001/8081
+- `abc.doctor32.in` → port 3002/8082
 
 ## 📝 Environment Variables
 
@@ -191,7 +191,7 @@ JWT_SECRET=your_jwt_secret_min_32_chars
 
 ### Frontend (.env.prod)
 ```env
-VITE_API_BASE=https://xyz.dizidental.cloud/api
+VITE_API_BASE=https://xyz.doctor32.in/api
 ```
 
 ## 🛠️ Technologies
@@ -250,7 +250,7 @@ abc → 72.61.171.38
 
 **SSL Certificate:**
 ```bash
-sudo certbot --nginx -d dizidental.cloud -d xyz.dizidental.cloud -d abc.dizidental.cloud
+sudo certbot --nginx -d doctor32.in -d xyz.doctor32.in -d abc.doctor32.in
 ```
 
 Auto-renews every 90 days.
@@ -301,8 +301,9 @@ For detailed deployment instructions and troubleshooting, see **[VPS_COMMANDS.md
 
 **VPS Information:**
 - IP: 72.61.171.38
-- Domain: dizidental.cloud
+- Domain: doctor32.in
 - PostgreSQL: localhost:5432
 - GitHub: https://github.com/dsoul2710/dizidentmain
 
 **Last Updated:** February 11, 2026
+

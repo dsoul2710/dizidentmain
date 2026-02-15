@@ -9,7 +9,7 @@ Complete directory structure and file organization for Dizidental Multi-Client H
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│         Hostinger KVM VPS (dizidental.cloud)     │
+│         Hostinger KVM VPS (doctor32.in)     │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
 │  ┌─────────────────────────────────────────────────┐   │
@@ -31,8 +31,8 @@ Complete directory structure and file organization for Dizidental Multi-Client H
 │                                                         │
 │  ┌─────────────────────────────────────────────────┐   │
 │  │  Nginx Reverse Proxy (Port 80, 443)             │   │
-│  │  xyz.dizidental.cloud  → XYZ containers   │   │
-│  │  abc.dizidental.cloud  → ABC containers   │   │
+│  │  xyz.doctor32.in  → XYZ containers   │   │
+│  │  abc.doctor32.in  → ABC containers   │   │
 │  └─────────────────────────────────────────────────┘   │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
@@ -418,7 +418,7 @@ SPRING_DATASOURCE_PASSWORD=9932
 JWT_SECRET=unique_secret_key_minimum_32_characters
 
 # API Base URL
-VITE_API_BASE=https://xyz.dizidental.cloud/api
+VITE_API_BASE=https://xyz.doctor32.in/api
 ```
 
 ---
@@ -446,8 +446,8 @@ VITE_API_BASE=https://xyz.dizidental.cloud/api
 - Backend: `http://localhost:8080/api`
 
 ### Production
-- Frontend: `https://{clientid}.dizidental.cloud`
-- Backend: `https://{clientid}.dizidental.cloud/api`
+- Frontend: `https://{clientid}.doctor32.in`
+- Backend: `https://{clientid}.doctor32.in/api`
 
 ---
 
@@ -568,3 +568,4 @@ Application Running
 **Last Updated:** February 11, 2026
 
 **Repository:** https://github.com/dsoul2710/dizidentmain
+
