@@ -174,11 +174,35 @@ export default function PatientDashboard({ user, onLogout }) {
         const lastSeenKey = `hms_events_last_seen_${currentUserId}`;
         const lastSeen = localStorage.getItem(lastSeenKey) || "";
 
+        const isEventForUser = (event) => {
+          const userIdStr = String(currentUserId);
+          const roleName = String(patientInfo?.name || user?.name || "").trim().toLowerCase();
+          const candidates = [
+            event?.userId,
+            event?.recipientUserId,
+            event?.targetUserId,
+            event?.patientUserId,
+            event?.doctorUserId,
+            event?.adminUserId,
+            event?.assignedDoctorId,
+            event?.patientId,
+            event?.doctorId,
+            event?.adminId,
+          ];
+          if (candidates.some((value) => value != null && String(value) === userIdStr)) {
+            return true;
+          }
+          if (roleName) {
+            return String(event?.patientName || "").trim().toLowerCase() === roleName;
+          }
+          return false;
+        };
+
         // Filter events that are newer than last seen
         const list = Array.isArray(eventsData) ? eventsData : [];
         const unreadEventsList = list.filter((item) => {
           if (!item?.timestamp || item.timestamp <= lastSeen) return false;
-          if (String(item?.actorUserId) === String(currentUserId)) return false;
+          if (!isEventForUser(item)) return false;
           return true;
         });
         setUnreadEvents(unreadEventsList);

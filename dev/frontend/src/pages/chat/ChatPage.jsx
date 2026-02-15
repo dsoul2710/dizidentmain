@@ -112,15 +112,7 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
           createdAt: p.createdAt || p.createdDate || p.created_at || "",
         }));
 
-        if (isDoctor && doctorParam && list.length === 0) {
-          data = await apiFetch(`${API_BASE_URL}/patients`);
-          list = (data || []).map((p) => ({
-          id: String(p.userId ?? p.id),
-          name: p.name || p.mobile || "Patient",
-          mobile: p.mobile,
-          createdAt: p.createdAt || p.createdDate || p.created_at || "",
-          }));
-        }
+        // If doctor-specific filter returns no patients, keep the list empty.
         setPatients(list);
         if (!selectedPatientId && list.length) {
           setSelectedPatientId(list[0].id);

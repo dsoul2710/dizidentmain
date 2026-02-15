@@ -755,7 +755,7 @@ export default function DiagnosisView() {
                 className="btn sm primary"
                 onClick={handleReportSave}
               >
-                Save
+                Save Reports
               </button>
             </div>
 
