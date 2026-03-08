@@ -1,5 +1,5 @@
 // src/pages/dashboards/DoctorDashboard.jsx
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import TreatmentPlanView from "../TreatmentPlanView.jsx";
 import DiagnosisView from "../DiagnosisView.jsx";
@@ -266,6 +266,7 @@ export default function DoctorDashboard({ user, onLogout }) {
     { type: "link", label: "Examination & Diagnosis", to: "/doctor/diagnosis", icon: "ri-stethoscope-line" },
     { type: "link", label: "Treatment Plan", to: "/doctor/treatment", icon: "ri-clipboard-line" },
     { type: "link", label: "Prescription (Rx)", to: "/doctor/rx", icon: "ri-file-list-3-line" },
+    { type: "link", label: "Dental Care", to: "/doctor/dental-care", icon: "ri-service-line" },
     { type: "group", label: "Other" },
     { type: "link", label: "Schedule", to: "/doctor/appointments", icon: "ri-calendar-2-line" },
     { type: "link", label: "Chat", to: "/doctor/chat", icon: "ri-chat-1-line" },
@@ -335,6 +336,7 @@ export default function DoctorDashboard({ user, onLogout }) {
         <Route path="overview" element={<DoctorOverview user={user} />} />
         <Route path="diagnosis" element={<DiagnosisView />} />
         <Route path="treatment" element={<TreatmentPlanView />} />
+        <Route path="dental-care" element={<DentalCarePage />} />
         <Route
           path="rx"
           element={
@@ -370,6 +372,58 @@ export default function DoctorDashboard({ user, onLogout }) {
   );
 }
 
+
+function DentalCarePage() {
+  const frameWrapRef = useRef(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const onFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", onFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await frameWrapRef.current?.requestFullscreen?.();
+      } else {
+        await document.exitFullscreen?.();
+      }
+    } catch (err) {
+      console.error("Unable to toggle fullscreen", err);
+    }
+  };
+
+  return (
+    <section className="view show">
+      <div
+        ref={frameWrapRef}
+        className="card border-0 shadow-sm"
+        style={{ minHeight: "calc(100vh - 120px)", position: "relative" }}
+      >
+        <button
+          type="button"
+          className="btn btn-sm btn-light"
+          onClick={toggleFullscreen}
+          title={isFullscreen ? "Exit fullscreen" : "Open fullscreen"}
+          aria-label={isFullscreen ? "Exit fullscreen" : "Open fullscreen"}
+          style={{ position: "absolute", top: 12, right: 12, zIndex: 2 }}
+        >
+          <i className={isFullscreen ? "ri-fullscreen-exit-line" : "ri-fullscreen-line"}></i>
+        </button>
+        <iframe
+          title="Dental Care"
+          src="https://catelog.doctor32.in"
+          style={{ width: "100%", height: "100%", minHeight: "calc(100vh - 120px)", border: 0 }}
+          loading="lazy"
+        />
+      </div>
+    </section>
+  );
+}
 
 function DoctorOverview({ user }) {
   const [loading, setLoading] = useState(false);

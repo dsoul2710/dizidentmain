@@ -207,7 +207,7 @@ upstream abc_frontend {
 
 server {
     listen 80;
-    server_name abc.doctor32.in;
+    server_name smiledental.dizidental.com;
     
     location / {
         proxy_pass http://abc_frontend;
@@ -462,7 +462,7 @@ Add DNS A record:
 sudo certbot --nginx -d def.doctor32.in
 
 # Or add to existing certificate
-sudo certbot --nginx -d doctor32.in -d xyz.doctor32.in -d abc.doctor32.in -d def.doctor32.in
+sudo certbot --nginx -d doctor32.in -d xyz.doctor32.in -d smiledental.dizidental.com -d def.doctor32.in
 ```
 
 ### Step 9: Test New Client
@@ -500,7 +500,7 @@ curl https://def.doctor32.in/api/actuator/health
 ```bash
 # From any computer
 nslookup xyz.doctor32.in
-nslookup abc.doctor32.in
+nslookup smiledental.dizidental.com
 
 # Should return YOUR_VPS_IP
 ```
@@ -521,7 +521,7 @@ ssh root@YOUR_VPS_IP
 sudo certbot --nginx \
   -d doctor32.in \
   -d xyz.doctor32.in \
-  -d abc.doctor32.in \
+  -d smiledental.dizidental.com \
   -d def.doctor32.in
 
 # Follow prompts:

@@ -75,7 +75,7 @@ cd dizidentmain
 | Client | URL | Database |
 |--------|-----|----------|
 | Client XYZ | https://xyz.doctor32.in | clinic_hms_xyz |
-| Client ABC | https://abc.doctor32.in | clinic_hms_abc |
+| Client ABC | https://smiledental.dizidental.com | clinic_hms_abc |
 
 ## 🔐 Default Admin Credentials
 
@@ -178,7 +178,7 @@ Tables are created automatically by Hibernate on first run.
 
 **Nginx** on VPS routes by subdomain:
 - `xyz.doctor32.in` → port 3001/8081
-- `abc.doctor32.in` → port 3002/8082
+- `smiledental.dizidental.com` → port 3002/8082
 
 ## 📝 Environment Variables
 
@@ -250,7 +250,7 @@ abc → 72.61.171.38
 
 **SSL Certificate:**
 ```bash
-sudo certbot --nginx -d doctor32.in -d xyz.doctor32.in -d abc.doctor32.in
+sudo certbot --nginx -d doctor32.in -d xyz.doctor32.in -d smiledental.dizidental.com
 ```
 
 Auto-renews every 90 days.
