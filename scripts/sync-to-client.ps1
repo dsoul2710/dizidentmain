@@ -19,18 +19,18 @@ $Dest = Join-Path $BaseDir "client$Client\$SourcePath"
 
 # Validate source
 if (-not (Test-Path $Source)) {
-    Write-Host "❌ Source not found: $Source" -ForegroundColor Red
+    Write-Host "Source not found: $Source" -ForegroundColor Red
     exit 1
 }
 
 # Validate client folder
 if (-not (Test-Path (Join-Path $BaseDir "client$Client"))) {
-    Write-Host "❌ Client folder not found: client$Client" -ForegroundColor Red
+    Write-Host "Client folder not found: client$Client" -ForegroundColor Red
     Write-Host "Available clients: clientabc, clientxyz" -ForegroundColor Yellow
     exit 1
 }
 
-Write-Host "📋 Syncing from dev to client$Client" -ForegroundColor Cyan
+Write-Host "Syncing from dev to client$Client" -ForegroundColor Cyan
 Write-Host "   Source: dev\$SourcePath"
 Write-Host "   Dest:   client$Client\$SourcePath"
 Write-Host ""
@@ -53,5 +53,5 @@ if (Test-Path $Source -PathType Container) {
 }
 
 Write-Host ""
-Write-Host "✅ Synced successfully!" -ForegroundColor Green
-Write-Host "💡 Don't forget to test in client$Client before deploying" -ForegroundColor Yellow
+Write-Host "Synced successfully!" -ForegroundColor Green
+Write-Host "Don't forget to test in client$Client before deploying" -ForegroundColor Yellow

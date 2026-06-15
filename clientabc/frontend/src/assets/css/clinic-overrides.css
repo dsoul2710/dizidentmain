@@ -1335,6 +1335,18 @@ h6 {
   }
 }
 
+@media (min-width: 1400px) {
+  .dashboard-main {
+    margin-inline-start: 17.1875rem !important;
+  }
+}
+
+@media (min-width: 1650px) {
+  .dashboard-main {
+    margin-inline-start: 19.5rem !important;
+  }
+}
+
 .navbar-search input {
   width: clamp(12rem, 36vw, 20rem);
 }
