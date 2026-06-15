@@ -11,7 +11,7 @@ public class ChatThreadResponse {
     private String type;
     private Long patientUserId;
     private Long doctorUserId;
-    private Long adminUserId;
+    private Long orgUserId;
     private String createdAt;
     private String updatedAt;
 }

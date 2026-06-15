@@ -63,7 +63,7 @@ export default function NotificationPanel({
     const roleMap = {
       DOCTOR: "/doctor/chat",
       PATIENT: "/patient/chat",
-      ADMIN: "/admin/chat",
+      ORG: "/org/chat",
     };
     const chatPath = roleMap[role] || "/chat";
     navigate(chatPath);
@@ -74,7 +74,7 @@ export default function NotificationPanel({
     const roleMap = {
       DOCTOR: "/doctor/chat",
       PATIENT: "/patient/chat",
-      ADMIN: "/admin/chat",
+      ORG: "/org/chat",
     };
     const chatPath = roleMap[role] || "/chat";
     navigate(chatPath);
@@ -85,7 +85,7 @@ export default function NotificationPanel({
     const roleMap = {
       DOCTOR: "/doctor/chat",
       PATIENT: "/patient/chat",
-      ADMIN: "/admin/chat",
+      ORG: "/org/chat",
     };
     const chatPath = roleMap[role] || "/chat";
     navigate(chatPath, { state: { selectedUserId: senderId } });

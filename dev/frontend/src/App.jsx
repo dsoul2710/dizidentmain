@@ -81,7 +81,7 @@ export default function App() {
   // Helper to send logged-in user to correct dashboard
   const getDefaultRouteForUser = () => {
     if (!user) return "/login";
-    if (user.role === "ADMIN") return "/admin/overview";
+    if (user.role === "ORG") return "/org/overview";
     if (user.role === "DOCTOR") return "/doctor/overview";
     if (user.role === "PATIENT") return "/patient/overview";
     return "/login";
@@ -110,11 +110,11 @@ export default function App() {
           }
         />
 
-        {/* Admin dashboard */}
+        {/* Org dashboard */}
         <Route
-          path="/admin/*"
+          path="/org/*"
           element={
-            user?.role === "ADMIN" ? (
+            user?.role === "ORG" ? (
               <Dashboard user={user} onLogout={handleLogout} />
             ) : (
               <Navigate to="/login" replace />

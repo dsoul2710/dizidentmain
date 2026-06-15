@@ -250,7 +250,7 @@ export default function PatientAdd() {
         alert("Patient saved.");
       }
       resetPatientForm();
-      navigate("/admin/patients");
+      navigate("/org/patients");
     } catch (err) {
       console.error("Error saving patient", err);
       alert("Unable to save patient. Please try again.");
@@ -540,7 +540,7 @@ export default function PatientAdd() {
                   <button
                     className="btn btn-outline"
                     type="button"
-                    onClick={() => navigate("/admin/patients")}
+                    onClick={() => navigate("/org/patients")}
                   >
                     Cancel
                   </button>

@@ -1,4 +1,4 @@
-﻿// src/pages/ScheduleView.jsx
+// src/pages/ScheduleView.jsx
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import PatientSelect from "../components/common/PatientSelect";
 import "./chat/chat.css";
@@ -72,7 +72,7 @@ function getCookie(name) {
 
 export default function ScheduleView({
   apiBaseUrl = "/api",
-  panelType = "ADMIN", // "ADMIN" or "DOCTOR"
+  panelType = "ORG", // "ORG" or "DOCTOR"
   currentUser, // expected to have .id for doctorUserId
 }) {
   const [viewDate, setViewDate] = useState(
@@ -126,9 +126,9 @@ export default function ScheduleView({
   const [editVisits, setEditVisits] = useState([]);
   const [editLoading, setEditLoading] = useState(false);
 
-  // --- LOAD PATIENTS only for ADMIN panel ---
+  // --- LOAD PATIENTS only for ORG panel ---
   useEffect(() => {
-    if (panelType !== "ADMIN") return;
+    if (panelType !== "ORG") return;
 
     const fetchPatients = async () => {
       try {
@@ -159,7 +159,7 @@ export default function ScheduleView({
           const id = currentUser?.id ?? currentUser?.userId ?? null;
           return id != null ? Number(id) : null;
         })()
-      : null; // ADMIN: always null - backend will use assignedDoctor
+      : null; // ORG: always null - backend will use assignedDoctor
 
   // console logs (you can remove later)
   console.log("ScheduleView -> currentUser:", currentUser);
@@ -512,7 +512,7 @@ export default function ScheduleView({
       if (visitId === "NEW_VISIT") {
         const newVisitPayload = {
           patientUserId: Number(effectivePatientId),
-          doctorUserId: doctorUserId, // for DOCTOR; null for ADMIN
+          doctorUserId: doctorUserId, // for DOCTOR; null for ORG
           visitType: "NEW",
           chiefComplaint: form.description || "",
           notes: form.description || "",
@@ -536,7 +536,7 @@ export default function ScheduleView({
         date: selectedKey, // "YYYY-MM-DD"
         slot: selectedSlot,
         patientUserId: Number(effectivePatientId),
-        doctorUserId: doctorUserId, // DOCTOR id, ADMIN null
+        doctorUserId: doctorUserId, // DOCTOR id, ORG null
         visitId: finalVisitId || null,
         description: form.description || "",
         createdByUserId: currentUser?.id ?? currentUser?.userId ?? null,
@@ -1209,7 +1209,7 @@ export default function ScheduleView({
                 </button>
               </div>
 
-              {panelType === "ADMIN" ? (
+              {panelType === "ORG" ? (
                 <div className="schedule-field">
                   <label>Patient</label>
                   <PatientSelect

@@ -44,8 +44,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatService {
 
-    private static final String TYPE_ADMIN_DOCTOR = "ADMIN_DOCTOR";
-    private static final String TYPE_ADMIN_PATIENT = "ADMIN_PATIENT";
+    private static final String TYPE_ORG_DOCTOR = "ORG_DOCTOR";
+    private static final String TYPE_ORG_PATIENT = "ORG_PATIENT";
     private static final String TYPE_DOCTOR_PATIENT = "DOCTOR_PATIENT";
 
     private final ChatThreadRepository chatThreadRepository;
@@ -67,13 +67,13 @@ public class ChatService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        if (TYPE_ADMIN_DOCTOR.equals(type)) {
-            Long adminId = requireId(req.getAdminUserId(), "adminUserId");
+        if (TYPE_ORG_DOCTOR.equals(type)) {
+            Long orgId = requireId(req.getOrgUserId(), "orgUserId");
             Long doctorId = requireId(req.getDoctorUserId(), "doctorUserId");
 
-            List<ChatThread> existing = chatThreadRepository.findByTypeAndAdmin_IdAndDoctor_IdOrderByUpdatedAtDesc(
+            List<ChatThread> existing = chatThreadRepository.findByTypeAndOrg_IdAndDoctor_IdOrderByUpdatedAtDesc(
                     type,
-                    adminId,
+                    orgId,
                     doctorId
             );
 
@@ -81,14 +81,14 @@ public class ChatService {
                 return toThreadResponse(existing.get(0));
             }
 
-            User admin = userRepository.findById(adminId)
-                    .orElseThrow(() -> new IllegalArgumentException("Admin user not found: " + adminId));
+            User org = userRepository.findById(orgId)
+                    .orElseThrow(() -> new IllegalArgumentException("Org user not found: " + orgId));
             User doctor = userRepository.findById(doctorId)
                     .orElseThrow(() -> new IllegalArgumentException("Doctor user not found: " + doctorId));
 
             ChatThread thread = ChatThread.builder()
                     .type(type)
-                    .admin(admin)
+                    .org(org)
                     .doctor(doctor)
                     .createdAt(now)
                     .updatedAt(now)
@@ -97,12 +97,12 @@ public class ChatService {
             return toThreadResponse(chatThreadRepository.save(thread));
         }
 
-        if (TYPE_ADMIN_PATIENT.equals(type)) {
-            Long adminId = requireId(req.getAdminUserId(), "adminUserId");
+        if (TYPE_ORG_PATIENT.equals(type)) {
+            Long orgId = requireId(req.getOrgUserId(), "orgUserId");
             Long patientId = requireId(req.getPatientUserId(), "patientUserId");
-            List<ChatThread> existing = chatThreadRepository.findByTypeAndAdmin_IdAndPatient_IdOrderByUpdatedAtDesc(
+            List<ChatThread> existing = chatThreadRepository.findByTypeAndOrg_IdAndPatient_IdOrderByUpdatedAtDesc(
                     type,
-                    adminId,
+                    orgId,
                     patientId
             );
 
@@ -110,13 +110,13 @@ public class ChatService {
                 return toThreadResponse(existing.get(0));
             }
 
-            User admin = userRepository.findById(adminId)
-                    .orElseThrow(() -> new IllegalArgumentException("Admin user not found: " + adminId));
+            User org = userRepository.findById(orgId)
+                    .orElseThrow(() -> new IllegalArgumentException("Org user not found: " + orgId));
             User patient = userRepository.findById(patientId)
                     .orElseThrow(() -> new IllegalArgumentException("Patient user not found: " + patientId));
             ChatThread thread = ChatThread.builder()
                     .type(type)
-                    .admin(admin)
+                    .org(org)
                     .patient(patient)
                     .createdAt(now)
                     .updatedAt(now)
@@ -334,7 +334,7 @@ public class ChatService {
                 .type(thread.getType())
                 .patientUserId(thread.getPatient() != null ? thread.getPatient().getId() : null)
                 .doctorUserId(thread.getDoctor() != null ? thread.getDoctor().getId() : null)
-                .adminUserId(thread.getAdmin() != null ? thread.getAdmin().getId() : null)
+                .orgUserId(thread.getOrg() != null ? thread.getOrg().getId() : null)
                 .createdAt(thread.getCreatedAt() != null ? thread.getCreatedAt().toString() : null)
                 .updatedAt(thread.getUpdatedAt() != null ? thread.getUpdatedAt().toString() : null)
                 .build();

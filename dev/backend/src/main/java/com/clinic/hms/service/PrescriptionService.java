@@ -109,7 +109,7 @@ public class PrescriptionService {
             Visit visit,
             UserDetails patientDetails
     ) {
-        // 1) If doctorUserId explicitly sent (doctor panel / future admin dropdown)
+        // 1) If doctorUserId explicitly sent (doctor panel / future org dropdown)
         if (req.getDoctorUserId() != null) {
             return userRepository.findById(req.getDoctorUserId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid doctor user id"));
@@ -120,7 +120,7 @@ public class PrescriptionService {
             return visit.getDoctor();
         }
 
-        // 3) If patient has assignedDoctor → use that (ADMIN flow)
+        // 3) If patient has assignedDoctor → use that (ORG flow)
         if (patientDetails != null && patientDetails.getAssignedDoctor() != null) {
             return patientDetails.getAssignedDoctor();
         }

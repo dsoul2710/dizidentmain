@@ -30,8 +30,8 @@ public class ChatThread {
     private User doctor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_user_id")
-    private User admin;
+    @JoinColumn(name = "org_user_id")
+    private User org;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

@@ -22,27 +22,36 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void seedAdminUser() {
-        // Check if any admin user exists
-        boolean adminExists = userRepository.findAll().stream()
-                .anyMatch(user -> "ADMIN".equalsIgnoreCase(user.getRole()));
+        // Check if user with mobile 9999999999 exists
+        User existing = userRepository.findAll().stream()
+                .filter(user -> "9999999999".equals(user.getMobile()))
+                .findFirst()
+                .orElse(null);
 
-        if (!adminExists) {
+        if (existing == null) {
             User admin = User.builder()
                     .mobile("9999999999")
                     .password("admin123")  // Plain text for now - should be hashed in production
-                    .role("ADMIN")
+                    .role("ORG")
                     .isActive(true)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
 
             userRepository.save(admin);
-            log.info("✅ Default admin user created:");
+            log.info("✅ Default org user created:");
             log.info("   Mobile: 9999999999");
             log.info("   Password: admin123");
-            log.info("   Role: ADMIN");
+            log.info("   Role: ORG");
         } else {
-            log.info("✅ Admin user already exists, skipping seed");
+            if (!"ORG".equalsIgnoreCase(existing.getRole())) {
+                existing.setRole("ORG");
+                existing.setUpdatedAt(LocalDateTime.now());
+                userRepository.save(existing);
+                log.info("✅ Updated existing user 9999999999 role to ORG");
+            } else {
+                log.info("✅ Org user already exists, skipping seed");
+            }
         }
     }
 }

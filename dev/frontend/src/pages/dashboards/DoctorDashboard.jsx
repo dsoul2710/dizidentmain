@@ -167,11 +167,11 @@ export default function DoctorDashboard({ user, onLogout }) {
             event?.targetUserId,
             event?.patientUserId,
             event?.doctorUserId,
-            event?.adminUserId,
+            event?.orgUserId,
             event?.assignedDoctorId,
             event?.patientId,
             event?.doctorId,
-            event?.adminId,
+            event?.orgId,
           ];
           if (candidates.some((value) => value != null && String(value) === userIdStr)) {
             return true;
