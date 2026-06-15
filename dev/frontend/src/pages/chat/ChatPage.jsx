@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
@@ -7,7 +7,7 @@ import { formatDateDMY } from "../../utils/dateFormat";
 import "./chat.css";
 
 const DEFAULT_MODE = {
-  ADMIN: "patient",
+  ORG: "patient",
   DOCTOR: "patient",
   PATIENT: "doctor",
 };
@@ -21,11 +21,11 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
   const [mode, setMode] = useState(DEFAULT_MODE[role] || "patient");
   const [patients, setPatients] = useState([]);
   const [doctors, setDoctors] = useState([]);
-  const [admins, setAdmins] = useState([]);
+  const [orgs, setOrgs] = useState([]);
 
   const [selectedPatientId, setSelectedPatientId] = useState("");
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
-  const [selectedAdminId, setSelectedAdminId] = useState("");
+  const [selectedOrgId, setSelectedOrgId] = useState("");
 
   const [thread, setThread] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -43,7 +43,7 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
   const [eventsError, setEventsError] = useState("");
 
   const [doctorSearch, setDoctorSearch] = useState("");
-  const [adminSearch, setAdminSearch] = useState("");
+  const [orgSearch, setOrgSearch] = useState("");
   const [patientSearch, setPatientSearch] = useState("");
 
   const clientRef = useRef(null);
@@ -57,7 +57,7 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
 
   threadIdRef.current = thread?.id || null;
 
-  const isAdmin = role === "ADMIN";
+  const isOrg = role === "ORG";
   const isDoctor = role === "DOCTOR";
   const isPatient = role === "PATIENT";
   const isEventsMode = mode === "events";
@@ -142,40 +142,40 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
       }
     };
 
-    const loadAdmins = async () => {
+    const loadOrgs = async () => {
       try {
-        const data = await apiFetch(`${API_BASE_URL}/users?role=ADMIN`);
+        const data = await apiFetch(`${API_BASE_URL}/users?role=ORG`);
         const list = (data || []).map((a) => ({
           id: String(a.id),
-          name: a.name || a.mobile || "Admin",
+          name: a.name || a.mobile || "Org",
           mobile: a.mobile,
         }));
-        setAdmins(list);
-        if (!selectedAdminId && list.length) {
-          setSelectedAdminId(list[0].id);
+        setOrgs(list);
+        if (!selectedOrgId && list.length) {
+          setSelectedOrgId(list[0].id);
         }
       } catch (err) {
-        console.error("Failed to load admins", err);
+        console.error("Failed to load orgs", err);
       }
     };
 
-    if (isAdmin || isDoctor) {
+    if (isOrg || isDoctor) {
       loadPatients();
     }
-    if (isAdmin || isPatient) {
+    if (isOrg || isPatient) {
       loadDoctors();
     }
     if (isDoctor || isPatient) {
-      loadAdmins();
+      loadOrgs();
     }
   }, [
     role,
-    isAdmin,
+    isOrg,
     isDoctor,
     isPatient,
     selectedPatientId,
     selectedDoctorId,
-    selectedAdminId,
+    selectedOrgId,
     currentUserId,
     assignedDoctorId,
   ]);
@@ -190,7 +190,7 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
     if (!selectedUserId) return;
     
     // Wait for user lists to be loaded
-    if (patients.length === 0 && doctors.length === 0 && admins.length === 0) {
+    if (patients.length === 0 && doctors.length === 0 && orgs.length === 0) {
       return;
     }
     
@@ -216,16 +216,16 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
       return;
     }
     
-    // Check in admins
-    const admin = admins.find(a => String(a.id) === userId);
-    if (admin) {
-      setMode("admin");
-      setSelectedAdminId(userId);
+    // Check in orgs
+    const org = orgs.find(a => String(a.id) === userId);
+    if (org) {
+      setMode("org");
+      setSelectedOrgId(userId);
       // Clear navigation state immediately
       navigate(location.pathname, { replace: true, state: {} });
       return;
     }
-  }, [location.state?.selectedUserId, patients, doctors, admins, navigate, location.pathname]);
+  }, [location.state?.selectedUserId, patients, doctors, orgs, navigate, location.pathname]);
 
   useEffect(() => {
     if (!isEventsMode || eventsLoading) return;
@@ -276,39 +276,39 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
   const resolvePayload = useMemo(() => {
     if (!currentUserId) return null;
 
-    if (isAdmin && mode === "doctor") {
+    if (isOrg && mode === "doctor") {
       if (!selectedDoctorId) return null;
       return {
-        type: "ADMIN_DOCTOR",
-        adminUserId: currentUserId,
+        type: "ORG_DOCTOR",
+        orgUserId: currentUserId,
         doctorUserId: Number(selectedDoctorId),
       };
     }
 
-    if (isDoctor && mode === "admin") {
-      if (!selectedAdminId) return null;
+    if (isDoctor && mode === "org") {
+      if (!selectedOrgId) return null;
       return {
-        type: "ADMIN_DOCTOR",
-        adminUserId: Number(selectedAdminId),
+        type: "ORG_DOCTOR",
+        orgUserId: Number(selectedOrgId),
         doctorUserId: currentUserId,
       };
     }
 
-    if ((isAdmin || isDoctor) && mode === "patient") {
+    if ((isOrg || isDoctor) && mode === "patient") {
       if (!selectedPatientId) return null;
       return {
-        type: isAdmin ? "ADMIN_PATIENT" : "DOCTOR_PATIENT",
-        adminUserId: isAdmin ? currentUserId : undefined,
+        type: isOrg ? "ORG_PATIENT" : "DOCTOR_PATIENT",
+        orgUserId: isOrg ? currentUserId : undefined,
         doctorUserId: isDoctor ? currentUserId : undefined,
         patientUserId: Number(selectedPatientId),
       };
     }
 
-    if (isPatient && mode === "admin") {
-      if (!selectedAdminId) return null;
+    if (isPatient && mode === "org") {
+      if (!selectedOrgId) return null;
       return {
-        type: "ADMIN_PATIENT",
-        adminUserId: Number(selectedAdminId),
+        type: "ORG_PATIENT",
+        orgUserId: Number(selectedOrgId),
         patientUserId: currentUserId,
       };
     }
@@ -325,11 +325,11 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
     return null;
   }, [
     currentUserId,
-    isAdmin,
+    isOrg,
     isDoctor,
     isPatient,
     mode,
-    selectedAdminId,
+    selectedOrgId,
     selectedDoctorId,
     selectedPatientId,
   ]);
@@ -519,12 +519,12 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
   }, [messages]);
 
   const resolveReceiverId = () => {
-    if (isAdmin && mode === "doctor") return selectedDoctorId;
-    if (isAdmin && mode === "patient") return selectedPatientId;
-    if (isDoctor && mode === "admin") return selectedAdminId;
+    if (isOrg && mode === "doctor") return selectedDoctorId;
+    if (isOrg && mode === "patient") return selectedPatientId;
+    if (isDoctor && mode === "org") return selectedOrgId;
     if (isDoctor && mode === "patient") return selectedPatientId;
     if (isPatient && mode === "doctor") return selectedDoctorId;
-    if (isPatient && mode === "admin") return selectedAdminId;
+    if (isPatient && mode === "org") return selectedOrgId;
     return null;
   };
 
@@ -605,13 +605,13 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
     const map = new Map();
     doctors.forEach((d) => map.set(String(d.id), d.name));
     patients.forEach((p) => map.set(String(p.id), p.name));
-    admins.forEach((a) => map.set(String(a.id), a.name));
+    orgs.forEach((a) => map.set(String(a.id), a.name));
     return map;
-  }, [doctors, patients, admins]);
+  }, [doctors, patients, orgs]);
 
   const patientIdSet = useMemo(() => new Set(patients.map((p) => String(p.id))), [patients]);
   const doctorIdSet = useMemo(() => new Set(doctors.map((d) => String(d.id))), [doctors]);
-  const adminIdSet = useMemo(() => new Set(admins.map((a) => String(a.id))), [admins]);
+  const orgIdSet = useMemo(() => new Set(orgs.map((a) => String(a.id))), [orgs]);
 
   const sumUnreadForIds = (idSet) => {
     let total = 0;
@@ -625,7 +625,7 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
 
   const unreadPatients = sumUnreadForIds(patientIdSet);
   const unreadDoctors = sumUnreadForIds(doctorIdSet);
-  const unreadAdmins = sumUnreadForIds(adminIdSet);
+  const unreadOrgs = sumUnreadForIds(orgIdSet);
 
   const formatTimestamp = (value) => {
     if (!value) return "";
@@ -647,11 +647,11 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
     return doctors.filter((d) => (d.name || "").toLowerCase().includes(query) || (d.mobile || "").includes(query));
   }, [doctors, doctorSearch]);
 
-  const filteredAdmins = useMemo(() => {
-    const query = adminSearch.trim().toLowerCase();
-    if (!query) return admins;
-    return admins.filter((a) => (a.name || "").toLowerCase().includes(query) || (a.mobile || "").includes(query));
-  }, [admins, adminSearch]);
+  const filteredOrgs = useMemo(() => {
+    const query = orgSearch.trim().toLowerCase();
+    if (!query) return orgs;
+    return orgs.filter((a) => (a.name || "").toLowerCase().includes(query) || (a.mobile || "").includes(query));
+  }, [orgs, orgSearch]);
 
   const filteredPatients = useMemo(() => {
     const query = patientSearch.trim().toLowerCase();
@@ -661,12 +661,12 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
 
   const activePartnerName = (() => {
     if (isEventsMode) return "Events";
-    if (isAdmin && mode === "doctor") return peopleMap.get(selectedDoctorId) || "Doctor";
-    if (isAdmin && mode === "patient") return peopleMap.get(selectedPatientId) || "Patient";
-    if (isDoctor && mode === "admin") return peopleMap.get(selectedAdminId) || "Admin";
+    if (isOrg && mode === "doctor") return peopleMap.get(selectedDoctorId) || "Doctor";
+    if (isOrg && mode === "patient") return peopleMap.get(selectedPatientId) || "Patient";
+    if (isDoctor && mode === "org") return peopleMap.get(selectedOrgId) || "Org";
     if (isDoctor && mode === "patient") return peopleMap.get(selectedPatientId) || "Patient";
     if (isPatient && mode === "doctor") return peopleMap.get(selectedDoctorId) || "Doctor";
-    if (isPatient && mode === "admin") return peopleMap.get(selectedAdminId) || "Admin";
+    if (isPatient && mode === "org") return peopleMap.get(selectedOrgId) || "Org";
     return "Chat";
   })();
 
@@ -704,21 +704,21 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
     if (isEventsMode) return [];
     if (mode === "patient") return filteredPatients;
     if (mode === "doctor") return filteredDoctors;
-    if (mode === "admin") return filteredAdmins;
+    if (mode === "org") return filteredOrgs;
     return [];
   })();
 
   const activeSelectedId = (() => {
     if (mode === "patient") return selectedPatientId;
     if (mode === "doctor") return selectedDoctorId;
-    if (mode === "admin") return selectedAdminId;
+    if (mode === "org") return selectedOrgId;
     return "";
   })();
 
   const setActiveSelectedId = (id) => {
     if (mode === "patient") setSelectedPatientId(id);
     if (mode === "doctor") setSelectedDoctorId(id);
-    if (mode === "admin") setSelectedAdminId(id);
+    if (mode === "org") setSelectedOrgId(id);
   };
 
   return (
@@ -730,7 +730,7 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
               <div className="chat-avatar">{initialsFor(currentUser?.name || role || "User")}</div>
             </div>
             <div className="info">
-              <h6 className="text-md mb-0">{isAdmin ? "Welcome Admin" : currentUser?.name || "User"}</h6>
+              <h6 className="text-md mb-0">{isOrg ? "Welcome Org" : currentUser?.name || "User"}</h6>
               <p className="mb-0">{role || "User"}</p>
             </div>
             <div className="action text-end">
@@ -746,7 +746,7 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
             >
               Events
             </button>
-            {isAdmin && (
+            {isOrg && (
               <>
                 <button
                   className={mode === "patient" ? "tab active" : "tab"}
@@ -774,11 +774,11 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
                   Patients {unreadPatients > 0 ? <span className="tab-badge">{unreadPatients}</span> : null}
                 </button>
                 <button
-                  className={mode === "admin" ? "tab active" : "tab"}
-                  onClick={() => setMode("admin")}
+                  className={mode === "org" ? "tab active" : "tab"}
+                  onClick={() => setMode("org")}
                   type="button"
                 >
-                  Admin {unreadAdmins > 0 ? <span className="tab-badge">{unreadAdmins}</span> : null}
+                  Org {unreadOrgs > 0 ? <span className="tab-badge">{unreadOrgs}</span> : null}
                 </button>
               </>
             )}
@@ -792,11 +792,11 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
                   Doctor {unreadDoctors > 0 ? <span className="tab-badge">{unreadDoctors}</span> : null}
                 </button>
                 <button
-                  className={mode === "admin" ? "tab active" : "tab"}
-                  onClick={() => setMode("admin")}
+                  className={mode === "org" ? "tab active" : "tab"}
+                  onClick={() => setMode("org")}
                   type="button"
                 >
-                  Admin {unreadAdmins > 0 ? <span className="tab-badge">{unreadAdmins}</span> : null}
+                  Org {unreadOrgs > 0 ? <span className="tab-badge">{unreadOrgs}</span> : null}
                 </button>
               </>
             )}
@@ -808,11 +808,11 @@ export default function ChatPage({ role, currentUser, onUnreadChange, assignedDo
             </span>
             <input
               type="text"
-              value={mode === "patient" ? patientSearch : mode === "doctor" ? doctorSearch : adminSearch}
+              value={mode === "patient" ? patientSearch : mode === "doctor" ? doctorSearch : orgSearch}
               onChange={(e) => {
                 if (mode === "patient") setPatientSearch(e.target.value);
                 if (mode === "doctor") setDoctorSearch(e.target.value);
-                if (mode === "admin") setAdminSearch(e.target.value);
+                if (mode === "org") setOrgSearch(e.target.value);
               }}
               placeholder={`Search ${mode === "events" ? "events" : mode}`}
               disabled={isEventsMode}

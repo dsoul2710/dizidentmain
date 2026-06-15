@@ -804,7 +804,7 @@ useEffect(() => {
             <button
               type="button"
               className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
-              onClick={() => navigate("/admin/patients/add")}
+              onClick={() => navigate("/org/patients/add")}
             >
               Add Patient
             </button>
@@ -871,7 +871,7 @@ useEffect(() => {
                             type="button"
                             className="btn sm"
                             onClick={() =>
-                              navigate(`/admin/patients/add?edit=${p.userId ?? p.id}`, {
+                              navigate(`/org/patients/add?edit=${p.userId ?? p.id}`, {
                                 state: { patient: p },
                               })
                             }

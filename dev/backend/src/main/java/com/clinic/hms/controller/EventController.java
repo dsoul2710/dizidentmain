@@ -17,7 +17,7 @@ public class EventController {
 
     private final EventService eventService;
 
-    // GET /api/events?userId=1&role=ADMIN
+    // GET /api/events?userId=1&role=ORG
     @GetMapping("/events")
     public List<EventResponse> listEvents(
             @RequestParam(required = false) Long userId,

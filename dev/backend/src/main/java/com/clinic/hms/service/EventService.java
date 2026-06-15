@@ -40,7 +40,7 @@ public class EventService {
         List<Bill> bills;
 
         switch (normalizedRole) {
-            case "ADMIN" -> {
+            case "ORG" -> {
                 appointments = appointmentRepository.findTop50ByOrderByCreatedAtDesc();
                 visits = visitRepository.findTop50ByOrderByCreatedAtDesc();
                 bills = billRepository.findTop50ByOrderByCreatedAtDesc();

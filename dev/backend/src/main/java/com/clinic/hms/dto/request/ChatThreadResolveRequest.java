@@ -8,5 +8,5 @@ public class ChatThreadResolveRequest {
     private String type;
     private Long patientUserId;
     private Long doctorUserId;
-    private Long adminUserId;
+    private Long orgUserId;
 }

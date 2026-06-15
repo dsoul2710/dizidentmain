@@ -68,4 +68,8 @@ public class Visit {
 
     @Column(name = "created_by_user_id")
     private Long createdByUserId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "org_user_id")
+    private User org;
 }
