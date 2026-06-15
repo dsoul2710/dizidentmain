@@ -12,6 +12,7 @@ import ChatBell from "../../components/chat/ChatBell.jsx";
 import NotificationPanel from "../../components/chat/NotificationPanel.jsx";
 import WowDashLayout from "../../components/layout/WowDashLayout.jsx";
 import { formatDateDMY } from "../../utils/dateFormat";
+import api from "../../api/api";
 
 function getCookie(name) {
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
@@ -33,6 +34,39 @@ export default function DoctorDashboard({ user, onLogout }) {
   const [unreadMessages, setUnreadMessages] = useState([]);
   const [unreadEvents, setUnreadEvents] = useState([]);
 
+  // Multi-clinic states
+  const [clinics, setClinics] = useState([]);
+  const [activeOrgId, setActiveOrgId] = useState(() => {
+    const saved = localStorage.getItem("hms_active_org_id");
+    return saved ? Number(saved) : null;
+  });
+
+  useEffect(() => {
+    const fetchClinics = async () => {
+      try {
+        const res = await api.get("/doctors/my-clinics");
+        const list = res.data || [];
+        setClinics(list);
+        if (list.length > 0) {
+          const savedId = localStorage.getItem("hms_active_org_id");
+          const exists = list.some((c) => String(c.id) === String(savedId));
+          if (!exists) {
+            localStorage.setItem("hms_active_org_id", String(list[0].id));
+            setActiveOrgId(list[0].id);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load clinics for doctor", err);
+      }
+    };
+    fetchClinics();
+  }, []);
+
+  const handleClinicChange = (id) => {
+    localStorage.setItem("hms_active_org_id", String(id));
+    setActiveOrgId(id);
+  };
+
   useEffect(() => {
     const rawName = (user?.name || "").trim();
     const isPlaceholder =
@@ -49,9 +83,8 @@ export default function DoctorDashboard({ user, onLogout }) {
     let cancelled = false;
     const loadDoctorName = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/doctors`);
-        if (!res.ok) throw new Error("Doctor fetch failed");
-        const data = await res.json();
+        const res = await api.get("/doctors");
+        const data = res.data;
         const match = (data || []).find(
           (d) => String(d.id) === String(userId) || String(d.userId) === String(userId)
         );
@@ -104,14 +137,12 @@ export default function DoctorDashboard({ user, onLogout }) {
 
       try {
         const [unreadResponse, patientsResponse] = await Promise.all([
-          fetch(`${API_BASE_URL}/chat/unread/by-sender?userId=${userId}`),
-          fetch(`${API_BASE_URL}/patients`)
+          api.get(`/chat/unread/by-sender?userId=${userId}`),
+          api.get(`/patients`)
         ]);
 
-        if (!unreadResponse.ok) return;
-
-        const unreadData = await unreadResponse.json();
-        const patientsData = patientsResponse.ok ? await patientsResponse.json() : [];
+        const unreadData = unreadResponse.data || [];
+        const patientsData = patientsResponse.data || [];
 
         // Create a map of userId to patient name
         const patientMap = {};
@@ -146,13 +177,9 @@ export default function DoctorDashboard({ user, onLogout }) {
       if (!userId) return;
 
       try {
-        const eventsResponse = await fetch(
-          `${API_BASE_URL}/events?userId=${userId}&role=DOCTOR`
-        );
+        const eventsResponse = await api.get(`/events?userId=${userId}&role=DOCTOR`);
 
-        if (!eventsResponse.ok) return;
-
-        const eventsData = await eventsResponse.json();
+        const eventsData = eventsResponse.data || [];
         
         // Get last seen timestamp from localStorage
         const lastSeenKey = `hms_events_last_seen_${userId}`;
@@ -235,18 +262,8 @@ export default function DoctorDashboard({ user, onLogout }) {
         createdByUserId: user?.id ?? user?.userId ?? null,
       };
 
-      const res = await fetch(`${API_BASE_URL}/visits`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || "Failed to create visit");
-      }
-
-      const data = await res.json();
+      const res = await api.post("/visits", payload);
+      const data = res.data;
       try {
         localStorage.setItem("active_patient_id", String(activePatientId));
         localStorage.setItem("active_visit_id", String(data.id));
@@ -302,13 +319,27 @@ export default function DoctorDashboard({ user, onLogout }) {
           )}
           {user?.role === "DOCTOR" && (
             <>
+              {clinics.length > 0 && (
+                <select
+                  className="form-select form-select-sm border-primary text-primary fw-semibold radius-8 ms-2"
+                  style={{ width: "auto" }}
+                  value={activeOrgId || ""}
+                  onChange={(e) => handleClinicChange(Number(e.target.value))}
+                >
+                  {clinics.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      🏥 {c.name}
+                    </option>
+                  ))}
+                </select>
+              )}
               <HeaderPatientSelector
                 apiBaseUrl={API_BASE_URL}
                 onPatientChange={setSelectedPatientId}
                 doctorUserId={user?.userId ?? user?.id ?? null}
               />
               <button
-                className="btn btn-primary btn-sm"
+                className="btn btn-primary btn-sm ms-2"
                 onClick={handleCreateVisit}
                 disabled={!selectedPatientId}
                 title={!selectedPatientId ? "Select a patient first" : ""}
@@ -319,7 +350,9 @@ export default function DoctorDashboard({ user, onLogout }) {
           )}
           <div className="d-flex flex-column text-end">
             <span className="text-sm text-secondary-light">Hello</span>
-            <span className="fw-semibold">Dr. {displayName || "Doctor"}</span>
+            <span className="fw-semibold">
+              {displayName && displayName.toLowerCase().startsWith("dr") ? displayName : `Dr. ${displayName || "Doctor"}`}
+            </span>
           </div>
         </>
       }
@@ -331,9 +364,9 @@ export default function DoctorDashboard({ user, onLogout }) {
         ) : null
       }
     >
-      <Routes>
+      <Routes key={activeOrgId}>
         <Route index element={<Navigate to="overview" replace />} />
-        <Route path="overview" element={<DoctorOverview user={user} />} />
+        <Route path="overview" element={<DoctorOverview user={user} activeOrgId={activeOrgId} />} />
         <Route path="diagnosis" element={<DiagnosisView />} />
         <Route path="treatment" element={<TreatmentPlanView />} />
         <Route path="dental-care" element={<DentalCarePage />} />
@@ -425,7 +458,7 @@ function DentalCarePage() {
   );
 }
 
-function DoctorOverview({ user }) {
+function DoctorOverview({ user, activeOrgId }) {
   const [loading, setLoading] = useState(false);
   const [todayAppointments, setTodayAppointments] = useState([]);
   const [error, setError] = useState("");
@@ -458,25 +491,22 @@ function DoctorOverview({ user }) {
       setLoading(true);
       setError("");
       try {
-        // Fetch today's appointments, patient list, and billing data
         const [dayRes, patientsRes, billRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/appointments/day/${todayStr}`),
-          fetch(`${API_BASE_URL}/patients`),
-          fetch(`${API_BASE_URL}/bills`),
+          api.get(`/appointments/day/${todayStr}`),
+          api.get(`/patients`),
+          api.get(`/bills`),
         ]);
 
-        const dayData = dayRes.ok ? await dayRes.json() : [];
-        const patientsData = patientsRes.ok ? await patientsRes.json() : [];
-        const billData = billRes.ok ? await billRes.json() : [];
+        const dayData = dayRes.data || [];
+        const patientsData = patientsRes.data || [];
+        const billData = billRes.data || [];
 
         if (cancelled) return;
 
-        // Filter by doctor ID
         const filteredDay = Array.isArray(dayData)
           ? dayData.filter((a) => String(a.doctorUserId ?? "") === String(doctorId))
           : [];
 
-        // Filter bills by doctor ID and calculate revenue
         const filteredBills = Array.isArray(billData)
           ? billData.filter((b) => String(b.doctorUserId ?? "") === String(doctorId))
           : [];
@@ -499,7 +529,6 @@ function DoctorOverview({ user }) {
 
         setTodayAppointments(filteredDay);
 
-        // Calculate statistics
         const completedToday = filteredDay.filter(
           (a) => a.status?.toLowerCase() === "completed"
         ).length;
@@ -532,7 +561,7 @@ function DoctorOverview({ user }) {
     return () => {
       cancelled = true;
     };
-  }, [doctorId, todayStr]);
+  }, [doctorId, todayStr, activeOrgId]);
 
   const renderAppt = (appt, idx) => {
     const label = appt.patientName || "Patient";

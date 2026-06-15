@@ -42,6 +42,8 @@ public class DoctorService {
     private final PrescriptionTemplateRepository prescriptionTemplateRepository;
     private final ChatThreadRepository chatThreadRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final com.clinic.hms.security.SecurityUtils securityUtils;
+    private final com.clinic.hms.repository.OrgDoctorMappingRepository orgDoctorMappingRepository;
 
     private static final String ROLE_DOCTOR = "DOCTOR";
 
@@ -83,6 +85,23 @@ public class DoctorService {
 
         details = userDetailsRepository.save(details);
 
+        try {
+            Long orgId = securityUtils.getActiveOrgId();
+            if (orgId != null) {
+                User org = userRepository.findById(orgId).orElse(null);
+                if (org != null) {
+                    com.clinic.hms.entity.OrgDoctorMapping mapping = com.clinic.hms.entity.OrgDoctorMapping.builder()
+                            .org(org)
+                            .doctor(user)
+                            .createdAt(LocalDateTime.now())
+                            .build();
+                    orgDoctorMappingRepository.save(mapping);
+                }
+            }
+        } catch (Exception e) {
+            // Ignore if called without security context (e.g., seeding)
+        }
+
         return DoctorResponse.builder()
                 .id(user.getId())               // doctor userId
                 .name(details.getFullName())
@@ -94,7 +113,21 @@ public class DoctorService {
 
     @Transactional(readOnly = true)
     public List<DoctorResponse> listDoctors() {
-        List<User> doctorUsers = userRepository.findByRole(ROLE_DOCTOR);
+        List<User> doctorUsers;
+        try {
+            Long orgId = securityUtils.getActiveOrgId();
+            if (orgId != null) {
+                doctorUsers = orgDoctorMappingRepository.findByOrg(
+                        userRepository.findById(orgId).orElseThrow()
+                ).stream()
+                .map(com.clinic.hms.entity.OrgDoctorMapping::getDoctor)
+                .toList();
+            } else {
+                doctorUsers = userRepository.findByRole(ROLE_DOCTOR);
+            }
+        } catch (Exception e) {
+            doctorUsers = userRepository.findByRole(ROLE_DOCTOR);
+        }
 
         return doctorUsers.stream()
                 .map(user -> {
@@ -120,7 +153,14 @@ public class DoctorService {
         int safeSize = Math.max(pageSize, 1);
         PageRequest pageable = PageRequest.of(safePage - 1, safeSize, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<UserDetails> result = userDetailsRepository.searchDoctors(ROLE_DOCTOR, search, pageable);
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore if no active org is set (e.g. legacy/testing)
+        }
+
+        Page<UserDetails> result = userDetailsRepository.searchDoctors(ROLE_DOCTOR, orgId, search, pageable);
         List<DoctorResponse> items = result.getContent().stream()
                 .map(details -> {
                     User user = details.getUser();

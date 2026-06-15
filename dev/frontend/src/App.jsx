@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/dashboards/Dashboard";
 import DoctorDashboard from "./pages/dashboards/DoctorDashboard";
 import PatientDashboard from "./pages/dashboards/PatientDashboard";
+import SuperAdminDashboard from "./pages/dashboards/SuperAdminDashboard";
 import { ToastProvider } from "./components/common/ToastProvider";
 import GlobalLoader from "./components/common/GlobalLoader";
 
@@ -81,6 +82,7 @@ export default function App() {
   // Helper to send logged-in user to correct dashboard
   const getDefaultRouteForUser = () => {
     if (!user) return "/login";
+    if (user.role === "SUPERADMIN") return "/super-admin/overview";
     if (user.role === "ORG") return "/org/overview";
     if (user.role === "DOCTOR") return "/doctor/overview";
     if (user.role === "PATIENT") return "/patient/overview";
@@ -106,6 +108,18 @@ export default function App() {
               <Navigate to={getDefaultRouteForUser()} replace />
             ) : (
               <LoginPage onLogin={handleLogin} />
+            )
+          }
+        />
+
+        {/* Super Admin dashboard */}
+        <Route
+          path="/super-admin/*"
+          element={
+            user?.role === "SUPERADMIN" ? (
+              <SuperAdminDashboard user={user} onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" replace />
             )
           }
         />
