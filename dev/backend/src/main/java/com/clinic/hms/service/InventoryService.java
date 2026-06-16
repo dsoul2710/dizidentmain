@@ -42,6 +42,8 @@ public class InventoryService {
     private final InventoryTreatmentTemplateRepository templateRepository;
 
     private final VendorRepository vendorRepository;
+    private final com.clinic.hms.security.SecurityUtils securityUtils;
+    private final com.clinic.hms.repository.UserRepository userRepository;
 
     // =============================
     // ITEMS
@@ -49,7 +51,21 @@ public class InventoryService {
 
     @Transactional(readOnly = true)
     public List<InventoryItemResponse> getAllItems() {
-        return itemRepository.findAll().stream()
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore
+        }
+
+        List<InventoryItem> items;
+        if (orgId != null) {
+            items = itemRepository.findByOrg_Id(orgId);
+        } else {
+            items = itemRepository.findAll();
+        }
+
+        return items.stream()
                 .map(this::toItemResponse)
                 .collect(Collectors.toList());
     }
@@ -58,6 +74,16 @@ public class InventoryService {
     public InventoryItemResponse createItem(InventoryItemCreateRequest req) {
 
         LocalDateTime now = LocalDateTime.now();
+
+        com.clinic.hms.entity.User org = null;
+        try {
+            Long orgId = securityUtils.getActiveOrgId();
+            if (orgId != null) {
+                org = userRepository.findById(orgId).orElse(null);
+            }
+        } catch (Exception e) {
+            // Ignore
+        }
 
         BigDecimal opening = BigDecimal.valueOf(
                 req.getOpeningQty() != null ? req.getOpeningQty() : 0d
@@ -70,15 +96,20 @@ public class InventoryService {
         );
 
         Vendor vendor = null;
+        final com.clinic.hms.entity.User finalOrg = org;
         if (req.getVendorId() != null) {
             vendor = vendorRepository.findById(req.getVendorId())
+                    .filter(v -> finalOrg == null || v.getOrg() == null || v.getOrg().getId().equals(finalOrg.getId()))
                     .orElse(null);
         } else if (req.getVendorName() != null && !req.getVendorName().isBlank()) {
-            vendor = vendorRepository.findAll().stream()
-                    .filter(v -> v.getName() != null && v.getName().equalsIgnoreCase(req.getVendorName().trim()))
+            String cleanName = req.getVendorName().trim();
+            List<Vendor> existingVendors = org != null ? vendorRepository.findByOrg_Id(org.getId()) : vendorRepository.findAll();
+            vendor = existingVendors.stream()
+                    .filter(v -> v.getName() != null && v.getName().equalsIgnoreCase(cleanName))
                     .findFirst()
                     .orElseGet(() -> vendorRepository.save(Vendor.builder()
-                            .name(req.getVendorName().trim())
+                            .name(cleanName)
+                            .org(finalOrg)
                             .isActive(true)
                             .createdAt(now)
                             .updatedAt(now)
@@ -101,6 +132,7 @@ public class InventoryService {
                 .vendor(vendor)
                 .notes(req.getNotes())
                 .isActive(true)
+                .org(org)
                 .gstPercent(BigDecimal.ZERO)
                 .createdAt(now)
                 .updatedAt(now)
@@ -162,7 +194,16 @@ public class InventoryService {
 
     @Transactional(readOnly = true)
     public List<InventoryMovementResponse> getAllMovements() {
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore
+        }
+
+        final Long finalOrgId = orgId;
         return movementRepository.findAll().stream()
+                .filter(m -> finalOrgId == null || m.getItem() == null || m.getItem().getOrg() == null || m.getItem().getOrg().getId().equals(finalOrgId))
                 .sorted(
                         Comparator
                                 .comparing(InventoryMovement::getMovementDate,

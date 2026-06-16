@@ -1,5 +1,6 @@
-﻿// src/pages/InventoryView.jsx
+// src/pages/InventoryView.jsx
 import React, { useEffect, useMemo, useState } from "react";
+import api from "../api/api";
 import { API_BASE_URL } from "../config";
 import "../assets/css/wowdash-users.css";
 
@@ -145,13 +146,8 @@ export default function InventoryView() {
 
   const fetchItems = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/inventory/items`);
-      if (res.ok) {
-        const data = await res.json();
-        setItems(Array.isArray(data) ? data : []);
-      } else {
-        console.error("Failed to load items");
-      }
+      const res = await api.get("/inventory/items");
+      setItems(Array.isArray(res.data) ? res.data : []);
     } catch (e) {
       console.error("Error loading items", e);
     }
@@ -159,13 +155,8 @@ export default function InventoryView() {
 
   const fetchMovements = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/inventory/movements`);
-      if (res.ok) {
-        const data = await res.json();
-        setMovements(Array.isArray(data) ? data : []);
-      } else {
-        console.error("Failed to load movements");
-      }
+      const res = await api.get("/inventory/movements");
+      setMovements(Array.isArray(res.data) ? res.data : []);
     } catch (e) {
       console.error("Error loading movements", e);
     }
@@ -173,29 +164,23 @@ export default function InventoryView() {
 
   const fetchTemplates = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/inventory/treatment-templates`);
-      if (res.ok) {
-        const data = await res.json();
-        const normalized = (Array.isArray(data) ? data : []).map((t) => ({
-          ...t,
-          rows: (t.rows || []).map((r) => ({
-            // Handle different DTO shapes
-            id: r.id,
-            itemId:
-              r.itemId ??
-              (r.item ? r.item.id : undefined) ??
-              (typeof r.item_id !== "undefined" ? r.item_id : undefined),
-            qtyPerTreatment:
-              r.qtyPerTreatment ??
-              r.quantityPerProcedure ??
-              r.quantityPerTreatment ??
-              0,
-          })),
-        }));
-        setTreatmentTemplates(normalized);
-      } else {
-        console.error("Failed to load treatment templates");
-      }
+      const res = await api.get("/inventory/treatment-templates");
+      const normalized = (Array.isArray(res.data) ? res.data : []).map((t) => ({
+        ...t,
+        rows: (t.rows || []).map((r) => ({
+          id: r.id,
+          itemId:
+            r.itemId ??
+            (r.item ? r.item.id : undefined) ??
+            (typeof r.item_id !== "undefined" ? r.item_id : undefined),
+          qtyPerTreatment:
+            r.qtyPerTreatment ??
+            r.quantityPerProcedure ??
+            r.quantityPerTreatment ??
+            0,
+        })),
+      }));
+      setTreatmentTemplates(normalized);
     } catch (e) {
       console.error("Error loading treatment templates", e);
     }
@@ -203,13 +188,8 @@ export default function InventoryView() {
 
   const fetchVendors = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/vendors`);
-      if (res.ok) {
-        const data = await res.json();
-        setVendors(Array.isArray(data) ? data : []);
-      } else {
-        console.error("Failed to load vendors");
-      }
+      const res = await api.get("/vendors");
+      setVendors(Array.isArray(res.data) ? res.data : []);
     } catch (e) {
       console.error("Error loading vendors", e);
     }
@@ -303,20 +283,8 @@ export default function InventoryView() {
     };
 
     try {
-      const res = await fetch(`${API_BASE_URL}/inventory/items`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        alert("Failed to save item. Please check server logs.");
-        return;
-      }
-
-      const saved = await res.json();
+      const res = await api.post("/inventory/items", payload);
+      const saved = res.data;
       setItems((prev) => [...prev, saved]);
 
       // reset form (keep last used category & vendor)
@@ -340,16 +308,7 @@ export default function InventoryView() {
   const handleDeleteItem = async (id) => {
     if (!window.confirm("Remove this item from inventory?")) return;
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/inventory/items/${id}`,
-        {
-        method: "DELETE",
-      });
-
-      if (!res.ok) {
-        alert("Failed to delete item. It may be in use (movements, templates).");
-        return;
-      }
+      await api.delete(`/inventory/items/${id}`);
 
       setItems((prev) => prev.filter((item) => item.id !== id));
       setMovements((prev) => prev.filter((m) => m.itemId !== id));
@@ -441,19 +400,7 @@ export default function InventoryView() {
     };
 
     try {
-      const res = await fetch(`${API_BASE_URL}/inventory/movements`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        alert("Failed to save movement. Please check server logs.");
-        return;
-      }
-
+      await api.post("/inventory/movements", payload);
       await refreshItemsAndMovements();
 
       // reset qty and note, keep item & date & type for faster daily entry
@@ -557,15 +504,7 @@ export default function InventoryView() {
     if (!window.confirm("Delete this treatment template?")) return;
 
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/inventory/treatment-templates/${templateId}`,
-        { method: "DELETE" }
-      );
-      if (!res.ok) {
-        alert("Failed to delete template.");
-        return;
-      }
-
+      await api.delete(`/inventory/treatment-templates/${templateId}`);
       setTreatmentTemplates((prev) => prev.filter((t) => t.id !== templateId));
 
       setTemplateForm((prev) =>
@@ -614,20 +553,8 @@ export default function InventoryView() {
     };
 
     try {
-      const res = await fetch(`${API_BASE_URL}/inventory/treatment-templates`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        alert("Failed to save template.");
-        return;
-      }
-
-      const saved = await res.json();
+      const res = await api.post("/inventory/treatment-templates", payload);
+      const saved = res.data;
 
       setTreatmentTemplates((prev) => {
         const existsIndex = prev.findIndex((t) => t.id === saved.id);
@@ -729,22 +656,7 @@ export default function InventoryView() {
   };
 
   try {
-    const res = await fetch(
-      `${API_BASE_URL}/inventory/auto-adjustments`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      }
-    );
-
-    if (!res.ok) {
-      alert("Failed to apply auto adjustment.");
-      return;
-    }
-
+    await api.post("/inventory/auto-adjustments", payload);
     await refreshItemsAndMovements();
 
     // Reset only count + note, keep template for next adjustment

@@ -41,6 +41,11 @@ public class LabController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<LabResponse> update(@PathVariable Long id, @RequestBody LabCreateRequest req) {
+        return ResponseEntity.ok(labService.updateLab(id, req));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         labService.deleteLab(id);
