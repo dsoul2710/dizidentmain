@@ -54,8 +54,7 @@ dist-ssr/
 *.local
 
 # Editor directories and files
-.vscode/*
-dev/.vscode/
+**/.vscode/
 !.vscode/extensions.json
 .idea/
 *.swp
@@ -123,5 +122,4 @@ bin/
 .FlattJavaCompiler
 
 # Custom/local configuration overrides
-dev/backend/src/main/resources/application-dev.properties
-
+**/src/main/resources/application-dev.properties
