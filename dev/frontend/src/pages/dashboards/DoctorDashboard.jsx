@@ -14,6 +14,16 @@ import WowDashLayout from "../../components/layout/WowDashLayout.jsx";
 import { formatDateDMY } from "../../utils/dateFormat";
 import api from "../../api/api";
 
+const getInitials = (name) => {
+  if (!name) return "U";
+  const clean = name.trim().replace(/^(dr|dr\.)\s+/i, "");
+  const parts = clean.split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return parts[0].substring(0, 2).toUpperCase();
+};
+
 function getCookie(name) {
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
   return match ? decodeURIComponent(match[2]) : "";
@@ -348,11 +358,16 @@ export default function DoctorDashboard({ user, onLogout }) {
               </button>
             </>
           )}
-          <div className="d-flex flex-column text-end">
-            <span className="text-sm text-secondary-light">Hello</span>
-            <span className="fw-semibold">
-              {displayName && displayName.toLowerCase().startsWith("dr") ? displayName : `Dr. ${displayName || "Doctor"}`}
-            </span>
+          <div className="d-flex align-items-center gap-2 ms-2">
+            <div className="w-40-px h-40-px bg-primary-100 text-primary-600 rounded-circle d-flex justify-content-center align-items-center fw-bold text-md shadow-sm border border-white">
+              {getInitials(displayName || user?.name || "Doctor")}
+            </div>
+            <div className="d-flex flex-column text-start">
+              <span className="text-xs text-secondary-light" style={{ lineHeight: 1 }}>Hello,</span>
+              <span className="fw-semibold text-primary-light text-sm" style={{ lineHeight: 1.2 }}>
+                {displayName && displayName.toLowerCase().startsWith("dr") ? displayName : `Dr. ${displayName || "Doctor"}`}
+              </span>
+            </div>
           </div>
         </>
       }
