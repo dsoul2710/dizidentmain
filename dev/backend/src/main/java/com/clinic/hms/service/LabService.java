@@ -20,15 +20,28 @@ import java.util.List;
 public class LabService {
 
     private final LabRepository labRepository;
+    private final com.clinic.hms.security.SecurityUtils securityUtils;
+    private final com.clinic.hms.repository.UserRepository userRepository;
 
     @Transactional
     public LabResponse createLab(LabCreateRequest req) {
         LocalDateTime now = LocalDateTime.now();
 
+        com.clinic.hms.entity.User org = null;
+        try {
+            Long orgId = securityUtils.getActiveOrgId();
+            if (orgId != null) {
+                org = userRepository.findById(orgId).orElse(null);
+            }
+        } catch (Exception e) {
+            // Ignore if no security context exists (e.g. seeding)
+        }
+
         Lab lab = Lab.builder()
                 .name(req.getName())
                 .address(req.getAddress())
                 .mobile(req.getMobile())
+                .org(org)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
@@ -40,8 +53,21 @@ public class LabService {
 
     @Transactional(readOnly = true)
     public List<LabResponse> listLabs() {
-        return labRepository.findAll()
-                .stream()
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore
+        }
+
+        List<Lab> labs;
+        if (orgId != null) {
+            labs = labRepository.findByOrg_Id(orgId);
+        } else {
+            labs = labRepository.findAll();
+        }
+
+        return labs.stream()
                 .map(this::toResponse)
                 .toList();
     }
@@ -52,7 +78,20 @@ public class LabService {
         int safeSize = Math.max(pageSize, 1);
         PageRequest pageable = PageRequest.of(safePage - 1, safeSize, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<Lab> result = labRepository.searchLabs(search, pageable);
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore
+        }
+
+        Page<Lab> result;
+        if (orgId != null) {
+            result = labRepository.searchLabsByOrg(orgId, search, pageable);
+        } else {
+            result = labRepository.searchLabs(search, pageable);
+        }
+
         List<LabResponse> items = result.getContent().stream()
                 .map(this::toResponse)
                 .toList();
@@ -68,7 +107,46 @@ public class LabService {
 
     @Transactional
     public void deleteLab(Long id) {
+        Lab lab = labRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Lab not found: " + id));
+
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore
+        }
+
+        if (orgId != null && lab.getOrg() != null && !lab.getOrg().getId().equals(orgId)) {
+            throw new SecurityException("Access denied");
+        }
+
         labRepository.deleteById(id);
+    }
+
+    @Transactional
+    public LabResponse updateLab(Long id, LabCreateRequest req) {
+        Lab lab = labRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Lab not found: " + id));
+
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore
+        }
+
+        if (orgId != null && lab.getOrg() != null && !lab.getOrg().getId().equals(orgId)) {
+            throw new SecurityException("Access denied");
+        }
+
+        lab.setName(req.getName());
+        lab.setAddress(req.getAddress());
+        lab.setMobile(req.getMobile());
+        lab.setUpdatedAt(LocalDateTime.now());
+
+        lab = labRepository.save(lab);
+        return toResponse(lab);
     }
 
     private LabResponse toResponse(Lab lab) {
