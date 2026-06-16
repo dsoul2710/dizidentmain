@@ -114,17 +114,17 @@ export default function PatientDashboard({ user, onLogout }) {
       if (!currentUserId) return;
 
       try {
-        const [unreadResponse, doctorsResponse, adminsResponse] = await Promise.all([
+        const [unreadResponse, doctorsResponse, orgsResponse] = await Promise.all([
           fetch(`${API_BASE_URL}/chat/unread/by-sender?userId=${currentUserId}`),
           fetch(`${API_BASE_URL}/doctors`),
-          fetch(`${API_BASE_URL}/users?role=ADMIN`)
+          fetch(`${API_BASE_URL}/users?role=ORG`)
         ]);
 
         if (!unreadResponse.ok) return;
 
         const unreadData = await unreadResponse.json();
         const doctorsData = doctorsResponse.ok ? await doctorsResponse.json() : [];
-        const adminsData = adminsResponse.ok ? await adminsResponse.json() : [];
+        const orgsData = orgsResponse.ok ? await orgsResponse.json() : [];
 
         // Create maps of userId to name
         const userMap = {};
@@ -132,9 +132,9 @@ export default function PatientDashboard({ user, onLogout }) {
           const id = String(d.id);
           userMap[id] = d.name || d.mobile || "Doctor";
         });
-        (adminsData || []).forEach((a) => {
+        (orgsData || []).forEach((a) => {
           const id = String(a.id);
-          userMap[id] = a.name || a.mobile || "Admin";
+          userMap[id] = a.name || a.mobile || "Org";
         });
 
         if (Array.isArray(unreadData) && unreadData.length > 0) {
@@ -183,11 +183,11 @@ export default function PatientDashboard({ user, onLogout }) {
             event?.targetUserId,
             event?.patientUserId,
             event?.doctorUserId,
-            event?.adminUserId,
+            event?.orgUserId,
             event?.assignedDoctorId,
             event?.patientId,
             event?.doctorId,
-            event?.adminId,
+            event?.orgId,
           ];
           if (candidates.some((value) => value != null && String(value) === userIdStr)) {
             return true;

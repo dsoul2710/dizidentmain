@@ -31,6 +31,10 @@ public interface UserDetailsRepository extends JpaRepository<UserDetails, Long> 
                     select d from UserDetails d
                     join d.user u
                     where u.role = :role
+                      and (:orgId is null or exists (
+                            select 1 from com.clinic.hms.entity.OrgPatientMapping m 
+                            where m.org.id = :orgId and m.patient.id = u.id
+                          ))
                       and (:doctorId is null or (d.assignedDoctor is not null and d.assignedDoctor.id = :doctorId))
                       and (
                         :q is null or :q = '' or
@@ -44,6 +48,10 @@ public interface UserDetailsRepository extends JpaRepository<UserDetails, Long> 
                     select count(d) from UserDetails d
                     join d.user u
                     where u.role = :role
+                      and (:orgId is null or exists (
+                            select 1 from com.clinic.hms.entity.OrgPatientMapping m 
+                            where m.org.id = :orgId and m.patient.id = u.id
+                          ))
                       and (:doctorId is null or (d.assignedDoctor is not null and d.assignedDoctor.id = :doctorId))
                       and (
                         :q is null or :q = '' or
@@ -56,6 +64,7 @@ public interface UserDetailsRepository extends JpaRepository<UserDetails, Long> 
     )
     Page<UserDetails> searchPatients(
             @Param("role") String role,
+            @Param("orgId") Long orgId,
             @Param("doctorId") Long doctorId,
             @Param("q") String query,
             Pageable pageable
@@ -66,6 +75,10 @@ public interface UserDetailsRepository extends JpaRepository<UserDetails, Long> 
                     select d from UserDetails d
                     join d.user u
                     where u.role = :role
+                      and (:orgId is null or exists (
+                            select 1 from com.clinic.hms.entity.OrgDoctorMapping m 
+                            where m.org.id = :orgId and m.doctor.id = u.id
+                          ))
                       and (
                         :q is null or :q = '' or
                         lower(d.fullName) like lower(concat('%', :q, '%')) or
@@ -77,6 +90,10 @@ public interface UserDetailsRepository extends JpaRepository<UserDetails, Long> 
                     select count(d) from UserDetails d
                     join d.user u
                     where u.role = :role
+                      and (:orgId is null or exists (
+                            select 1 from com.clinic.hms.entity.OrgDoctorMapping m 
+                            where m.org.id = :orgId and m.doctor.id = u.id
+                          ))
                       and (
                         :q is null or :q = '' or
                         lower(d.fullName) like lower(concat('%', :q, '%')) or
@@ -87,6 +104,7 @@ public interface UserDetailsRepository extends JpaRepository<UserDetails, Long> 
     )
     Page<UserDetails> searchDoctors(
             @Param("role") String role,
+            @Param("orgId") Long orgId,
             @Param("q") String query,
             Pageable pageable
     );

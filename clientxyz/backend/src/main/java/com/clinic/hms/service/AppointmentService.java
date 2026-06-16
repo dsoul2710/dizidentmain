@@ -32,22 +32,39 @@ public class AppointmentService {
     private final UserDetailsRepository userDetailsRepository;
     private final VisitRepository visitRepository;
     private final EventPushService eventPushService;
+    private final com.clinic.hms.security.SecurityUtils securityUtils;
 
     @Transactional(readOnly = true)
     public List<AppointmentResponse> listAppointmentsForDate(LocalDate date) {
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore
+        }
+        final Long finalOrgId = orgId;
         return appointmentRepository.findByAppointmentDate(date)
                 .stream()
                 .filter(appointment -> !isCancelled(appointment))
+                .filter(appointment -> finalOrgId == null || (appointment.getOrg() != null && finalOrgId.equals(appointment.getOrg().getId())))
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<AppointmentResponse> listAppointmentsInRange(LocalDate fromDate, LocalDate toDate) {
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore
+        }
+        final Long finalOrgId = orgId;
         return appointmentRepository
                 .findByAppointmentDateBetweenOrderByAppointmentDateAscStartTimeAsc(fromDate, toDate)
                 .stream()
                 .filter(appointment -> !isCancelled(appointment))
+                .filter(appointment -> finalOrgId == null || (appointment.getOrg() != null && finalOrgId.equals(appointment.getOrg().getId())))
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
@@ -84,10 +101,21 @@ public class AppointmentService {
                     .orElseThrow(() -> new IllegalArgumentException("Invalid visit id"));
         }
 
+        User org = null;
+        try {
+            Long orgId = securityUtils.getActiveOrgId();
+            if (orgId != null) {
+                org = userRepository.findById(orgId).orElse(null);
+            }
+        } catch (Exception e) {
+            // Ignore
+        }
+
         Appointment appointment = Appointment.builder()
                 .patient(patient)
                 .doctor(doctor)
                 .visit(visit)
+                .org(org)
                 .appointmentDate(date)
                 .startTime(startTime)
                 .endTime(endTime)

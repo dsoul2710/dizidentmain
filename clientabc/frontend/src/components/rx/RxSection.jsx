@@ -48,7 +48,7 @@ function getCookie(name) {
 
 export default function RxSection({
   apiBaseUrl = "/api",
-  panelType = "ADMIN", // "ADMIN" or "DOCTOR"
+  panelType = "ORG", // "ORG" or "DOCTOR"
   currentUser,
   onUseTemplate,
 }) {
@@ -108,7 +108,7 @@ export default function RxSection({
 
   // Load patients for ADMIN
   useEffect(() => {
-    if (panelType !== "ADMIN") return;
+    if (panelType !== "ORG") return;
 
     const fetchPatients = async () => {
       try {
@@ -580,7 +580,7 @@ export default function RxSection({
                 }}
               >
                 {/* PATIENT SELECT */}
-                {panelType === "ADMIN" ? (
+                {panelType === "ORG" ? (
                   <div>
                     <label>Patient</label>
                     <PatientSelect

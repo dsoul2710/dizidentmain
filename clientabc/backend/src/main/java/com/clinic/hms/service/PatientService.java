@@ -62,6 +62,9 @@ public class PatientService {
     private final ChatThreadRepository chatThreadRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final PasswordEncoder passwordEncoder;
+    private final com.clinic.hms.security.SecurityUtils securityUtils;
+    private final com.clinic.hms.repository.OrgPatientMappingRepository orgPatientMappingRepository;
+    private final com.clinic.hms.repository.DoctorPatientMappingRepository doctorPatientMappingRepository;
 
     @Value("${file.upload.base-dir}")
     private String baseUploadDir;
@@ -112,15 +115,60 @@ public class PatientService {
 
         details = userDetailsRepository.save(details);
 
+        try {
+            Long orgId = securityUtils.getActiveOrgId();
+            if (orgId != null) {
+                User org = userRepository.findById(orgId).orElse(null);
+                if (org != null) {
+                    com.clinic.hms.entity.OrgPatientMapping mapping = com.clinic.hms.entity.OrgPatientMapping.builder()
+                            .org(org)
+                            .patient(user)
+                            .createdAt(LocalDateTime.now())
+                            .build();
+                    orgPatientMappingRepository.save(mapping);
+                }
+            }
+
+            String role = securityUtils.getCurrentUserRole();
+            if ("DOCTOR".equalsIgnoreCase(role)) {
+                User doctor = securityUtils.getCurrentUser();
+                if (doctor != null) {
+                    com.clinic.hms.entity.DoctorPatientMapping docMap = com.clinic.hms.entity.DoctorPatientMapping.builder()
+                            .doctor(doctor)
+                            .patient(user)
+                            .createdAt(LocalDateTime.now())
+                            .build();
+                    doctorPatientMappingRepository.save(docMap);
+                }
+            }
+        } catch (Exception e) {
+            // Ignore if no security context exists (e.g. seeding)
+        }
+
         return toDto(details);
     }
 
 
     @Transactional(readOnly = true)
     public List<PatientResponse> listPatients(Long doctorId) {
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore if called outside request context (e.g. testing)
+        }
+
+        final Long finalOrgId = orgId;
         List<UserDetails> list = userDetailsRepository.findByUserRoleOrderByCreatedAtDesc("PATIENT");
         return list.stream()
                 .filter(details -> {
+                    if (finalOrgId != null) {
+                        boolean exists = orgPatientMappingRepository.existsByOrgAndPatient(
+                                userRepository.findById(finalOrgId).orElse(null),
+                                details.getUser()
+                        );
+                        if (!exists) return false;
+                    }
                     if (doctorId == null) return true;
                     User assigned = details.getAssignedDoctor();
                     if (assigned == null) return false;
@@ -137,7 +185,14 @@ public class PatientService {
         int safeSize = Math.max(pageSize, 1);
         PageRequest pageable = PageRequest.of(safePage - 1, safeSize, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<UserDetails> result = userDetailsRepository.searchPatients("PATIENT", doctorId, search, pageable);
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore if no active org is set
+        }
+
+        Page<UserDetails> result = userDetailsRepository.searchPatients("PATIENT", orgId, doctorId, search, pageable);
         List<PatientResponse> items = result.getContent()
                 .stream()
                 .map(this::toDto)

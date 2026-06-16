@@ -194,7 +194,7 @@ export default function Dashboard({ user, onLogout }) {
 
     const loadUnreadEvents = async () => {
       const userId = user?.id ?? user?.userId;
-      const role = user?.role || "ADMIN";
+      const role = user?.role || "ORG";
       if (!userId) return;
 
       try {
@@ -219,11 +219,11 @@ export default function Dashboard({ user, onLogout }) {
             event?.targetUserId,
             event?.patientUserId,
             event?.doctorUserId,
-            event?.adminUserId,
+            event?.orgUserId,
             event?.assignedDoctorId,
             event?.patientId,
             event?.doctorId,
-            event?.adminId,
+            event?.orgId,
           ];
           if (candidates.some((value) => value != null && String(value) === userIdStr)) {
             return true;
@@ -234,7 +234,7 @@ export default function Dashboard({ user, onLogout }) {
           if (role === "PATIENT" && roleName) {
             return String(event?.patientName || "").trim().toLowerCase() === roleName;
           }
-          if (role === "ADMIN") {
+          if (role === "ORG") {
             return String(event?.actorUserId || "") === userIdStr;
           }
           return false;
@@ -263,22 +263,22 @@ export default function Dashboard({ user, onLogout }) {
 
 
   const navItems = [
-    { type: "link", label: "Overview", to: "/admin/overview", end: true, icon: "ri-home-5-line" },
+    { type: "link", label: "Overview", to: "/org/overview", end: true, icon: "ri-home-5-line" },
     { type: "group", label: "Patients" },
-    { type: "link", label: "Patient Entry", to: "/admin/patients", icon: "ri-user-add-line" },
-    { type: "link", label: "Doctor Entry", to: "/admin/doctor", icon: "ri-stethoscope-line" },
-    { type: "link", label: "Lab Entry", to: "/admin/lab", icon: "ri-flask-line" },
-    { type: "link", label: "Vendor Entry", to: "/admin/vendor", icon: "ri-store-2-line" },
+    { type: "link", label: "Patient Entry", to: "/org/patients", icon: "ri-user-add-line" },
+    { type: "link", label: "Doctor Entry", to: "/org/doctor", icon: "ri-stethoscope-line" },
+    { type: "link", label: "Lab Entry", to: "/org/lab", icon: "ri-flask-line" },
+    { type: "link", label: "Vendor Entry", to: "/org/vendor", icon: "ri-store-2-line" },
     { type: "group", label: "Schedule" },
-    { type: "link", label: "Schedule", to: "/admin/appointments", icon: "ri-calendar-schedule-line" },
-    { type: "link", label: "Prescription", to: "/admin/rx", icon: "ri-file-list-3-line" },
-    { type: "link", label: "Consent & Guide", to: "/admin/consent", icon: "ri-file-text-line" },
-    { type: "link", label: "Chat", to: "/admin/chat", icon: "ri-chat-1-line" },
+    { type: "link", label: "Schedule", to: "/org/appointments", icon: "ri-calendar-schedule-line" },
+    { type: "link", label: "Prescription", to: "/org/rx", icon: "ri-file-list-3-line" },
+    { type: "link", label: "Consent & Guide", to: "/org/consent", icon: "ri-file-text-line" },
+    { type: "link", label: "Chat", to: "/org/chat", icon: "ri-chat-1-line" },
     { type: "group", label: "Finance" },
-    { type: "link", label: "Billing", to: "/admin/billing", icon: "ri-wallet-3-line" },
-    { type: "link", label: "Reports", to: "/admin/reports", icon: "ri-bar-chart-2-line" },
+    { type: "link", label: "Billing", to: "/org/billing", icon: "ri-wallet-3-line" },
+    { type: "link", label: "Reports", to: "/org/reports", icon: "ri-bar-chart-2-line" },
     { type: "group", label: "Inventory" },
-    { type: "link", label: "Inventory", to: "/admin/inventory", icon: "ri-archive-line" },
+    { type: "link", label: "Inventory", to: "/org/inventory", icon: "ri-archive-line" },
   ];
 
   return (
@@ -291,11 +291,11 @@ export default function Dashboard({ user, onLogout }) {
         <>
           <ChatBell
             userId={user?.id ?? user?.userId}
-            role={user?.role || "ADMIN"}
+            role={user?.role || "ORG"}
             onClick={() => setNotificationPanelOpen(!notificationPanelOpen)}
           />
           <div className="d-flex flex-column text-end">
-            <span className="fw-semibold">Welcome Admin</span>
+            <span className="fw-semibold">Welcome Org</span>
           </div>
         </>
       }
@@ -305,7 +305,7 @@ export default function Dashboard({ user, onLogout }) {
         <Route
           path="overview"
           element={
-            <AdminOverview
+            <OrgOverview
               overviewMetrics={overviewMetrics}
               formatValue={formatValue}
               scheduleToday={scheduleToday}
@@ -324,7 +324,7 @@ export default function Dashboard({ user, onLogout }) {
           element={
             <ScheduleView
               apiBaseUrl={API_BASE_URL}
-              panelType="ADMIN"
+              panelType="ORG"
               currentUser={user}
             />
           }
@@ -334,18 +334,18 @@ export default function Dashboard({ user, onLogout }) {
           element={
             <RxSection
               apiBaseUrl={API_BASE_URL}
-              panelType="ADMIN"
+              panelType="ORG"
               currentUser={user}
             />
           }
         />
         <Route path="prescription" element={<Prescription />} />
         <Route path="consent" element={<ConsentPostOpView />} />
-        <Route path="chat" element={<ChatPage role="ADMIN" currentUser={user} />} />
+        <Route path="chat" element={<ChatPage role="ORG" currentUser={user} />} />
         <Route path="billing" element={<BillingView currentUser={user} />} />
         <Route path="reports" element={<ReportsView />} />
         <Route path="inventory" element={<InventoryView />} />
-        <Route path="*" element={<Navigate to="/admin/overview" replace />} />
+        <Route path="*" element={<Navigate to="/org/overview" replace />} />
       </Routes>
       <NotificationPanel
         unreadMessages={unreadMessages}
@@ -353,13 +353,13 @@ export default function Dashboard({ user, onLogout }) {
         isOpen={notificationPanelOpen}
         onClose={() => setNotificationPanelOpen(false)}
         userId={user?.id ?? user?.userId}
-        role="ADMIN"
+        role="ORG"
       />
     </WowDashLayout>
   );
 }
 
-function AdminOverview({
+function OrgOverview({
   overviewMetrics,
   formatValue,
   scheduleToday,
