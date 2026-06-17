@@ -24,10 +24,22 @@ public class VendorService {
     private final VendorRepository vendorRepository;
     private final InventoryItemRepository inventoryItemRepository;
     private final InventoryMovementRepository inventoryMovementRepository;
+    private final com.clinic.hms.security.SecurityUtils securityUtils;
+    private final com.clinic.hms.repository.UserRepository userRepository;
 
     @Transactional
     public VendorResponse createVendor(VendorCreateRequest req) {
         LocalDateTime now = LocalDateTime.now();
+
+        com.clinic.hms.entity.User org = null;
+        try {
+            Long orgId = securityUtils.getActiveOrgId();
+            if (orgId != null) {
+                org = userRepository.findById(orgId).orElse(null);
+            }
+        } catch (Exception e) {
+            // Ignore if no security context exists (e.g. seeding)
+        }
 
         Vendor vendor = Vendor.builder()
                 .name(req.getName())
@@ -35,6 +47,7 @@ public class VendorService {
                 .mobile(req.getMobile())
                 .category(req.getCategory())
                 .gstNo(req.getGstNo())
+                .org(org)
                 .isActive(true)
                 .createdAt(now)
                 .updatedAt(now)
@@ -46,7 +59,21 @@ public class VendorService {
 
     @Transactional(readOnly = true)
     public List<VendorResponse> listVendors() {
-        return vendorRepository.findAll().stream()
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore
+        }
+
+        List<Vendor> vendors;
+        if (orgId != null) {
+            vendors = vendorRepository.findByOrg_Id(orgId);
+        } else {
+            vendors = vendorRepository.findAll();
+        }
+
+        return vendors.stream()
                 .map(this::toResponse)
                 .toList();
     }
@@ -57,7 +84,20 @@ public class VendorService {
         int safeSize = Math.max(pageSize, 1);
         PageRequest pageable = PageRequest.of(safePage - 1, safeSize, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<Vendor> result = vendorRepository.searchVendors(search, pageable);
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore
+        }
+
+        Page<Vendor> result;
+        if (orgId != null) {
+            result = vendorRepository.searchVendorsByOrg(orgId, search, pageable);
+        } else {
+            result = vendorRepository.searchVendors(search, pageable);
+        }
+
         List<VendorResponse> items = result.getContent().stream()
                 .map(this::toResponse)
                 .toList();
@@ -73,9 +113,20 @@ public class VendorService {
 
     @Transactional
     public void deleteVendor(Long id) {
-        if (!vendorRepository.existsById(id)) {
-            throw new IllegalArgumentException("Vendor not found: " + id);
+        Vendor vendor = vendorRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Vendor not found: " + id));
+
+        Long orgId = null;
+        try {
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {
+            // Ignore
         }
+
+        if (orgId != null && vendor.getOrg() != null && !vendor.getOrg().getId().equals(orgId)) {
+            throw new SecurityException("Access denied");
+        }
+
         inventoryMovementRepository.deleteByItem_Vendor_Id(id);
         inventoryItemRepository.deleteByVendor_Id(id);
         vendorRepository.deleteById(id);

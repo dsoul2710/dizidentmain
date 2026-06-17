@@ -13,6 +13,16 @@ import ChatBell from "../../components/chat/ChatBell.jsx";
 import NotificationPanel from "../../components/chat/NotificationPanel.jsx";
 import WowDashLayout from "../../components/layout/WowDashLayout.jsx";
 
+const getInitials = (name) => {
+  if (!name) return "U";
+  const clean = name.trim().replace(/^(dr|dr\.)\s+/i, "");
+  const parts = clean.split(/\s+/);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return parts[0].substring(0, 2).toUpperCase();
+};
+
 export default function PatientDashboard({ user, onLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -465,11 +475,16 @@ export default function PatientDashboard({ user, onLogout }) {
             role={user?.role || "PATIENT"}
             onClick={() => setNotificationPanelOpen(!notificationPanelOpen)}
           />
-          <div className="d-flex flex-column text-end">
-            <span className="text-sm text-secondary-light">Hello</span>
-            <span className="fw-semibold">
-              {patientInfo?.name || user?.name || "User"}
-            </span>
+          <div className="d-flex align-items-center gap-2 ms-2">
+            <div className="w-40-px h-40-px bg-primary-100 text-primary-600 rounded-circle d-flex justify-content-center align-items-center fw-bold text-md shadow-sm border border-white">
+              {getInitials(patientInfo?.name || user?.name || "User")}
+            </div>
+            <div className="d-flex flex-column text-start">
+              <span className="text-xs text-secondary-light" style={{ lineHeight: 1 }}>Hello,</span>
+              <span className="fw-semibold text-primary-light text-sm" style={{ lineHeight: 1.2 }}>
+                {patientInfo?.name || user?.name || "User"}
+              </span>
+            </div>
           </div>
         </>
       }
