@@ -332,6 +332,31 @@
   border-color: var(--wow-primary-600);
 }
 
+.wowdash-users .card-header .form-select,
+.wowdash-users .card-header .navbar-search input {
+  height: 40px !important;
+  line-height: 1.2 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  vertical-align: middle !important;
+  box-sizing: border-box !important;
+}
+
+.wowdash-users .card-header .navbar-search {
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 40px !important;
+}
+
+.wowdash-users .card-header select.form-select-sm {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  height: 40px !important;
+}
+
 .wowdash-users .modal-card {
   background: var(--wow-white);
   border-radius: 12px;

@@ -26,4 +26,24 @@ public interface LabRepository extends JpaRepository<Lab, Long> {
                     """
     )
     Page<Lab> searchLabs(@Param("q") String query, Pageable pageable);
+
+    java.util.List<Lab> findByOrg_Id(Long orgId);
+
+    @Query(
+            value = """
+                    select l from Lab l
+                    where (l.org.id = :orgId) and (:q is null or :q = '' or
+                      lower(l.name) like lower(concat('%', :q, '%')) or
+                      lower(l.address) like lower(concat('%', :q, '%')) or
+                      lower(l.mobile) like lower(concat('%', :q, '%')))
+                    """,
+            countQuery = """
+                    select count(l) from Lab l
+                    where (l.org.id = :orgId) and (:q is null or :q = '' or
+                      lower(l.name) like lower(concat('%', :q, '%')) or
+                      lower(l.address) like lower(concat('%', :q, '%')) or
+                      lower(l.mobile) like lower(concat('%', :q, '%')))
+                    """
+    )
+    Page<Lab> searchLabsByOrg(@Param("orgId") Long orgId, @Param("q") String query, Pageable pageable);
 }

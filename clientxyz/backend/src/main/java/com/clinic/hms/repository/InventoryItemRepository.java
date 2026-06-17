@@ -11,6 +11,8 @@ public interface InventoryItemRepository extends JpaRepository<InventoryItem, Lo
 
     Optional<InventoryItem> findByItemCode(String itemCode);
 
+    List<InventoryItem> findByOrg_Id(Long orgId);
+
     List<InventoryItem> findByCategoryAndIsActiveTrueOrderByNameAsc(String category);
 
     List<InventoryItem> findByIsActiveTrueOrderByNameAsc();

@@ -30,4 +30,28 @@ public interface VendorRepository extends JpaRepository<Vendor, Long> {
                     """
     )
     Page<Vendor> searchVendors(@Param("q") String query, Pageable pageable);
+
+    java.util.List<Vendor> findByOrg_Id(Long orgId);
+
+    @Query(
+            value = """
+                    select v from Vendor v
+                    where (v.org.id = :orgId) and (:q is null or :q = '' or
+                      lower(v.name) like lower(concat('%', :q, '%')) or
+                      lower(v.address) like lower(concat('%', :q, '%')) or
+                      lower(v.mobile) like lower(concat('%', :q, '%')) or
+                      lower(v.category) like lower(concat('%', :q, '%')) or
+                      lower(v.gstNo) like lower(concat('%', :q, '%')))
+                    """,
+            countQuery = """
+                    select count(v) from Vendor v
+                    where (v.org.id = :orgId) and (:q is null or :q = '' or
+                      lower(v.name) like lower(concat('%', :q, '%')) or
+                      lower(v.address) like lower(concat('%', :q, '%')) or
+                      lower(v.mobile) like lower(concat('%', :q, '%')) or
+                      lower(v.category) like lower(concat('%', :q, '%')) or
+                      lower(v.gstNo) like lower(concat('%', :q, '%')))
+                    """
+    )
+    Page<Vendor> searchVendorsByOrg(@Param("orgId") Long orgId, @Param("q") String query, Pageable pageable);
 }
