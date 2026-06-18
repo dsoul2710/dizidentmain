@@ -12,4 +12,5 @@ public class LoginResponse {
     private String mobile;
     private String role;
     private String name; // optional, from user_details later
+    private String providerType; // LAB, PHARMACY, BED_MANAGER, etc.
 }

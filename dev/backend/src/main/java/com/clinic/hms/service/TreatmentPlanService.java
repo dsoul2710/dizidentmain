@@ -2,12 +2,10 @@ package com.clinic.hms.service;
 
 import com.clinic.hms.dto.request.TreatmentPlanRequest;
 import com.clinic.hms.dto.response.TreatmentPlanResponse;
-import com.clinic.hms.entity.Visit;
-import com.clinic.hms.entity.User;
-import com.clinic.hms.entity.VisitTreatmentItem;
+import com.clinic.hms.entity.*;
+import com.clinic.hms.repository.PatientRepository;
 import com.clinic.hms.repository.VisitRepository;
 import com.clinic.hms.repository.VisitTreatmentItemRepository;
-import com.clinic.hms.repository.UserRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +22,7 @@ public class TreatmentPlanService {
 
     private final VisitRepository visitRepository;
     private final VisitTreatmentItemRepository treatmentItemRepository;
-    private final UserRepository userRepository;
+    private final PatientRepository patientRepository;
     private final ObjectMapper objectMapper;
 
     private static final TypeReference<List<String>> LIST_STRING = new TypeReference<>() {};
@@ -205,7 +203,7 @@ public class TreatmentPlanService {
             throw new IllegalArgumentException("patientUserId is required when visitId is not provided");
         }
 
-        User patient = userRepository.findById(req.getPatientUserId())
+        Patient patient = patientRepository.findById(req.getPatientUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Patient user not found: " + req.getPatientUserId()));
 
         Visit visit = new Visit();

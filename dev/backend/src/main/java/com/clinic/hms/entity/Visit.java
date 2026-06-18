@@ -20,11 +20,11 @@ public class Visit {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_user_id", nullable = false)
-    private User patient;
+    private Patient patient;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_user_id")
-    private User doctor;
+    private Doctor doctor;
 
     @Column(name = "visit_date", nullable = false)
     private LocalDateTime visitDate;
@@ -71,5 +71,5 @@ public class Visit {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "org_user_id")
-    private User org;
+    private OrgHospital org;
 }

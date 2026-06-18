@@ -1,12 +1,11 @@
 package com.clinic.hms.controller;
 
 import com.clinic.hms.entity.Appointment;
-import com.clinic.hms.entity.User;
-import com.clinic.hms.entity.UserDetails;
+import com.clinic.hms.entity.Doctor;
+import com.clinic.hms.entity.Patient;
 import com.clinic.hms.entity.Visit;
 import com.clinic.hms.entity.VisitTreatmentItem;
 import com.clinic.hms.repository.AppointmentRepository;
-import com.clinic.hms.repository.UserDetailsRepository;
 import com.clinic.hms.repository.VisitTreatmentItemRepository;
 import com.clinic.hms.utill.TimeFormatUtil;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ public class AppointmentReportController {
 
     private final AppointmentRepository appointmentRepository;
     private final VisitTreatmentItemRepository visitTreatmentItemRepository;
-    private final UserDetailsRepository userDetailsRepository;
 
     // ---------- Summary ----------
     @GetMapping("/summary")
@@ -194,7 +192,7 @@ public class AppointmentReportController {
 
     private boolean doctorMatches(Appointment a, Long doctorId) {
         if (doctorId == null) return true;
-        User doctor = a.getDoctor();
+        Doctor doctor = a.getDoctor();
         return doctor != null && Objects.equals(doctor.getId(), doctorId);
     }
 
@@ -221,7 +219,7 @@ public class AppointmentReportController {
     }
 
     private String doctorKey(Appointment appt) {
-        User doctor = appt.getDoctor();
+        Doctor doctor = appt.getDoctor();
         if (doctor == null) return "Unassigned";
         return doctorName(appt);
     }
@@ -291,18 +289,14 @@ public class AppointmentReportController {
     }
 
     private String patientName(Appointment appt) {
-        User patient = appt.getPatient();
+        Patient patient = appt.getPatient();
         if (patient == null) return "Unknown";
-        return userDetailsRepository.findFirstByUser_Id(patient.getId())
-                .map(UserDetails::getFullName)
-                .orElse("Patient #" + patient.getId());
+        return patient.getFullName() != null ? patient.getFullName() : "Patient #" + patient.getId();
     }
 
     private String doctorName(Appointment appt) {
-        User doctor = appt.getDoctor();
+        Doctor doctor = appt.getDoctor();
         if (doctor == null) return "Unassigned";
-        return userDetailsRepository.findFirstByUser_Id(doctor.getId())
-                .map(UserDetails::getFullName)
-                .orElse("Doctor #" + doctor.getId());
+        return doctor.getFullName() != null ? doctor.getFullName() : "Doctor #" + doctor.getId();
     }
 }

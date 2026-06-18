@@ -1,14 +1,9 @@
 package com.clinic.hms.controller;
 
-import com.clinic.hms.entity.Bill;
-import com.clinic.hms.entity.BillItem;
-import com.clinic.hms.entity.BillPayment;
-import com.clinic.hms.entity.User;
-import com.clinic.hms.entity.VisitTreatmentItem;
+import com.clinic.hms.entity.*;
 import com.clinic.hms.repository.BillItemRepository;
 import com.clinic.hms.repository.BillPaymentRepository;
 import com.clinic.hms.repository.BillRepository;
-import com.clinic.hms.repository.UserDetailsRepository;
 import com.clinic.hms.repository.VisitTreatmentItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,7 +30,6 @@ public class RevenueReportController {
     private final BillRepository billRepository;
     private final BillItemRepository billItemRepository;
     private final BillPaymentRepository billPaymentRepository;
-    private final UserDetailsRepository userDetailsRepository;
     private final VisitTreatmentItemRepository visitTreatmentItemRepository;
 
     @GetMapping("/daywise")
@@ -79,7 +73,7 @@ public class RevenueReportController {
                                 Collectors.toList(),
                                 list -> {
                                     BigDecimal billed = list.stream()
-                                            .map(this::netAmount)
+                                             .map(this::netAmount)
                                             .reduce(BigDecimal.ZERO, BigDecimal::add);
                                     return new BillBucket(list.size(), billed);
                                 }
@@ -144,9 +138,9 @@ public class RevenueReportController {
         Map<Long, DoctorAggregate> aggregates = new LinkedHashMap<>();
 
         for (Bill bill : bills) {
-            User doctorUser = resolveDoctorUser(bill);
+            Doctor doctorUser = resolveDoctorUser(bill);
             Long docId = doctorUser != null ? doctorUser.getId() : null;
-            String doctorName = resolveName(doctorUser, "Doctor", nameCache);
+            String doctorName = resolveDoctorName(doctorUser, nameCache);
 
             DoctorAggregate agg = aggregates.computeIfAbsent(
                     docId != null ? docId : -1L,
@@ -222,7 +216,7 @@ public class RevenueReportController {
         }
 
         List<Map<String, Object>> summary = aggregates.values().stream()
-                .sorted((a, b) -> b.value.compareTo(a.value))
+                .sorted((a, b) -> Long.compare(b.cases, a.cases)) // Sort by cases descending to matching logic
                 .map(TreatmentAggregate::toMap)
                 .toList();
 
@@ -260,8 +254,8 @@ public class RevenueReportController {
             row.put("billId", bill.getId());
             row.put("billNo", bill.getBillNo());
             row.put("billDate", bill.getBillDate() != null ? bill.getBillDate().toLocalDate() : null);
-            row.put("patient", resolveName(bill.getPatient(), "Patient", nameCache));
-            row.put("doctor", resolveName(resolveDoctorUser(bill), "Doctor", nameCache));
+            row.put("patient", resolvePatientName(bill.getPatient(), nameCache));
+            row.put("doctor", resolveDoctorName(resolveDoctorUser(bill), nameCache));
             row.put("netAmount", billed);
             row.put("paidAmount", paid);
             row.put("pendingAmount", pending);
@@ -325,7 +319,7 @@ public class RevenueReportController {
 
     private boolean doctorMatches(Bill bill, Long doctorId) {
         if (doctorId == null) return true;
-        User doc = resolveDoctorUser(bill);
+        Doctor doc = resolveDoctorUser(bill);
         return doc != null && Objects.equals(doc.getId(), doctorId);
     }
 
@@ -366,18 +360,30 @@ public class RevenueReportController {
         return val != null ? val : BigDecimal.ZERO;
     }
 
-    private String resolveName(User user, String fallbackPrefix, Map<Long, String> cache) {
-        if (user == null) return "Unknown";
-        Long id = user.getId();
-        if (id == null) return fallbackPrefix;
+    private String resolvePatientName(Patient patient, Map<Long, String> cache) {
+        if (patient == null) return "Unknown";
+        Long id = patient.getId();
+        if (id == null) return "Patient";
 
         if (cache.containsKey(id)) {
             return cache.get(id);
         }
 
-        String name = userDetailsRepository.findFirstByUser_Id(id)
-                .map(d -> Optional.ofNullable(d.getFullName()).orElse(fallbackPrefix + " " + id))
-                .orElse(fallbackPrefix + " " + id);
+        String name = patient.getFullName() != null ? patient.getFullName() : "Patient " + id;
+        cache.put(id, name);
+        return name;
+    }
+
+    private String resolveDoctorName(Doctor doctor, Map<Long, String> cache) {
+        if (doctor == null) return "Unassigned";
+        Long id = doctor.getId();
+        if (id == null) return "Doctor";
+
+        if (cache.containsKey(id)) {
+            return cache.get(id);
+        }
+
+        String name = doctor.getFullName() != null ? doctor.getFullName() : "Doctor " + id;
         cache.put(id, name);
         return name;
     }
@@ -397,7 +403,7 @@ public class RevenueReportController {
         return trimmed.isEmpty() ? null : trimmed.toUpperCase();
     }
 
-    private User resolveDoctorUser(Bill bill) {
+    private Doctor resolveDoctorUser(Bill bill) {
         if (bill == null) return null;
         if (bill.getDoctor() != null) return bill.getDoctor();
         if (bill.getVisit() != null && bill.getVisit().getDoctor() != null) {

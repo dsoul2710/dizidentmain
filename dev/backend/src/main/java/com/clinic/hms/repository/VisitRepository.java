@@ -1,6 +1,7 @@
 // src/main/java/com/clinic/hms/repository/VisitRepository.java
 package com.clinic.hms.repository;
 
+import com.clinic.hms.constants.QueryConstants;
 import com.clinic.hms.entity.User;
 import com.clinic.hms.entity.Visit;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,7 +29,7 @@ public interface VisitRepository extends JpaRepository<Visit, Long> {
     List<Visit> findTop50ByDoctor_IdOrderByCreatedAtDesc(Long doctorUserId);
 
     @Modifying
-    @Query("update Visit v set v.doctor = null where v.doctor.id = :doctorUserId")
+    @Query(QueryConstants.Visit.CLEAR_DOCTOR)
     int clearDoctorByDoctorId(@Param("doctorUserId") Long doctorUserId);
 
 }

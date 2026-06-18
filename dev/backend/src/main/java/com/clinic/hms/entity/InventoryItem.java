@@ -79,5 +79,5 @@ public class InventoryItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "org_user_id")
-    private User org;
+    private OrgHospital org;
 }

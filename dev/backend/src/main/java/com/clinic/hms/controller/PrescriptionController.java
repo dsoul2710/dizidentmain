@@ -5,9 +5,9 @@ import com.clinic.hms.dto.request.PrescriptionRequest;
 import com.clinic.hms.dto.request.PrescriptionTemplateRequest;
 import com.clinic.hms.dto.response.PrescriptionResponse;
 import com.clinic.hms.entity.PrescriptionTemplate;
-import com.clinic.hms.entity.User;
+import com.clinic.hms.entity.Doctor;
 import com.clinic.hms.repository.PrescriptionTemplateRepository;
-import com.clinic.hms.repository.UserRepository;
+import com.clinic.hms.repository.DoctorRepository;
 import com.clinic.hms.service.PrescriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ import java.util.List;
 public class PrescriptionController {
 
     private final PrescriptionTemplateRepository templateRepository;
-    private final UserRepository userRepository;
+    private final DoctorRepository doctorRepository;
     private final PrescriptionService prescriptionService;
 
     // -----------------------------
@@ -50,9 +50,9 @@ public class PrescriptionController {
             return ResponseEntity.badRequest().build();
         }
 
-        User doctor = null;
+        Doctor doctor = null;
         if (request.getDoctorUserId() != null) {
-            doctor = userRepository.findById(request.getDoctorUserId())
+            doctor = doctorRepository.findById(request.getDoctorUserId())
                     .orElseThrow(() -> new IllegalArgumentException(
                             "Doctor user not found: " + request.getDoctorUserId()));
         }

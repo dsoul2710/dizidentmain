@@ -12,6 +12,7 @@ import Dashboard from "./pages/dashboards/Dashboard";
 import DoctorDashboard from "./pages/dashboards/DoctorDashboard";
 import PatientDashboard from "./pages/dashboards/PatientDashboard";
 import SuperAdminDashboard from "./pages/dashboards/SuperAdminDashboard";
+import ServiceProviderDashboard from "./pages/dashboards/ServiceProviderDashboard";
 import { ToastProvider } from "./components/common/ToastProvider";
 import GlobalLoader from "./components/common/GlobalLoader";
 
@@ -24,9 +25,13 @@ export default function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
+        let role = parsed.role;
+        if (role === "SUPER_ADMIN") role = "SUPERADMIN";
+        if (role === "ORG_HOSPITAL") role = "ORG";
         const normalized = {
           ...parsed,
           id: parsed.id ?? parsed.userId ?? null,
+          role,
         };
         setUser(normalized);
       } catch {
@@ -50,9 +55,13 @@ export default function App() {
 
   const handleLogin = (userObj) => {
     // Normalize so we always have user.id = backend users.id
+    let role = userObj.role;
+    if (role === "SUPER_ADMIN") role = "SUPERADMIN";
+    if (role === "ORG_HOSPITAL") role = "ORG";
     const normalized = {
       ...userObj,
       id: userObj.id ?? userObj.userId ?? null,
+      role,
     };
 
     setUser(normalized);
@@ -86,6 +95,7 @@ export default function App() {
     if (user.role === "ORG") return "/org/overview";
     if (user.role === "DOCTOR") return "/doctor/overview";
     if (user.role === "PATIENT") return "/patient/overview";
+    if (user.role === "SERVICE_PROVIDER") return "/provider/overview";
     return "/login";
   };
 
@@ -154,6 +164,18 @@ export default function App() {
           element={
             user?.role === "PATIENT" ? (
               <PatientDashboard user={user} onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
+        {/* Service Provider dashboard */}
+        <Route
+          path="/provider/*"
+          element={
+            user?.role === "SERVICE_PROVIDER" ? (
+              <ServiceProviderDashboard user={user} onLogout={handleLogout} />
             ) : (
               <Navigate to="/login" replace />
             )

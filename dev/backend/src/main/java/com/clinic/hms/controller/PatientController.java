@@ -4,8 +4,8 @@ import com.clinic.hms.dto.request.PatientCreateRequest;
 import com.clinic.hms.dto.request.PatientUpdateRequest;
 import com.clinic.hms.dto.response.PatientResponse;
 import com.clinic.hms.dto.response.PagedResponse;
-import com.clinic.hms.entity.UserDetails;
-import com.clinic.hms.repository.UserDetailsRepository;
+import com.clinic.hms.entity.Patient;
+import com.clinic.hms.repository.PatientRepository;
 import com.clinic.hms.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -30,7 +30,7 @@ import java.util.List;
 public class PatientController {
 
     private final PatientService patientService;
-    private final UserDetailsRepository userDetailsRepository;
+    private final PatientRepository patientRepository;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -55,6 +55,11 @@ public class PatientController {
         PagedResponse<PatientResponse> response =
                 patientService.listPatientsPaged(doctorId, search, resolvedPage, resolvedPageSize);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public PatientResponse getById(@PathVariable Long id) {
+        return patientService.getPatientById(id);
     }
 
     @DeleteMapping("/{id}")
@@ -99,10 +104,10 @@ public class PatientController {
     // GET /api/patients/{id}/reports-files
     @GetMapping("/{id}/reports-files")
     public ResponseEntity<List<String>> listReportsFiles(@PathVariable Long id) {
-        UserDetails details = userDetailsRepository.findFirstByUser_Id(id)
+        Patient patient = patientRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid patient details id"));
 
-        List<String> paths = splitPaths(details.getPastReportsFilePath());
+        List<String> paths = splitPaths(patient.getPastReportsFilePath());
         List<String> names = paths.stream()
                 .map(p -> Paths.get(p).getFileName().toString())
                 .toList();
@@ -111,10 +116,10 @@ public class PatientController {
 
     @GetMapping("/{id}/id-file")
     public ResponseEntity<Resource> viewIdFile(@PathVariable Long id) throws Exception {
-        UserDetails details = userDetailsRepository.findFirstByUser_Id(id)
+        Patient patient = patientRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid patient details id"));
 
-        String filePath = details.getIdInsuranceFilePath();
+        String filePath = patient.getIdInsuranceFilePath();
         if (filePath == null || filePath.isBlank()) {
             return ResponseEntity.notFound().build();
         }
@@ -142,10 +147,10 @@ public class PatientController {
             @PathVariable Long id,
             @RequestParam(value = "fileName", required = false) String fileName
     ) throws Exception {
-        UserDetails details = userDetailsRepository.findFirstByUser_Id(id)
+        Patient patient = patientRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid patient details id"));
 
-        List<String> paths = splitPaths(details.getPastReportsFilePath());
+        List<String> paths = splitPaths(patient.getPastReportsFilePath());
         if (paths.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

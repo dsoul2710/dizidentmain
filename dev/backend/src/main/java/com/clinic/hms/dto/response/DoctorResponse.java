@@ -13,4 +13,6 @@ public class DoctorResponse {
     private String mobile;
     private String speciality;
     private String createdAt;   // ISO string for frontend table
+    private String uniqueId;
+    private Boolean isActive;
 }

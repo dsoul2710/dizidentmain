@@ -59,7 +59,9 @@ export const filterPatientsByQuery = (list = [], query) => {
 export const buildPatientOptionLabel = (patient) => {
   const name = getPatientName(patient) || "Unknown";
   const mobile = getPatientMobile(patient);
-  return mobile ? `${name} (${mobile})` : name;
+  const uid = patient?.unique_id || patient?.uniqueId;
+  const idStr = uid ? ` [${uid}]` : "";
+  return mobile ? `${name}${idStr} (${mobile})` : `${name}${idStr}`;
 };
 
 export const selectPatientsForDropdown = (list, query, options = {}) => {

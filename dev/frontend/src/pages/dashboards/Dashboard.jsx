@@ -185,7 +185,7 @@ export default function Dashboard({ user, onLogout }) {
           const formattedMessages = unreadData.map((item) => {
             const senderId = String(item.senderUserId);
             const senderName = userMap[senderId] || item.senderName || "Unknown User";
-            
+
             return {
               id: item.senderUserId || Math.random(),
               senderName: senderName,
@@ -215,7 +215,7 @@ export default function Dashboard({ user, onLogout }) {
         if (!eventsResponse.ok) return;
 
         const eventsData = await eventsResponse.json();
-        
+
         // Get last seen timestamp from localStorage
         const lastSeenKey = `hms_events_last_seen_${userId}`;
         const lastSeen = localStorage.getItem(lastSeenKey) || "";
@@ -423,34 +423,34 @@ function OrgOverview({
         ))}
 
         <div className="col-xxl-6">
-            <div className="card h-100">
-              <div className="card-header border-bottom">
-                <h6 className="mb-0 fw-bold text-lg">Schedule for Today</h6>
-              </div>
-              <div className="card-body">
-                {loading && (
-                  <div className="text-secondary-light">Loading schedule...</div>
-                )}
-                {!loading && (!scheduleToday || scheduleToday.length === 0) && (
-                  <div className="text-secondary-light">No schedule loaded.</div>
-                )}
-                {!loading && scheduleToday?.length > 0 && (
-                  <div className="d-flex flex-column gap-2">
-                    {scheduleToday.slice(0, 6).map((appt) => (
-                      <div key={appt.id} className="d-flex justify-content-between gap-2">
-                        <div className="text-secondary-light">
-                          {appt.patientName || "Patient"}
-                        </div>
-                        <div className="text-secondary-light">
-                          {appt.slot || "-"}
-                        </div>
+          <div className="card h-100">
+            <div className="card-header border-bottom">
+              <h6 className="mb-0 fw-bold text-lg">Schedule for Today</h6>
+            </div>
+            <div className="card-body">
+              {loading && (
+                <div className="text-secondary-light">Loading schedule...</div>
+              )}
+              {!loading && (!scheduleToday || scheduleToday.length === 0) && (
+                <div className="text-secondary-light">No schedule loaded.</div>
+              )}
+              {!loading && scheduleToday?.length > 0 && (
+                <div className="d-flex flex-column gap-2">
+                  {scheduleToday.slice(0, 6).map((appt) => (
+                    <div key={appt.id} className="d-flex justify-content-between gap-2">
+                      <div className="text-secondary-light">
+                        {appt.patientName || "Patient"}
                       </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+                      <div className="text-secondary-light">
+                        {appt.slot || "-"}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
+        </div>
         <div className="col-xxl-6">
           <div className="card h-100">
             <div className="card-header border-bottom">

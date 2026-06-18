@@ -5,9 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrganizationUpdateRequest {
-    private String name;
-    private String mobile;
-    private String password;
+public class OrganizationUpdateRequest extends OrganizationCreateRequest {
     private Boolean isActive;
 }

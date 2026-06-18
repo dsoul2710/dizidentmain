@@ -1,9 +1,11 @@
 package com.clinic.hms.controller;
 
+import com.clinic.hms.constants.AppConstants;
 import com.clinic.hms.entity.User;
-import com.clinic.hms.entity.UserDetails;
+import com.clinic.hms.entity.Patient;
 import com.clinic.hms.entity.Visit;
-import com.clinic.hms.repository.UserDetailsRepository;
+import com.clinic.hms.repository.PatientRepository;
+import com.clinic.hms.repository.PatientDoctorMappingRepository;
 import com.clinic.hms.repository.VisitRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,22 +31,24 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PatientReportController {
 
-    private final UserDetailsRepository userDetailsRepository;
+    private final PatientRepository patientRepository;
+    private final PatientDoctorMappingRepository patientDoctorMappingRepository;
     private final VisitRepository visitRepository;
 
     // ---------- helpers ----------
 
     private Map<Long, PatientSnapshot> loadSnapshots() {
-        List<UserDetails> patients = userDetailsRepository.findByUserRole("PATIENT");
+        List<Patient> patients = patientRepository.findByIsDeletedFalseOrderByCreatedAtDesc();
         List<Visit> allVisits = visitRepository.findAll();
 
         Map<Long, List<Visit>> visitsByPatient = allVisits.stream()
+                .filter(v -> v.getPatient() != null)
                 .collect(Collectors.groupingBy(v -> v.getPatient().getId()));
 
         Map<Long, PatientSnapshot> map = new HashMap<>();
-        for (UserDetails ud : patients) {
-            User u = ud.getUser();
-            List<Visit> vlist = visitsByPatient.getOrDefault(u.getId(), Collections.emptyList());
+        for (Patient p : patients) {
+            User u = p.getUser();
+            List<Visit> vlist = visitsByPatient.getOrDefault(p.getId(), Collections.emptyList());
 
             LocalDate firstVisit = vlist.stream()
                     .map(v -> v.getVisitDate().toLocalDate())
@@ -55,16 +59,23 @@ public class PatientReportController {
                     .max(LocalDate::compareTo)
                     .orElse(null);
 
-            map.put(u.getId(), PatientSnapshot.builder()
-                    .patientUserId(u.getId())
-                    .name(ud.getFullName())
+            Long primaryDocId = patientDoctorMappingRepository.findByPatient(p)
+                    .stream()
+                    .filter(m -> AppConstants.Status.ACTIVE.equalsIgnoreCase(m.getStatus()))
+                    .map(m -> m.getDoctor().getId())
+                    .findFirst()
+                    .orElse(null);
+
+            map.put(p.getId(), PatientSnapshot.builder()
+                    .patientUserId(p.getId())
+                    .name(p.getFullName())
                     .mobile(u.getMobile())
-                    .gender(ud.getGender())
-                    .city(ud.getCity())
-                    .referredBy(ud.getReferredBy())
-                    .dob(ud.getDob())
-                    .ageYears(ud.getAgeYears())
-                    .assignedDoctorId(ud.getAssignedDoctor() != null ? ud.getAssignedDoctor().getId() : null)
+                    .gender(p.getGender())
+                    .city(p.getCity())
+                    .referredBy(p.getReferredBy())
+                    .dob(p.getDob())
+                    .ageYears(p.getAgeYears())
+                    .assignedDoctorId(primaryDocId)
                     .firstVisit(firstVisit)
                     .lastVisit(lastVisit)
                     .visitCount(vlist.size())

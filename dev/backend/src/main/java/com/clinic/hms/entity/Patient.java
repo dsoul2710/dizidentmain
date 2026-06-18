@@ -2,31 +2,35 @@ package com.clinic.hms.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "user_details")
+@Table(name = "patients")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class UserDetails {
+@SuperBuilder
+public class Patient extends AuditableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // FK to users.id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "user_id")
     private User user;
+
+    @Column(name = "unique_id", nullable = true, unique = true, length = 20)
+    private String uniqueId; // Format: PAT-XXXXXX
 
     @Column(name = "full_name", nullable = false, length = 150)
     private String fullName;
 
     private LocalDate dob;
+    
     @Column(name = "age_years")
     private Integer ageYears;
 
@@ -53,18 +57,4 @@ public class UserDetails {
 
     @Column(name = "past_reports_file_path", length = 255)
     private String pastReportsFilePath;
-
-    @Column(length = 150)
-    private String speciality; // for doctors
-
-    // primary doctor for patient (optional)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assigned_doctor_id")
-    private User assignedDoctor;
-
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
 }

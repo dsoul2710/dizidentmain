@@ -1,5 +1,6 @@
 package com.clinic.hms.repository;
 
+import com.clinic.hms.constants.QueryConstants;
 import com.clinic.hms.entity.ChatThread;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -28,16 +29,16 @@ public interface ChatThreadRepository extends JpaRepository<ChatThread, Long> {
             Long patientUserId
     );
 
-    @Query("select t.id from ChatThread t where t.patient.id = :patientUserId")
+    @Query(QueryConstants.ChatThread.FIND_IDS_BY_PATIENT)
     List<Long> findIdsByPatientUserId(@Param("patientUserId") Long patientUserId);
 
-    @Query("select t.id from ChatThread t where t.doctor.id = :doctorUserId")
+    @Query(QueryConstants.ChatThread.FIND_IDS_BY_DOCTOR)
     List<Long> findIdsByDoctorUserId(@Param("doctorUserId") Long doctorUserId);
 
-    @Query(value = "select id from chat_threads where visit_id = :visitId", nativeQuery = true)
+    @Query(value = QueryConstants.ChatThread.FIND_IDS_BY_VISIT_NATIVE, nativeQuery = true)
     List<Long> findIdsByVisitId(@Param("visitId") Long visitId);
 
     @Modifying
-    @Query(value = "delete from chat_threads where visit_id = :visitId", nativeQuery = true)
+    @Query(value = QueryConstants.ChatThread.DELETE_BY_VISIT_NATIVE, nativeQuery = true)
     int deleteByVisitId(@Param("visitId") Long visitId);
 }

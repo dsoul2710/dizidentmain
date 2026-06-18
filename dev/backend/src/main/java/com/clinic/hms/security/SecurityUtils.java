@@ -1,7 +1,10 @@
 package com.clinic.hms.security;
 
+import com.clinic.hms.constants.AppConstants;
 import com.clinic.hms.entity.User;
-import com.clinic.hms.repository.OrgDoctorMappingRepository;
+import com.clinic.hms.repository.DoctorOrgMappingRepository;
+import com.clinic.hms.repository.ServiceProviderOrgMappingRepository;
+import com.clinic.hms.repository.PatientOrgMappingRepository;
 import com.clinic.hms.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +18,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class SecurityUtils {
 
     private final UserRepository userRepository;
-    private final OrgDoctorMappingRepository orgDoctorMappingRepository;
+    private final DoctorOrgMappingRepository doctorOrgMappingRepository;
+    private final ServiceProviderOrgMappingRepository serviceProviderOrgMappingRepository;
+    private final PatientOrgMappingRepository patientOrgMappingRepository;
 
     public CustomUserDetails getCurrentUserDetails() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -44,24 +49,22 @@ public class SecurityUtils {
         String role = getCurrentUserRole();
         if (role == null) return null;
 
-        if ("ORG".equalsIgnoreCase(role)) {
+        if (AppConstants.Roles.ORG_HOSPITAL.equalsIgnoreCase(role)) {
             return getCurrentUserId();
-        } else if ("DOCTOR".equalsIgnoreCase(role)) {
+        } else if (AppConstants.Roles.DOCTOR.equalsIgnoreCase(role)) {
             HttpServletRequest request = getCurrentRequest();
             if (request == null) return null;
 
-            String activeOrgHeader = request.getHeader("X-Active-Org-Id");
+            String activeOrgHeader = request.getHeader(AppConstants.Headers.ACTIVE_ORG_ID);
             if (activeOrgHeader == null || activeOrgHeader.isBlank()) {
                 throw new IllegalArgumentException("X-Active-Org-Id header is missing for DOCTOR role");
             }
 
             try {
                 Long orgId = Long.parseLong(activeOrgHeader);
-                User doctor = getCurrentUser();
-                User org = userRepository.findById(orgId).orElseThrow(() -> 
-                    new IllegalArgumentException("Invalid clinic organization: " + orgId));
-                
-                if (!orgDoctorMappingRepository.existsByOrgAndDoctor(org, doctor)) {
+                Long doctorId = getCurrentUserId();
+
+                if (!doctorOrgMappingRepository.existsByOrg_IdAndDoctor_IdAndStatus(orgId, doctorId, AppConstants.Status.ACTIVE)) {
                     throw new SecurityException("Doctor is not associated with clinic: " + orgId);
                 }
 
@@ -69,12 +72,42 @@ public class SecurityUtils {
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Invalid X-Active-Org-Id header value");
             }
-        } else if ("PATIENT".equalsIgnoreCase(role)) {
+        } else if (AppConstants.Roles.SERVICE_PROVIDER.equalsIgnoreCase(role)) {
+            HttpServletRequest request = getCurrentRequest();
+            if (request == null) return null;
+
+            String activeOrgHeader = request.getHeader(AppConstants.Headers.ACTIVE_ORG_ID);
+            if (activeOrgHeader == null || activeOrgHeader.isBlank()) {
+                throw new IllegalArgumentException("X-Active-Org-Id header is missing for SERVICE_PROVIDER role");
+            }
+
+            try {
+                Long orgId = Long.parseLong(activeOrgHeader);
+                Long spId = getCurrentUserId();
+
+                if (!serviceProviderOrgMappingRepository.existsByOrg_IdAndServiceProvider_IdAndStatus(orgId, spId, AppConstants.Status.ACTIVE)) {
+                    throw new SecurityException("Service Provider is not associated with clinic: " + orgId);
+                }
+
+                return orgId;
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid X-Active-Org-Id header value");
+            }
+        } else if (AppConstants.Roles.PATIENT.equalsIgnoreCase(role)) {
             HttpServletRequest request = getCurrentRequest();
             if (request != null) {
-                String activeOrgHeader = request.getHeader("X-Active-Org-Id");
+                String activeOrgHeader = request.getHeader(AppConstants.Headers.ACTIVE_ORG_ID);
                 if (activeOrgHeader != null && !activeOrgHeader.isBlank()) {
-                    return Long.parseLong(activeOrgHeader);
+                    try {
+                        Long orgId = Long.parseLong(activeOrgHeader);
+                        Long patientId = getCurrentUserId();
+                        if (!patientOrgMappingRepository.existsByOrg_IdAndPatient_IdAndStatus(orgId, patientId, AppConstants.Status.ACTIVE)) {
+                            throw new SecurityException("Patient is not associated with clinic: " + orgId);
+                        }
+                        return orgId;
+                    } catch (NumberFormatException e) {
+                        throw new IllegalArgumentException("Invalid X-Active-Org-Id header value");
+                    }
                 }
             }
             return null;

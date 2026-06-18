@@ -1,21 +1,13 @@
-// src/main/java/com/clinic/hms/service/DoctorService.java
 package com.clinic.hms.service;
 
+import com.clinic.hms.constants.AppConstants;
 import com.clinic.hms.dto.request.DoctorCreateRequest;
 import com.clinic.hms.dto.request.DoctorUpdateRequest;
 import com.clinic.hms.dto.response.DoctorResponse;
-import com.clinic.hms.entity.User;
-import com.clinic.hms.entity.UserDetails;
-import com.clinic.hms.repository.UserDetailsRepository;
-import com.clinic.hms.repository.UserRepository;
-import com.clinic.hms.repository.AppointmentRepository;
-import com.clinic.hms.repository.VisitRepository;
-import com.clinic.hms.repository.BillRepository;
-import com.clinic.hms.repository.PrescriptionRepository;
-import com.clinic.hms.repository.PrescriptionItemRepository;
-import com.clinic.hms.repository.PrescriptionTemplateRepository;
-import com.clinic.hms.repository.ChatThreadRepository;
-import com.clinic.hms.repository.ChatMessageRepository;
+import com.clinic.hms.dto.response.PagedResponse;
+import com.clinic.hms.entity.*;
+import com.clinic.hms.repository.*;
+import com.clinic.hms.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,30 +18,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class DoctorService {
 
     private final UserRepository userRepository;
-    private final UserDetailsRepository userDetailsRepository;
+    private final DoctorRepository doctorRepository;
+    private final OrgHospitalRepository orgHospitalRepository;
+    private final DoctorOrgMappingRepository doctorOrgMappingRepository;
+    
     private final PasswordEncoder passwordEncoder;
-    private final AppointmentRepository appointmentRepository;
-    private final VisitRepository visitRepository;
-    private final BillRepository billRepository;
-    private final PrescriptionRepository prescriptionRepository;
-    private final PrescriptionItemRepository prescriptionItemRepository;
-    private final PrescriptionTemplateRepository prescriptionTemplateRepository;
-    private final ChatThreadRepository chatThreadRepository;
-    private final ChatMessageRepository chatMessageRepository;
-    private final com.clinic.hms.security.SecurityUtils securityUtils;
-    private final com.clinic.hms.repository.OrgDoctorMappingRepository orgDoctorMappingRepository;
-
-    private static final String ROLE_DOCTOR = "DOCTOR";
+    private final SecurityUtils securityUtils;
 
     @Transactional
     public DoctorResponse createDoctor(DoctorCreateRequest req) {
-
         // 1) Mobile unique check
         userRepository.findByMobile(req.getMobile())
                 .ifPresent(u -> {
@@ -57,16 +41,20 @@ public class DoctorService {
                 });
 
         LocalDateTime now = LocalDateTime.now();
+        Long currentUserId = null;
+        try {
+            currentUserId = securityUtils.getCurrentUserId();
+        } catch (Exception e) {}
 
-        // 2) Create User row
+        // 2) Create User credentials row
         User user = User.builder()
                 .mobile(req.getMobile())
                 .password(passwordEncoder.encode(
                         req.getPassword() != null && !req.getPassword().isBlank()
                                 ? req.getPassword()
-                                : "1234"   // default password; you can change
+                                : "1234"
                 ))
-                .role(ROLE_DOCTOR)
+                .role(UserRole.DOCTOR)
                 .isActive(true)
                 .createdAt(now)
                 .updatedAt(now)
@@ -74,81 +62,115 @@ public class DoctorService {
 
         user = userRepository.save(user);
 
-        // 3) Create UserDetails row
-        UserDetails details = UserDetails.builder()
+        // Generate a unique ID (e.g. DOC-XXXXXX)
+        String uniqueId = generateUniqueDoctorId();
+
+        // 3) Create Doctor profile row
+        Doctor doctor = Doctor.builder()
                 .user(user)
                 .fullName(req.getName())
                 .speciality(req.getSpeciality())
+                .uniqueId(uniqueId)
                 .createdAt(now)
                 .updatedAt(now)
+                .createdByUserId(currentUserId)
+                .updatedByUserId(currentUserId)
+                .isDeleted(false)
                 .build();
 
-        details = userDetailsRepository.save(details);
+        doctor = doctorRepository.save(doctor);
 
+        // 4) Map to active Org if registering under an Org
         try {
             Long orgId = securityUtils.getActiveOrgId();
             if (orgId != null) {
-                User org = userRepository.findById(orgId).orElse(null);
+                OrgHospital org = orgHospitalRepository.findById(orgId).orElse(null);
                 if (org != null) {
-                    com.clinic.hms.entity.OrgDoctorMapping mapping = com.clinic.hms.entity.OrgDoctorMapping.builder()
+                    DoctorOrgMapping mapping = DoctorOrgMapping.builder()
                             .org(org)
-                            .doctor(user)
-                            .createdAt(LocalDateTime.now())
+                            .doctor(doctor)
+                            .status(AppConstants.Status.ACTIVE)
+                            .createdAt(now)
+                            .updatedAt(now)
+                            .createdByUserId(currentUserId)
                             .build();
-                    orgDoctorMappingRepository.save(mapping);
+                    doctorOrgMappingRepository.save(mapping);
                 }
             }
         } catch (Exception e) {
-            // Ignore if called without security context (e.g., seeding)
+            // Ignore
         }
 
-        return DoctorResponse.builder()
-                .id(user.getId())               // doctor userId
-                .name(details.getFullName())
-                .mobile(user.getMobile())
-                .speciality(details.getSpeciality())
-                .createdAt(now.toString())
-                .build();
+        return toResponse(doctor);
+    }
+
+    @Transactional
+    public void onboardDoctor(String uniqueId) {
+        Long orgId = securityUtils.getActiveOrgId();
+        if (orgId == null) {
+            throw new IllegalStateException("Only authenticated organizations can onboard doctors");
+        }
+
+        Doctor doctor = doctorRepository.findByUniqueIdAndIsDeletedFalse(uniqueId)
+                .orElseThrow(() -> new IllegalArgumentException("Doctor not found with ID: " + uniqueId));
+
+        OrgHospital org = orgHospitalRepository.findById(orgId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid active organization: " + orgId));
+
+        Long currentUserId = null;
+        try {
+            currentUserId = securityUtils.getCurrentUserId();
+        } catch (Exception e) {}
+
+        Optional<DoctorOrgMapping> existingMapping = doctorOrgMappingRepository.findByOrgAndDoctor(org, doctor);
+        if (existingMapping.isPresent()) {
+            DoctorOrgMapping mapping = existingMapping.get();
+            if (AppConstants.Status.ACTIVE.equalsIgnoreCase(mapping.getStatus())) {
+                throw new IllegalArgumentException("Doctor is already onboarded at this clinic");
+            }
+            mapping.setStatus(AppConstants.Status.ACTIVE);
+            mapping.setUpdatedAt(LocalDateTime.now());
+            doctorOrgMappingRepository.save(mapping);
+        } else {
+            DoctorOrgMapping mapping = DoctorOrgMapping.builder()
+                    .org(org)
+                    .doctor(doctor)
+                    .status(AppConstants.Status.ACTIVE)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .createdByUserId(currentUserId)
+                    .build();
+            doctorOrgMappingRepository.save(mapping);
+        }
     }
 
     @Transactional(readOnly = true)
     public List<DoctorResponse> listDoctors() {
-        List<User> doctorUsers;
+        Long orgId = null;
         try {
-            Long orgId = securityUtils.getActiveOrgId();
-            if (orgId != null) {
-                doctorUsers = orgDoctorMappingRepository.findByOrg(
-                        userRepository.findById(orgId).orElseThrow()
-                ).stream()
-                .map(com.clinic.hms.entity.OrgDoctorMapping::getDoctor)
-                .toList();
-            } else {
-                doctorUsers = userRepository.findByRole(ROLE_DOCTOR);
-            }
-        } catch (Exception e) {
-            doctorUsers = userRepository.findByRole(ROLE_DOCTOR);
+            orgId = securityUtils.getActiveOrgId();
+        } catch (Exception e) {}
+
+        List<Doctor> doctors;
+        if (orgId != null) {
+            doctors = doctorOrgMappingRepository.findByOrg(
+                    orgHospitalRepository.findById(orgId).orElseThrow()
+            ).stream()
+            .filter(m -> AppConstants.Status.ACTIVE.equalsIgnoreCase(m.getStatus()))
+            .map(DoctorOrgMapping::getDoctor)
+            .filter(d -> !Boolean.TRUE.equals(d.getIsDeleted()))
+            .toList();
+        } else {
+            doctors = doctorRepository.findByIsDeletedFalse();
         }
 
-        return doctorUsers.stream()
-                .map(user -> {
-                    UserDetails details = userDetailsRepository.findByUser(user)
-                            .orElse(null);
-
-                    return DoctorResponse.builder()
-                            .id(user.getId())
-                            .name(details != null ? details.getFullName() : null)
-                            .mobile(user.getMobile())
-                            .speciality(details != null ? details.getSpeciality() : null)
-                            .createdAt(user.getCreatedAt() != null
-                                    ? user.getCreatedAt().toString()
-                                    : null)
-                            .build();
-                })
+        return doctors.stream()
+                .map(this::toResponse)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public com.clinic.hms.dto.response.PagedResponse<DoctorResponse> listDoctorsPaged(String search, int page, int pageSize) {
+    public PagedResponse<DoctorResponse> listDoctorsPaged(String search, int page, int pageSize) {
         int safePage = Math.max(page, 1);
         int safeSize = Math.max(pageSize, 1);
         PageRequest pageable = PageRequest.of(safePage - 1, safeSize, Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -156,25 +178,14 @@ public class DoctorService {
         Long orgId = null;
         try {
             orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore if no active org is set (e.g. legacy/testing)
-        }
+        } catch (Exception e) {}
 
-        Page<UserDetails> result = userDetailsRepository.searchDoctors(ROLE_DOCTOR, orgId, search, pageable);
+        Page<Doctor> result = doctorRepository.searchDoctors(orgId, search, pageable);
         List<DoctorResponse> items = result.getContent().stream()
-                .map(details -> {
-                    User user = details.getUser();
-                    return DoctorResponse.builder()
-                            .id(user.getId())
-                            .name(details.getFullName())
-                            .mobile(user.getMobile())
-                            .speciality(details.getSpeciality())
-                            .createdAt(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null)
-                            .build();
-                })
+                .map(this::toResponse)
                 .toList();
 
-        return com.clinic.hms.dto.response.PagedResponse.<DoctorResponse>builder()
+        return PagedResponse.<DoctorResponse>builder()
                 .items(items)
                 .page(safePage)
                 .pageSize(safeSize)
@@ -185,61 +196,41 @@ public class DoctorService {
 
     @Transactional
     public void deleteDoctor(Long doctorUserId) {
-        User user = userRepository.findById(doctorUserId)
-                .orElseThrow(() -> new IllegalArgumentException("Doctor user not found: " + doctorUserId));
+        Doctor doctor = doctorRepository.findById(doctorUserId)
+                .orElseThrow(() -> new IllegalArgumentException("Doctor profile not found: " + doctorUserId));
 
-        // Optional: ensure it's really a doctor
-        if (!ROLE_DOCTOR.equalsIgnoreCase(user.getRole())) {
-            throw new IllegalArgumentException("User is not a doctor: " + doctorUserId);
+        Long currentUserId = null;
+        try {
+            currentUserId = securityUtils.getCurrentUserId();
+        } catch (Exception e) {}
+
+        // HIPAA: soft delete
+        doctor.setIsDeleted(true);
+        doctor.setDeletedAt(LocalDateTime.now());
+        doctor.setDeletedByUserId(currentUserId);
+        
+        User user = doctor.getUser();
+        if (user != null) {
+            user.setIsActive(false);
+            user.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(user);
         }
 
-        // Unassign patients linked to this doctor
-        userDetailsRepository.clearAssignedDoctor(doctorUserId);
-
-        // Delete appointments linked to this doctor
-        appointmentRepository.deleteByDoctor_Id(doctorUserId);
-
-        // Clear doctor from visits and bills to keep patient history
-        visitRepository.clearDoctorByDoctorId(doctorUserId);
-        billRepository.clearDoctorByDoctorId(doctorUserId);
-
-        // Delete prescriptions and related items for this doctor
-        List<com.clinic.hms.entity.Prescription> prescriptions =
-                prescriptionRepository.findByDoctor_Id(doctorUserId);
-        for (com.clinic.hms.entity.Prescription rx : prescriptions) {
-            if (rx.getId() != null) {
-                prescriptionItemRepository.deleteByPrescription_Id(rx.getId());
-            }
-        }
-        prescriptionRepository.deleteAll(prescriptions);
-
-        // Delete doctor-specific prescription templates
-        prescriptionTemplateRepository.deleteByDoctor_Id(doctorUserId);
-
-        // Delete chat threads and messages linked to this doctor
-        List<Long> threadIds = chatThreadRepository.findIdsByDoctorUserId(doctorUserId);
-        for (Long threadId : threadIds) {
-            chatMessageRepository.deleteByThread_Id(threadId);
-        }
-        if (!threadIds.isEmpty()) {
-            chatThreadRepository.deleteAllById(threadIds);
+        // Set mapping associations to INACTIVE
+        List<DoctorOrgMapping> mappings = doctorOrgMappingRepository.findByDoctor(doctor);
+        for (DoctorOrgMapping m : mappings) {
+            m.setStatus(AppConstants.Status.INACTIVE);
+            m.setUpdatedAt(LocalDateTime.now());
+            doctorOrgMappingRepository.save(m);
         }
 
-        // Delete details if exists
-        userDetailsRepository.findByUser(user)
-                .ifPresent(userDetailsRepository::delete);
-
-        userRepository.delete(user);
+        doctorRepository.save(doctor);
     }
 
     @Transactional
     public DoctorResponse updateDoctor(Long doctorUserId, DoctorUpdateRequest req) {
         User user = userRepository.findById(doctorUserId)
                 .orElseThrow(() -> new IllegalArgumentException("Doctor user not found: " + doctorUserId));
-
-        if (!ROLE_DOCTOR.equalsIgnoreCase(user.getRole())) {
-            throw new IllegalArgumentException("User is not a doctor: " + doctorUserId);
-        }
 
         String mobile = req.getMobile() != null ? req.getMobile().trim() : null;
         if (mobile != null && !mobile.isBlank() && !mobile.equals(user.getMobile())) {
@@ -253,32 +244,53 @@ public class DoctorService {
             user.setPassword(passwordEncoder.encode(req.getPassword()));
         }
 
-        UserDetails details = userDetailsRepository.findByUser(user)
-                .orElseGet(() -> UserDetails.builder()
-                        .user(user)
-                        .createdAt(LocalDateTime.now())
-                        .build());
+        if (req.getIsActive() != null) {
+            user.setIsActive(req.getIsActive());
+        }
+
+        Doctor doctor = doctorRepository.findByIdAndIsDeletedFalse(doctorUserId)
+                .orElseThrow(() -> new IllegalArgumentException("Doctor profile not found or deleted"));
 
         if (req.getName() != null) {
-            details.setFullName(req.getName().trim());
+            doctor.setFullName(req.getName().trim());
         }
         if (req.getSpeciality() != null) {
-            details.setSpeciality(req.getSpeciality().trim());
+            doctor.setSpeciality(req.getSpeciality().trim());
         }
+
+        Long currentUserId = null;
+        try {
+            currentUserId = securityUtils.getCurrentUserId();
+        } catch (Exception e) {}
 
         LocalDateTime now = LocalDateTime.now();
         user.setUpdatedAt(now);
-        details.setUpdatedAt(now);
+        doctor.setUpdatedAt(now);
+        doctor.setUpdatedByUserId(currentUserId);
 
         userRepository.save(user);
-        userDetailsRepository.save(details);
+        doctorRepository.save(doctor);
 
+        return toResponse(doctor);
+    }
+
+    private String generateUniqueDoctorId() {
+        String uniqueId = AppConstants.DoctorId.PREFIX + String.format(AppConstants.DoctorId.FORMAT, (int)(Math.random() * AppConstants.DoctorId.RANGE));
+        while (doctorRepository.findByUniqueIdAndIsDeletedFalse(uniqueId).isPresent()) {
+            uniqueId = AppConstants.DoctorId.PREFIX + String.format(AppConstants.DoctorId.FORMAT, (int)(Math.random() * AppConstants.DoctorId.RANGE));
+        }
+        return uniqueId;
+    }
+
+    private DoctorResponse toResponse(Doctor doctor) {
         return DoctorResponse.builder()
-                .id(user.getId())
-                .name(details.getFullName())
-                .mobile(user.getMobile())
-                .speciality(details.getSpeciality())
-                .createdAt(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null)
+                .id(doctor.getId())
+                .name(doctor.getFullName())
+                .mobile(doctor.getUser().getMobile())
+                .speciality(doctor.getSpeciality())
+                .uniqueId(doctor.getUniqueId())
+                .createdAt(doctor.getCreatedAt() != null ? doctor.getCreatedAt().toString() : null)
+                .isActive(doctor.getUser().getIsActive())
                 .build();
     }
 }

@@ -44,6 +44,7 @@ public class InventoryService {
     private final VendorRepository vendorRepository;
     private final com.clinic.hms.security.SecurityUtils securityUtils;
     private final com.clinic.hms.repository.UserRepository userRepository;
+    private final com.clinic.hms.repository.OrgHospitalRepository orgHospitalRepository;
 
     // =============================
     // ITEMS
@@ -75,11 +76,11 @@ public class InventoryService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        com.clinic.hms.entity.User org = null;
+        com.clinic.hms.entity.OrgHospital org = null;
         try {
             Long orgId = securityUtils.getActiveOrgId();
             if (orgId != null) {
-                org = userRepository.findById(orgId).orElse(null);
+                org = orgHospitalRepository.findById(orgId).orElse(null);
             }
         } catch (Exception e) {
             // Ignore
@@ -96,7 +97,7 @@ public class InventoryService {
         );
 
         Vendor vendor = null;
-        final com.clinic.hms.entity.User finalOrg = org;
+        final com.clinic.hms.entity.OrgHospital finalOrg = org;
         if (req.getVendorId() != null) {
             vendor = vendorRepository.findById(req.getVendorId())
                     .filter(v -> finalOrg == null || v.getOrg() == null || v.getOrg().getId().equals(finalOrg.getId()))

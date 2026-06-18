@@ -746,11 +746,13 @@ useEffect(() => {
       const mobile = String(p.mobile || "").toLowerCase();
       const city = (p.city || "").toLowerCase();
       const referredBy = (p.referred_by || p.referredBy || "").toLowerCase();
+      const uniqueId = (p.unique_id || p.uniqueId || "").toLowerCase();
       return (
         name.includes(q) ||
         mobile.includes(q) ||
         city.includes(q) ||
-        referredBy.includes(q)
+        referredBy.includes(q) ||
+        uniqueId.includes(q)
       );
     });
   }, [patients, patientSearch, serverPaging]);
@@ -839,7 +841,7 @@ useEffect(() => {
                   <React.Fragment key={p.userId ?? p.id}>
                     <tr>
                       <td>{String(idx + 1).padStart(2, "0")}</td>
-                      <td>{p.id}</td>
+                      <td>{p.unique_id || p.id}</td>
                       <td>{p.name}</td>
                       <td>{p.mobile}</td>
                       <td>

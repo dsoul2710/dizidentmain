@@ -22,16 +22,17 @@ public class LabService {
     private final LabRepository labRepository;
     private final com.clinic.hms.security.SecurityUtils securityUtils;
     private final com.clinic.hms.repository.UserRepository userRepository;
+    private final com.clinic.hms.repository.OrgHospitalRepository orgHospitalRepository;
 
     @Transactional
     public LabResponse createLab(LabCreateRequest req) {
         LocalDateTime now = LocalDateTime.now();
 
-        com.clinic.hms.entity.User org = null;
+        com.clinic.hms.entity.OrgHospital org = null;
         try {
             Long orgId = securityUtils.getActiveOrgId();
             if (orgId != null) {
-                org = userRepository.findById(orgId).orElse(null);
+                org = orgHospitalRepository.findById(orgId).orElse(null);
             }
         } catch (Exception e) {
             // Ignore if no security context exists (e.g. seeding)

@@ -2,7 +2,7 @@
 package com.clinic.hms.repository;
 
 import com.clinic.hms.entity.Appointment;
-import com.clinic.hms.entity.User;
+import com.clinic.hms.entity.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
@@ -12,7 +12,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     List<Appointment> findByAppointmentDate(LocalDate date);
 
-    List<Appointment> findByDoctorAndAppointmentDate(User doctor, LocalDate date);
+    List<Appointment> findByDoctorAndAppointmentDate(Doctor doctor, LocalDate date);
 
     List<Appointment> findByAppointmentDateGreaterThanEqualOrderByAppointmentDateAscStartTimeAsc(LocalDate from);
 

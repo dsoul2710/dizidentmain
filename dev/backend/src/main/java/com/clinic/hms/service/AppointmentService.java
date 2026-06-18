@@ -1,17 +1,12 @@
 // src/main/java/com/clinic/hms/service/AppointmentService.java
 package com.clinic.hms.service;
 
+import com.clinic.hms.constants.AppConstants;
 import com.clinic.hms.dto.request.AppointmentCreateRequest;
 import com.clinic.hms.dto.request.AppointmentUpdateRequest;
 import com.clinic.hms.dto.response.AppointmentResponse;
-import com.clinic.hms.entity.Appointment;
-import com.clinic.hms.entity.User;
-import com.clinic.hms.entity.UserDetails;
-import com.clinic.hms.entity.Visit;
-import com.clinic.hms.repository.AppointmentRepository;
-import com.clinic.hms.repository.UserDetailsRepository;
-import com.clinic.hms.repository.UserRepository;
-import com.clinic.hms.repository.VisitRepository;
+import com.clinic.hms.entity.*;
+import com.clinic.hms.repository.*;
 import com.clinic.hms.utill.TimeFormatUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,8 +23,10 @@ import java.util.stream.Collectors;
 public class AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final UserRepository userRepository;
-    private final UserDetailsRepository userDetailsRepository;
+    private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
+    private final OrgHospitalRepository orgHospitalRepository;
+    private final PatientDoctorMappingRepository patientDoctorMappingRepository;
     private final VisitRepository visitRepository;
     private final EventPushService eventPushService;
     private final com.clinic.hms.security.SecurityUtils securityUtils;
@@ -77,21 +74,19 @@ public class AppointmentService {
         LocalDateTime now = LocalDateTime.now();
 
         // PATIENT (required)
-        User patient = userRepository.findById(req.getPatientUserId())
+        Patient patient = patientRepository.findById(req.getPatientUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid patient user id"));
 
         // DOCTOR (optional: use explicit id OR patient's assigned doctor, OR null)
-        User doctor = null;
+        Doctor doctor = null;
         if (req.getDoctorUserId() != null) {
-            doctor = userRepository.findById(req.getDoctorUserId())
+            doctor = doctorRepository.findById(req.getDoctorUserId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid doctor user id"));
         } else {
             // Try fallback: patient's assigned doctor
-            UserDetails patientDetails = userDetailsRepository
-                    .findFirstByUser_Id(patient.getId())
-                    .orElse(null);
-            if (patientDetails != null && patientDetails.getAssignedDoctor() != null) {
-                doctor = patientDetails.getAssignedDoctor();
+            List<PatientDoctorMapping> mappings = patientDoctorMappingRepository.findByPatient(patient);
+            if (!mappings.isEmpty()) {
+                doctor = mappings.get(0).getDoctor();
             }
         }
 
@@ -101,11 +96,11 @@ public class AppointmentService {
                     .orElseThrow(() -> new IllegalArgumentException("Invalid visit id"));
         }
 
-        User org = null;
+        OrgHospital org = null;
         try {
             Long orgId = securityUtils.getActiveOrgId();
             if (orgId != null) {
-                org = userRepository.findById(orgId).orElse(null);
+                org = orgHospitalRepository.findById(orgId).orElse(null);
             }
         } catch (Exception e) {
             // Ignore
@@ -119,7 +114,7 @@ public class AppointmentService {
                 .appointmentDate(date)
                 .startTime(startTime)
                 .endTime(endTime)
-                .status("BOOKED")
+                .status(AppConstants.AppointmentStatus.BOOKED)
                 .reason(req.getDescription())
                 .notes(req.getDescription())
                 .createdAt(now)
@@ -137,7 +132,7 @@ public class AppointmentService {
     public void cancelAppointment(Long id) {
         Appointment appt = appointmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Appointment not found"));
-        appt.setStatus("CANCELLED");
+        appt.setStatus(AppConstants.AppointmentStatus.CANCELLED);
         appt.setUpdatedAt(LocalDateTime.now());
         appointmentRepository.save(appt);
     }
@@ -202,31 +197,23 @@ public class AppointmentService {
     private boolean isCancelled(Appointment appointment) {
         String status = appointment.getStatus();
         if (status == null) return false;
-        return status.trim().equalsIgnoreCase("CANCELLED")
+        return status.trim().equalsIgnoreCase(AppConstants.AppointmentStatus.CANCELLED)
                 || status.trim().toUpperCase().contains("CANCEL");
     }
 
     private AppointmentResponse toDto(Appointment a) {
-        User patient = a.getPatient();
-        User doctor = a.getDoctor();
-
-        UserDetails patientDetails = patient != null
-                ? userDetailsRepository.findFirstByUser_Id(patient.getId()).orElse(null)
-                : null;
-
-        UserDetails doctorDetails = doctor != null
-                ? userDetailsRepository.findFirstByUser_Id(doctor.getId()).orElse(null)
-                : null;
+        Patient patient = a.getPatient();
+        Doctor doctor = a.getDoctor();
 
         return AppointmentResponse.builder()
                 .id(a.getId())
                 .date(a.getAppointmentDate().toString())          // "YYYY-MM-DD"
                 .slot(TimeFormatUtil.formatSlot(a.getStartTime()))// "1:30 PM"
                 .patientUserId(patient != null ? patient.getId() : null)
-                .patientName(patientDetails != null ? patientDetails.getFullName() : null)
-                .patientMobile(patient != null ? patient.getMobile() : null)
+                .patientName(patient != null ? patient.getFullName() : null)
+                .patientMobile(patient != null && patient.getUser() != null ? patient.getUser().getMobile() : null)
                 .doctorUserId(doctor != null ? doctor.getId() : null)
-                .doctorName(doctorDetails != null ? doctorDetails.getFullName() : null)
+                .doctorName(doctor != null ? doctor.getFullName() : null)
                 .visitId(a.getVisit() != null ? a.getVisit().getId() : null)
                 .description(a.getReason())
                 .status(a.getStatus())

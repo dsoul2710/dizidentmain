@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class VisitDiagnosisService {
 
-    private final UserRepository userRepository;
+    private final PatientRepository patientRepository;
     private final VisitRepository visitRepository;
     private final VisitExaminationItemRepository visitExamRepo;
     private final ExamItemMasterRepository examMasterRepo;
@@ -30,7 +30,7 @@ public class VisitDiagnosisService {
             visit = visitRepository.findById(req.getVisitId())
                     .orElseThrow(() -> new IllegalArgumentException("Visit not found: " + req.getVisitId()));
         } else {
-            User patient = userRepository.findById(req.getPatientUserId())
+            Patient patient = patientRepository.findById(req.getPatientUserId())
                     .orElseThrow(() -> new IllegalArgumentException("Patient user not found: " + req.getPatientUserId()));
 
             visit = new Visit();

@@ -1,15 +1,10 @@
-// src/main/java/com/clinic/hms/service/VisitService.java
 package com.clinic.hms.service;
 
 import com.clinic.hms.dto.request.VisitCreateRequest;
 import com.clinic.hms.dto.request.VisitUpdateRequest;
 import com.clinic.hms.dto.response.VisitResponse;
-import com.clinic.hms.entity.User;
-import com.clinic.hms.entity.UserDetails;
-import com.clinic.hms.entity.Visit;
-import com.clinic.hms.repository.UserDetailsRepository;
-import com.clinic.hms.repository.UserRepository;
-import com.clinic.hms.repository.VisitRepository;
+import com.clinic.hms.entity.*;
+import com.clinic.hms.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,20 +18,20 @@ import java.util.stream.Collectors;
 public class VisitService {
 
     private final VisitRepository visitRepository;
-    private final UserRepository userRepository;
-    private final UserDetailsRepository userDetailsRepository;
+    private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
     private final EventPushService eventPushService;
 
     @Transactional
     public VisitResponse createVisit(VisitCreateRequest req) {
         LocalDateTime now = LocalDateTime.now();
 
-        User patient = userRepository.findById(req.getPatientUserId())
+        Patient patient = patientRepository.findByIdAndIsDeletedFalse(req.getPatientUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid patient user id"));
 
-        User doctor = null;
+        Doctor doctor = null;
         if (req.getDoctorUserId() != null) {
-            doctor = userRepository.findById(req.getDoctorUserId())
+            doctor = doctorRepository.findByIdAndIsDeletedFalse(req.getDoctorUserId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid doctor user id"));
         }
 
@@ -69,7 +64,7 @@ public class VisitService {
 
     @Transactional
     public VisitResponse autoCreateVisit(Long patientUserId) {
-        User patient = userRepository.findById(patientUserId)
+        Patient patient = patientRepository.findByIdAndIsDeletedFalse(patientUserId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid patient user id"));
 
         // If patient already has a visit, return the most recent one
@@ -107,7 +102,7 @@ public class VisitService {
                 .orElseThrow(() -> new IllegalArgumentException("Visit not found: " + visitId));
 
         if (req.getDoctorUserId() != null) {
-            User doctor = userRepository.findById(req.getDoctorUserId())
+            Doctor doctor = doctorRepository.findByIdAndIsDeletedFalse(req.getDoctorUserId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid doctor user id"));
             visit.setDoctor(doctor);
         }
@@ -130,25 +125,16 @@ public class VisitService {
     }
 
     private VisitResponse toDto(Visit v) {
-        User patient = v.getPatient();
-        UserDetails patientDetails = userDetailsRepository
-                .findFirstByUser_Id(patient.getId())
-                .orElse(null);
-
-        User doctor = v.getDoctor();
-        UserDetails doctorDetails = null;
-        if (doctor != null) {
-            doctorDetails = userDetailsRepository.findFirstByUser_Id(doctor.getId())
-                    .orElse(null);
-        }
+        Patient patient = v.getPatient();
+        Doctor doctor = v.getDoctor();
 
         return VisitResponse.builder()
                 .id(v.getId())
-                .patientUserId(patient.getId())
-                .patientName(patientDetails != null ? patientDetails.getFullName() : null)
-                .patientMobile(patient.getMobile())
+                .patientUserId(patient != null ? patient.getId() : null)
+                .patientName(patient != null ? patient.getFullName() : null)
+                .patientMobile(patient != null && patient.getUser() != null ? patient.getUser().getMobile() : null)
                 .doctorUserId(doctor != null ? doctor.getId() : null)
-                .doctorName(doctorDetails != null ? doctorDetails.getFullName() : null)
+                .doctorName(doctor != null ? doctor.getFullName() : null)
                 .visitDate(v.getVisitDate().toString())
                 .visitType(v.getVisitType())
                 .chiefComplaint(v.getChiefComplaint())

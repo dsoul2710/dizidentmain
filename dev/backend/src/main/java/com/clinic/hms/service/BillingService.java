@@ -26,8 +26,9 @@ public class BillingService {
 
     private final VisitRepository visitRepository;
     private final VisitTreatmentItemRepository visitTreatmentItemRepository;
-    private final UserRepository userRepository;
-    private final UserDetailsRepository userDetailsRepository;
+    private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
+    private final PatientDoctorMappingRepository patientDoctorMappingRepository;
     private final BillRepository billRepository;
     private final BillItemRepository billItemRepository;
     private final BillPaymentRepository billPaymentRepository;
@@ -75,9 +76,9 @@ public class BillingService {
         if (visit.getPatient() == null || !Objects.equals(visit.getPatient().getId(), req.getPatientUserId())) {
             throw new IllegalArgumentException("Visit does not belong to patient " + req.getPatientUserId());
         }
-        User patient = userRepository.findById(req.getPatientUserId())
+        Patient patient = patientRepository.findById(req.getPatientUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Patient not found: " + req.getPatientUserId()));
-        User doctor = resolveDoctor(req.getDoctorUserId(), visit, patient);
+        Doctor doctor = resolveDoctor(req.getDoctorUserId(), visit, patient);
 
         LocalDateTime billDate = parseBillDate(req.getBillDate());
         String billNo = generateBillNo();
@@ -210,18 +211,19 @@ public class BillingService {
         return String.format("BILL-%05d", next);
     }
 
-    private User resolveDoctor(Long doctorUserId, Visit visit, User patient) {
+    private Doctor resolveDoctor(Long doctorUserId, Visit visit, Patient patient) {
         if (doctorUserId != null) {
-            return userRepository.findById(doctorUserId)
+            return doctorRepository.findById(doctorUserId)
                     .orElseThrow(() -> new IllegalArgumentException("Doctor not found: " + doctorUserId));
         }
         if (visit != null && visit.getDoctor() != null) {
             return visit.getDoctor();
         }
         if (patient != null) {
-            return userDetailsRepository.findFirstByUser_Id(patient.getId())
-                    .map(UserDetails::getAssignedDoctor)
-                    .orElse(null);
+            List<PatientDoctorMapping> mappings = patientDoctorMappingRepository.findByPatient(patient);
+            if (!mappings.isEmpty()) {
+                return mappings.get(0).getDoctor();
+            }
         }
         return null;
     }
@@ -276,5 +278,19 @@ public class BillingService {
                 .items(itemDtos)
                 .payments(payDtos)
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> getAllBills() {
+        return billRepository.findAll().stream()
+                .map(bill -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", bill.getId());
+                    map.put("doctorUserId", bill.getDoctor() != null ? bill.getDoctor().getId() : null);
+                    map.put("totalAmount", bill.getNetAmount());
+                    map.put("date", bill.getBillDate() != null ? bill.getBillDate().toString() : null);
+                    return map;
+                })
+                .toList();
     }
 }

@@ -40,4 +40,8 @@ public class PatientResponse {
     // NEW: file flags
     private boolean hasIdFile;
     private boolean hasReportFile;
+    private Boolean isActive;
+
+    @JsonProperty("unique_id")
+    private String uniqueId;
 }

@@ -5,6 +5,7 @@ import com.clinic.hms.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +18,12 @@ import java.util.List;
 public class DataSeeder implements CommandLineRunner {
 
     private final UserRepository userRepository;
-    private final UserDetailsRepository userDetailsRepository;
-    private final OrgDoctorMappingRepository orgDoctorMappingRepository;
-    private final OrgPatientMappingRepository orgPatientMappingRepository;
+    private final SuperAdminRepository superAdminRepository;
+    private final OrgHospitalRepository orgHospitalRepository;
+    private final DoctorRepository doctorRepository;
+    private final PatientRepository patientRepository;
+    private final DoctorOrgMappingRepository doctorOrgMappingRepository;
+    private final PatientOrgMappingRepository patientOrgMappingRepository;
     private final AppointmentRepository appointmentRepository;
     private final VisitRepository visitRepository;
     private final BillRepository billRepository;
@@ -27,23 +31,27 @@ public class DataSeeder implements CommandLineRunner {
     private final VendorRepository vendorRepository;
     private final InventoryItemRepository inventoryItemRepository;
     private final PrescriptionRepository prescriptionRepository;
+    private final ServiceProviderRepository serviceProviderRepository;
+    private final ServiceProviderOrgMappingRepository serviceProviderOrgMappingRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        User superAdmin = seedSuperAdmin();
-        User defaultOrg = seedDefaultOrg();
+        seedSuperAdmin();
+        OrgHospital defaultOrg = seedDefaultOrg();
         linkExistingData(defaultOrg);
+        seedDefaultServiceProviders(defaultOrg);
     }
 
-    private User seedSuperAdmin() {
+    private void seedSuperAdmin() {
         User superAdmin = userRepository.findByMobile("9999999999").orElse(null);
 
         if (superAdmin == null) {
             superAdmin = User.builder()
                     .mobile("9999999999")
-                    .password("admin123")
-                    .role("SUPERADMIN")
+                    .password(passwordEncoder.encode("admin123"))
+                    .role(UserRole.SUPER_ADMIN)
                     .isActive(true)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
@@ -51,71 +59,119 @@ public class DataSeeder implements CommandLineRunner {
             superAdmin = userRepository.save(superAdmin);
             log.info("✅ Super Admin user seeded (9999999999)");
         } else {
-            if (!"SUPERADMIN".equalsIgnoreCase(superAdmin.getRole())) {
-                superAdmin.setRole("SUPERADMIN");
-                superAdmin.setUpdatedAt(LocalDateTime.now());
-                superAdmin = userRepository.save(superAdmin);
-                log.info("✅ Migrated existing user 9999999999 to SUPERADMIN");
+            superAdmin.setPassword(passwordEncoder.encode("admin123"));
+            if (superAdmin.getRole() != UserRole.SUPER_ADMIN) {
+                superAdmin.setRole(UserRole.SUPER_ADMIN);
             }
+            superAdmin.setUpdatedAt(LocalDateTime.now());
+            superAdmin = userRepository.save(superAdmin);
+            log.info("✅ Migrated existing user 9999999999 to SUPER_ADMIN");
         }
-        return superAdmin;
+
+        SuperAdmin profile = superAdminRepository.findById(superAdmin.getId()).orElse(null);
+        if (profile == null) {
+            profile = SuperAdmin.builder()
+                    .user(superAdmin)
+                    .fullName("System Administrator")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .createdByUserId(superAdmin.getId())
+                    .updatedByUserId(superAdmin.getId())
+                    .build();
+            superAdminRepository.save(profile);
+            log.info("✅ Super Admin profile seeded");
+        }
     }
 
-    private User seedDefaultOrg() {
+    private OrgHospital seedDefaultOrg() {
         User defaultOrg = userRepository.findByMobile("8888888888").orElse(null);
 
         if (defaultOrg == null) {
             defaultOrg = User.builder()
                     .mobile("8888888888")
-                    .password("org123")
-                    .role("ORG")
+                    .password(passwordEncoder.encode("org123"))
+                    .role(UserRole.ORG_HOSPITAL)
                     .isActive(true)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
             defaultOrg = userRepository.save(defaultOrg);
+            log.info("✅ Default Clinic Org user seeded (8888888888)");
+        } else {
+            defaultOrg.setPassword(passwordEncoder.encode("org123"));
+            if (defaultOrg.getRole() != UserRole.ORG_HOSPITAL) {
+                defaultOrg.setRole(UserRole.ORG_HOSPITAL);
+            }
+            defaultOrg.setUpdatedAt(LocalDateTime.now());
+            defaultOrg = userRepository.save(defaultOrg);
+            log.info("✅ Migrated existing user 8888888888 to ORG_HOSPITAL");
+        }
 
-            UserDetails details = UserDetails.builder()
+        OrgHospital profile = orgHospitalRepository.findById(defaultOrg.getId()).orElse(null);
+        if (profile == null) {
+            profile = OrgHospital.builder()
                     .user(defaultOrg)
-                    .fullName("Default Clinic Org")
+                    .orgName("Default Clinic Org")
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
+                    .createdByUserId(defaultOrg.getId())
+                    .updatedByUserId(defaultOrg.getId())
+                    .isDeleted(false)
                     .build();
-            userDetailsRepository.save(details);
-
-            log.info("✅ Default Clinic Org user seeded (8888888888)");
+            profile = orgHospitalRepository.save(profile);
+            log.info("✅ Default Clinic Org profile seeded");
         }
-        return defaultOrg;
+        return profile;
     }
 
-    private void linkExistingData(User defaultOrg) {
+    private void linkExistingData(OrgHospital defaultOrg) {
         log.info("🔄 Checking and linking legacy data to Default Clinic Org...");
 
         // 1. Link Doctors
-        List<User> doctors = userRepository.findByRole("DOCTOR");
-        for (User doc : doctors) {
-            if (!orgDoctorMappingRepository.existsByOrgAndDoctor(defaultOrg, doc)) {
-                OrgDoctorMapping mapping = OrgDoctorMapping.builder()
+        List<Doctor> doctors = doctorRepository.findAll();
+        for (Doctor doc : doctors) {
+            if (!doctorOrgMappingRepository.existsByOrgAndDoctor(defaultOrg, doc)) {
+                DoctorOrgMapping mapping = DoctorOrgMapping.builder()
                         .org(defaultOrg)
                         .doctor(doc)
+                        .status("ACTIVE")
                         .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
+                        .createdByUserId(defaultOrg.getId())
                         .build();
-                orgDoctorMappingRepository.save(mapping);
-                log.info("🔗 Linked doctor {} to default clinic org", doc.getMobile());
+                doctorOrgMappingRepository.save(mapping);
+                log.info("🔗 Linked doctor {} to default clinic org", doc.getFullName());
             }
         }
 
         // 2. Link Patients
-        List<User> patients = userRepository.findByRole("PATIENT");
-        for (User pat : patients) {
-            if (!orgPatientMappingRepository.existsByOrgAndPatient(defaultOrg, pat)) {
-                OrgPatientMapping mapping = OrgPatientMapping.builder()
+        List<Patient> patients = patientRepository.findAll();
+        for (Patient pat : patients) {
+            boolean needsSave = false;
+            if (pat.getUniqueId() == null || pat.getUniqueId().isBlank()) {
+                String uniqueId = "PAT-" + String.format("%06d", (int)(Math.random() * 1000000));
+                while (patientRepository.existsByUniqueId(uniqueId)) {
+                    uniqueId = "PAT-" + String.format("%06d", (int)(Math.random() * 1000000));
+                }
+                pat.setUniqueId(uniqueId);
+                needsSave = true;
+                log.info("Generated unique ID {} for legacy patient {}", uniqueId, pat.getFullName());
+            }
+            if (needsSave) {
+                patientRepository.save(pat);
+            }
+
+            if (!patientOrgMappingRepository.existsByOrgAndPatient(defaultOrg, pat)) {
+                PatientOrgMapping mapping = PatientOrgMapping.builder()
                         .org(defaultOrg)
                         .patient(pat)
+                        .status("ACTIVE")
                         .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
+                        .createdByUserId(defaultOrg.getId())
                         .build();
-                orgPatientMappingRepository.save(mapping);
-                log.info("🔗 Linked patient {} to default clinic org", pat.getMobile());
+                patientOrgMappingRepository.save(mapping);
+                log.info("🔗 Linked patient {} to default clinic org", pat.getFullName());
             }
         }
 
@@ -183,5 +239,111 @@ public class DataSeeder implements CommandLineRunner {
         }
 
         log.info("✅ Legacy data mapping checked successfully");
+    }
+
+    private void seedDefaultServiceProviders(OrgHospital defaultOrg) {
+        // 1. Seed LAB provider (7777777777 / provider123)
+        User labUser = userRepository.findByMobile("7777777777").orElse(null);
+        if (labUser == null) {
+            labUser = User.builder()
+                    .mobile("7777777777")
+                    .password(passwordEncoder.encode("provider123"))
+                    .role(UserRole.SERVICE_PROVIDER)
+                    .isActive(true)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            labUser = userRepository.save(labUser);
+            log.info("✅ Lab service provider user seeded (7777777777)");
+        } else {
+            labUser.setPassword(passwordEncoder.encode("provider123"));
+            if (labUser.getRole() != UserRole.SERVICE_PROVIDER) {
+                labUser.setRole(UserRole.SERVICE_PROVIDER);
+            }
+            labUser.setUpdatedAt(LocalDateTime.now());
+            labUser = userRepository.save(labUser);
+            log.info("✅ Refreshed lab service provider password");
+        }
+        ServiceProvider labProfile = serviceProviderRepository.findById(labUser.getId()).orElse(null);
+        if (labProfile == null) {
+            labProfile = ServiceProvider.builder()
+                    .user(labUser)
+                    .providerName("Default Lab Partner")
+                    .providerType(ServiceProviderType.LAB)
+                    .address("Suite 101, Med Plaza")
+                    .mobile("7777777777")
+                    .uniqueId("SP-000001")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .createdByUserId(defaultOrg.getId())
+                    .isDeleted(false)
+                    .build();
+            labProfile = serviceProviderRepository.save(labProfile);
+            log.info("✅ Lab service provider profile seeded");
+        }
+        if (!serviceProviderOrgMappingRepository.existsByOrgAndServiceProvider(defaultOrg, labProfile)) {
+            ServiceProviderOrgMapping mapping = ServiceProviderOrgMapping.builder()
+                    .org(defaultOrg)
+                    .serviceProvider(labProfile)
+                    .status("ACTIVE")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .createdByUserId(defaultOrg.getId())
+                    .build();
+            serviceProviderOrgMappingRepository.save(mapping);
+            log.info("🔗 Linked lab partner to Default Clinic Org");
+        }
+
+        // 2. Seed PHARMACY provider (6666666666 / provider123)
+        User pharmUser = userRepository.findByMobile("6666666666").orElse(null);
+        if (pharmUser == null) {
+            pharmUser = User.builder()
+                    .mobile("6666666666")
+                    .password(passwordEncoder.encode("provider123"))
+                    .role(UserRole.SERVICE_PROVIDER)
+                    .isActive(true)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
+            pharmUser = userRepository.save(pharmUser);
+            log.info("✅ Pharmacy service provider user seeded (6666666666)");
+        } else {
+            pharmUser.setPassword(passwordEncoder.encode("provider123"));
+            if (pharmUser.getRole() != UserRole.SERVICE_PROVIDER) {
+                pharmUser.setRole(UserRole.SERVICE_PROVIDER);
+            }
+            pharmUser.setUpdatedAt(LocalDateTime.now());
+            pharmUser = userRepository.save(pharmUser);
+            log.info("✅ Refreshed pharmacy service provider password");
+        }
+        ServiceProvider pharmProfile = serviceProviderRepository.findById(pharmUser.getId()).orElse(null);
+        if (pharmProfile == null) {
+            pharmProfile = ServiceProvider.builder()
+                    .user(pharmUser)
+                    .providerName("Default Pharmacy Partner")
+                    .providerType(ServiceProviderType.PHARMACY)
+                    .address("Ground Floor, Clinic Wing")
+                    .mobile("6666666666")
+                    .uniqueId("SP-000002")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .createdByUserId(defaultOrg.getId())
+                    .isDeleted(false)
+                    .build();
+            pharmProfile = serviceProviderRepository.save(pharmProfile);
+            log.info("✅ Pharmacy service provider profile seeded");
+        }
+        if (!serviceProviderOrgMappingRepository.existsByOrgAndServiceProvider(defaultOrg, pharmProfile)) {
+            ServiceProviderOrgMapping mapping = ServiceProviderOrgMapping.builder()
+                    .org(defaultOrg)
+                    .serviceProvider(pharmProfile)
+                    .status("ACTIVE")
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
+                    .createdByUserId(defaultOrg.getId())
+                    .build();
+            serviceProviderOrgMappingRepository.save(mapping);
+            log.info("🔗 Linked pharmacy partner to Default Clinic Org");
+        }
     }
 }

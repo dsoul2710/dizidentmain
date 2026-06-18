@@ -19,15 +19,13 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // patient_user_id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_user_id")
-    private User patient;
+    private Patient patient;
 
-    // doctor_user_id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_user_id")
-    private User doctor;
+    private Doctor doctor;
 
     // visit_id (optional)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -63,5 +61,5 @@ public class Appointment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "org_user_id")
-    private User org;
+    private OrgHospital org;
 }

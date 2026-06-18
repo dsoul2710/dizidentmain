@@ -23,8 +23,9 @@ public class User {
     @Column(nullable = false, length = 15)
     private String password;
 
-    @Column(nullable = false, length = 20)
-    private String role; // PATIENT / DOCTOR / ORG
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private UserRole role;
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;

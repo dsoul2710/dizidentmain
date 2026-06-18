@@ -1,11 +1,13 @@
 package com.clinic.hms.controller;
 
+import com.clinic.hms.constants.AppConstants;
 import com.clinic.hms.dto.request.OrganizationCreateRequest;
 import com.clinic.hms.dto.request.OrganizationUpdateRequest;
 import com.clinic.hms.dto.response.OrganizationResponse;
 import com.clinic.hms.entity.User;
-import com.clinic.hms.entity.UserDetails;
-import com.clinic.hms.repository.UserDetailsRepository;
+import com.clinic.hms.entity.UserRole;
+import com.clinic.hms.entity.OrgHospital;
+import com.clinic.hms.repository.OrgHospitalRepository;
 import com.clinic.hms.repository.UserRepository;
 import com.clinic.hms.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +26,13 @@ import java.util.List;
 public class OrganizationController {
 
     private final UserRepository userRepository;
-    private final UserDetailsRepository userDetailsRepository;
+    private final OrgHospitalRepository orgHospitalRepository;
     private final SecurityUtils securityUtils;
     private final PasswordEncoder passwordEncoder;
 
     private void checkSuperAdmin() {
         String role = securityUtils.getCurrentUserRole();
-        if (!"SUPERADMIN".equalsIgnoreCase(role)) {
+        if (!AppConstants.Roles.SUPER_ADMIN.equalsIgnoreCase(role)) {
             throw new SecurityException("Only Super Admins can manage organizations");
         }
     }
@@ -38,21 +40,15 @@ public class OrganizationController {
     @GetMapping
     public ResponseEntity<List<OrganizationResponse>> list() {
         checkSuperAdmin();
-        List<User> orgs = userRepository.findByRole("ORG");
+        List<OrgHospital> orgs = orgHospitalRepository.findByIsDeletedFalse();
         List<OrganizationResponse> responses = orgs.stream()
-                .map(user -> {
-                    String name = userDetailsRepository.findByUser(user)
-                            .map(UserDetails::getFullName)
-                            .orElse("Clinic Org");
-
-                    return OrganizationResponse.builder()
-                            .id(user.getId())
-                            .name(name)
-                            .mobile(user.getMobile())
-                            .isActive(user.getIsActive())
-                            .createdAt(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null)
-                            .build();
-                })
+                .map(org -> OrganizationResponse.builder()
+                        .id(org.getId())
+                        .name(org.getOrgName())
+                        .mobile(org.getUser().getMobile())
+                        .isActive(org.getUser().getIsActive())
+                        .createdAt(org.getCreatedAt() != null ? org.getCreatedAt().toString() : null)
+                        .build())
                 .toList();
 
         return ResponseEntity.ok(responses);
@@ -69,6 +65,11 @@ public class OrganizationController {
                 });
 
         LocalDateTime now = LocalDateTime.now();
+        Long currentUserId = null;
+        try {
+            currentUserId = securityUtils.getCurrentUserId();
+        } catch (Exception e) {}
+
         User orgUser = User.builder()
                 .mobile(req.getMobile())
                 .password(passwordEncoder.encode(
@@ -76,7 +77,7 @@ public class OrganizationController {
                                 ? req.getPassword()
                                 : "admin123"
                 ))
-                .role("ORG")
+                .role(UserRole.ORG_HOSPITAL)
                 .isActive(true)
                 .createdAt(now)
                 .updatedAt(now)
@@ -84,18 +85,22 @@ public class OrganizationController {
 
         orgUser = userRepository.save(orgUser);
 
-        UserDetails details = UserDetails.builder()
+        OrgHospital orgHospital = OrgHospital.builder()
+                .id(orgUser.getId())
                 .user(orgUser)
-                .fullName(req.getName())
+                .orgName(req.getName())
                 .createdAt(now)
                 .updatedAt(now)
+                .createdByUserId(currentUserId)
+                .updatedByUserId(currentUserId)
+                .isDeleted(false)
                 .build();
 
-        userDetailsRepository.save(details);
+        orgHospitalRepository.save(orgHospital);
 
         OrganizationResponse response = OrganizationResponse.builder()
                 .id(orgUser.getId())
-                .name(details.getFullName())
+                .name(orgHospital.getOrgName())
                 .mobile(orgUser.getMobile())
                 .isActive(orgUser.getIsActive())
                 .createdAt(orgUser.getCreatedAt().toString())
@@ -110,9 +115,9 @@ public class OrganizationController {
         checkSuperAdmin();
 
         User orgUser = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Organization not found: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Organization user not found: " + id));
 
-        if (!"ORG".equalsIgnoreCase(orgUser.getRole())) {
+        if (orgUser.getRole() != UserRole.ORG_HOSPITAL) {
             throw new IllegalArgumentException("Target user is not an organization");
         }
 
@@ -132,23 +137,29 @@ public class OrganizationController {
             orgUser.setIsActive(req.getIsActive());
         }
 
-        UserDetails details = userDetailsRepository.findByUser(orgUser)
-                .orElseGet(() -> UserDetails.builder().user(orgUser).createdAt(LocalDateTime.now()).build());
+        OrgHospital orgHospital = orgHospitalRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new IllegalArgumentException("Organization profile not found or deleted"));
 
         if (req.getName() != null) {
-            details.setFullName(req.getName().trim());
+            orgHospital.setOrgName(req.getName().trim());
         }
+
+        Long currentUserId = null;
+        try {
+            currentUserId = securityUtils.getCurrentUserId();
+        } catch (Exception e) {}
 
         LocalDateTime now = LocalDateTime.now();
         orgUser.setUpdatedAt(now);
-        details.setUpdatedAt(now);
+        orgHospital.setUpdatedAt(now);
+        orgHospital.setUpdatedByUserId(currentUserId);
 
         userRepository.save(orgUser);
-        userDetailsRepository.save(details);
+        orgHospitalRepository.save(orgHospital);
 
         OrganizationResponse response = OrganizationResponse.builder()
                 .id(orgUser.getId())
-                .name(details.getFullName())
+                .name(orgHospital.getOrgName())
                 .mobile(orgUser.getMobile())
                 .isActive(orgUser.getIsActive())
                 .createdAt(orgUser.getCreatedAt() != null ? orgUser.getCreatedAt().toString() : null)
@@ -162,16 +173,27 @@ public class OrganizationController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         checkSuperAdmin();
 
-        User orgUser = userRepository.findById(id)
+        OrgHospital orgHospital = orgHospitalRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Organization not found: " + id));
 
-        if (!"ORG".equalsIgnoreCase(orgUser.getRole())) {
-            throw new IllegalArgumentException("Target user is not an organization");
+        Long currentUserId = null;
+        try {
+            currentUserId = securityUtils.getCurrentUserId();
+        } catch (Exception e) {}
+
+        // HIPAA: Soft delete profile and de-activate login
+        orgHospital.setIsDeleted(true);
+        orgHospital.setDeletedAt(LocalDateTime.now());
+        orgHospital.setDeletedByUserId(currentUserId);
+        
+        User orgUser = orgHospital.getUser();
+        if (orgUser != null) {
+            orgUser.setIsActive(false);
+            orgUser.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(orgUser);
         }
 
-        orgUser.setIsActive(false);
-        orgUser.setUpdatedAt(LocalDateTime.now());
-        userRepository.save(orgUser);
+        orgHospitalRepository.save(orgHospital);
 
         return ResponseEntity.noContent().build();
     }
