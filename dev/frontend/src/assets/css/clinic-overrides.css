@@ -4,6 +4,7 @@
 
 :root {
   --primary: #2563eb;
+  --brand: #2563eb;
   --greyLight-1: #f8fafc;
   --greyLight-2: #e2e8f0;
   --greyLight-3: #d9e2ef;
@@ -1848,7 +1849,7 @@ h6 {
 }
 
 .bg-light-primary {
-  background-color: rgba(79, 131, 255, 0.1);
+  background-color: rgba(37, 99, 235, 0.1);
 }
 
 .bg-light-success {
@@ -1868,7 +1869,7 @@ h6 {
 }
 
 .text-primary {
-  color: #4f83ff;
+  color: var(--primary);
 }
 
 .text-success {
@@ -2032,4 +2033,29 @@ h6 {
 
 .ps-0 {
   padding-left: 0;
+}
+
+/* Header Redesign Styles */
+.header-divider {
+  width: 1px;
+  height: 28px;
+  background-color: var(--bs-border-color, #e2e8f0);
+  margin: 0 4px;
+}
+
+.profile-avatar-wrapper {
+  position: relative;
+  padding: 2px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.22) 0%, rgba(37, 99, 235, 0.04) 100%);
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.12);
+  display: inline-flex;
+}
+
+.profile-avatar-inner {
+  border: 2px solid #fff !important;
+}
+
+.text-xxs {
+  font-size: 0.68rem !important;
 }

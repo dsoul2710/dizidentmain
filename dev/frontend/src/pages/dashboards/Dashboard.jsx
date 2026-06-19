@@ -19,16 +19,9 @@ import ChatPage from "../chat/ChatPage.jsx";
 import ChatBell from "../../components/chat/ChatBell.jsx";
 import NotificationPanel from "../../components/chat/NotificationPanel.jsx";
 import WowDashLayout from "../../components/layout/WowDashLayout.jsx";
-
-const getInitials = (name) => {
-  if (!name) return "U";
-  const clean = name.trim().replace(/^(dr|dr\.)\s+/i, "");
-  const parts = clean.split(/\s+/);
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  }
-  return parts[0].substring(0, 2).toUpperCase();
-};
+import HeaderProfile from "../../components/layout/HeaderProfile.jsx";
+import OrgOverview from "../org/OrgOverview.jsx";
+import useNotifications from "../../hooks/useNotifications";
 
 export default function Dashboard({ user, onLogout }) {
   const navigate = useNavigate();
@@ -38,8 +31,7 @@ export default function Dashboard({ user, onLogout }) {
   const [recentActivity, setRecentActivity] = useState([]);
   const [overviewLoading, setOverviewLoading] = useState(false);
   const [notificationPanelOpen, setNotificationPanelOpen] = useState(false);
-  const [unreadMessages, setUnreadMessages] = useState([]);
-  const [unreadEvents, setUnreadEvents] = useState([]);
+  const { unreadMessages, unreadEvents } = useNotifications(user, notificationPanelOpen);
 
   const formatValue = (val) =>
     typeof val === "number" ? val.toLocaleString("en-IN") : val;
@@ -152,123 +144,7 @@ export default function Dashboard({ user, onLogout }) {
     loadOverview();
   }, []);
 
-  useEffect(() => {
-    const loadUnreadMessages = async () => {
-      const userId = user?.id ?? user?.userId;
-      if (!userId) return;
 
-      try {
-        const [unreadResponse, patientsResponse, doctorsResponse] = await Promise.all([
-          fetch(`${API_BASE_URL}/chat/unread/by-sender?userId=${userId}`),
-          fetch(`${API_BASE_URL}/patients`),
-          fetch(`${API_BASE_URL}/doctors`)
-        ]);
-
-        if (!unreadResponse.ok) return;
-
-        const unreadData = await unreadResponse.json();
-        const patientsData = patientsResponse.ok ? await patientsResponse.json() : [];
-        const doctorsData = doctorsResponse.ok ? await doctorsResponse.json() : [];
-
-        // Create maps of userId to name
-        const userMap = {};
-        (patientsData || []).forEach((p) => {
-          const id = String(p.userId ?? p.id);
-          userMap[id] = p.name || p.mobile || "Patient";
-        });
-        (doctorsData || []).forEach((d) => {
-          const id = String(d.id);
-          userMap[id] = d.name || d.mobile || "Doctor";
-        });
-
-        if (Array.isArray(unreadData) && unreadData.length > 0) {
-          const formattedMessages = unreadData.map((item) => {
-            const senderId = String(item.senderUserId);
-            const senderName = userMap[senderId] || item.senderName || "Unknown User";
-
-            return {
-              id: item.senderUserId || Math.random(),
-              senderName: senderName,
-              preview: `${item.count} unread message${item.count > 1 ? "s" : ""}`,
-              count: item.count,
-            };
-          });
-          setUnreadMessages(formattedMessages);
-        } else {
-          setUnreadMessages([]);
-        }
-      } catch (err) {
-        console.error("Failed to load unread messages", err);
-      }
-    };
-
-    const loadUnreadEvents = async () => {
-      const userId = user?.id ?? user?.userId;
-      const role = user?.role || "ORG";
-      if (!userId) return;
-
-      try {
-        const eventsResponse = await fetch(
-          `${API_BASE_URL}/events?userId=${userId}&role=${encodeURIComponent(role)}`
-        );
-
-        if (!eventsResponse.ok) return;
-
-        const eventsData = await eventsResponse.json();
-
-        // Get last seen timestamp from localStorage
-        const lastSeenKey = `hms_events_last_seen_${userId}`;
-        const lastSeen = localStorage.getItem(lastSeenKey) || "";
-
-        const isEventForUser = (event) => {
-          const userIdStr = String(userId);
-          const roleName = String(user?.name || "").trim().toLowerCase();
-          const candidates = [
-            event?.userId,
-            event?.recipientUserId,
-            event?.targetUserId,
-            event?.patientUserId,
-            event?.doctorUserId,
-            event?.orgUserId,
-            event?.assignedDoctorId,
-            event?.patientId,
-            event?.doctorId,
-            event?.orgId,
-          ];
-          if (candidates.some((value) => value != null && String(value) === userIdStr)) {
-            return true;
-          }
-          if (role === "DOCTOR" && roleName) {
-            return String(event?.doctorName || "").trim().toLowerCase() === roleName;
-          }
-          if (role === "PATIENT" && roleName) {
-            return String(event?.patientName || "").trim().toLowerCase() === roleName;
-          }
-          if (role === "ORG") {
-            return String(event?.actorUserId || "") === userIdStr;
-          }
-          return false;
-        };
-
-        // Filter events that are newer than last seen
-        const list = Array.isArray(eventsData) ? eventsData : [];
-        const unreadEventsList = list.filter((item) => {
-          if (!item?.timestamp || item.timestamp <= lastSeen) return false;
-          if (!isEventForUser(item)) return false;
-          return true;
-        });
-        setUnreadEvents(unreadEventsList);
-      } catch (err) {
-        console.error("Failed to load unread events", err);
-      }
-    };
-
-    // Only load when notification panel is opened
-    if (notificationPanelOpen) {
-      loadUnreadMessages();
-      loadUnreadEvents();
-    }
-  }, [notificationPanelOpen, user?.id, user?.userId, user?.role]);
 
 
 
@@ -304,17 +180,10 @@ export default function Dashboard({ user, onLogout }) {
             role={user?.role || "ORG"}
             onClick={() => setNotificationPanelOpen(!notificationPanelOpen)}
           />
-          <div className="d-flex align-items-center gap-2 ms-2">
-            <div className="w-40-px h-40-px bg-primary-100 text-primary-600 rounded-circle d-flex justify-content-center align-items-center fw-bold text-md shadow-sm border border-white">
-              {getInitials(user?.name || "Org")}
-            </div>
-            <div className="d-flex flex-column text-start">
-              <span className="text-xs text-secondary-light" style={{ lineHeight: 1 }}>Welcome,</span>
-              <span className="fw-semibold text-primary-light text-sm" style={{ lineHeight: 1.2 }}>
-                {user?.name || "Org"}
-              </span>
-            </div>
-          </div>
+          <HeaderProfile
+            name={user?.name || "Org"}
+            roleLabel="Org Administrator"
+          />
         </>
       }
     >
@@ -377,113 +246,3 @@ export default function Dashboard({ user, onLogout }) {
   );
 }
 
-function OrgOverview({
-  overviewMetrics,
-  formatValue,
-  scheduleToday,
-  recentActivity,
-  loading,
-}) {
-  return (
-    <section className="view show">
-      <div className="row gy-4">
-        {overviewMetrics.map((metric) => (
-          <div className="col-xxl-3 col-sm-6" key={metric.key}>
-            <div className="card p-3 shadow-2 radius-8 h-100">
-              <div className="d-flex align-items-center justify-content-between gap-2">
-                <div>
-                  <h6 className="fw-semibold mb-2">
-                    {formatValue(metric.value)}{" "}
-                    <span className="text-secondary-light text-sm">
-                      {metric.suffix}
-                    </span>
-                  </h6>
-                  <span className="text-secondary-light text-sm">
-                    {metric.label}
-                  </span>
-                </div>
-                <span
-                  className={`w-48-px h-48-px ${metric.tone} flex-shrink-0 d-flex justify-content-center align-items-center rounded-circle`}
-                >
-                  <i className={`${metric.icon} text-xl`}></i>
-                </span>
-              </div>
-              <div className="progress mt-3" style={{ height: 6 }}>
-                <div
-                  className="progress-bar"
-                  style={{ width: `${metric.percent}%` }}
-                  role="progressbar"
-                  aria-valuenow={metric.percent}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                ></div>
-              </div>
-            </div>
-          </div>
-        ))}
-
-        <div className="col-xxl-6">
-          <div className="card h-100">
-            <div className="card-header border-bottom">
-              <h6 className="mb-0 fw-bold text-lg">Schedule for Today</h6>
-            </div>
-            <div className="card-body">
-              {loading && (
-                <div className="text-secondary-light">Loading schedule...</div>
-              )}
-              {!loading && (!scheduleToday || scheduleToday.length === 0) && (
-                <div className="text-secondary-light">No schedule loaded.</div>
-              )}
-              {!loading && scheduleToday?.length > 0 && (
-                <div className="d-flex flex-column gap-2">
-                  {scheduleToday.slice(0, 6).map((appt) => (
-                    <div key={appt.id} className="d-flex justify-content-between gap-2">
-                      <div className="text-secondary-light">
-                        {appt.patientName || "Patient"}
-                      </div>
-                      <div className="text-secondary-light">
-                        {appt.slot || "-"}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="col-xxl-6">
-          <div className="card h-100">
-            <div className="card-header border-bottom">
-              <h6 className="mb-0 fw-bold text-lg">Recent Activity</h6>
-            </div>
-            <div className="card-body">
-              {loading && (
-                <div className="text-secondary-light">Loading activity...</div>
-              )}
-              {!loading && (!recentActivity || recentActivity.length === 0) && (
-                <div className="text-secondary-light">No recent activity.</div>
-              )}
-              {!loading && recentActivity?.length > 0 && (
-                <ul className="mb-0 text-secondary-light">
-                  {recentActivity.map((appt) => {
-                    const activityDate =
-                      formatDateDMY(appt.dateKey || appt.date) ||
-                      appt.dateKey ||
-                      appt.date ||
-                      "date";
-                    return (
-                      <li key={`act-${appt.id}`}>
-                        {appt.patientName || "Patient"} - {activityDate}{" "}
-                        {appt.slot ? `@ ${appt.slot}` : ""}
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}

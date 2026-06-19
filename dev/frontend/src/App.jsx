@@ -7,7 +7,7 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import LoginPage from "./pages/LoginPage";
+import LoginPage from "./pages/auth/LoginPage";
 import Dashboard from "./pages/dashboards/Dashboard";
 import DoctorDashboard from "./pages/dashboards/DoctorDashboard";
 import PatientDashboard from "./pages/dashboards/PatientDashboard";

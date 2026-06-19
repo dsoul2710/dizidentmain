@@ -1,6 +1,7 @@
 // src/components/HeaderPatientSelector.jsx
 import React, { useEffect, useRef, useState } from "react";
 import PatientSelect from "../common/PatientSelect";
+import { getPatientName } from "../../utils/patientList";
 
 // Simple helpers for cookies
 function setCookie(name, value, days = 7) {
@@ -83,7 +84,6 @@ export default function HeaderPatientSelector({
           const patient = items[0];
           setSelectedPatient(patient);
           // Cache patient name for next page load
-          const { getPatientName } = require("../../utils/patientList");
           const name = getPatientName(patient) || "Unknown";
           setCookie("selectedPatientName", name, 7);
           console.log("Selected patient set from search:", patient);

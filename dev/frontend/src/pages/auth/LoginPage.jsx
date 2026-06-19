@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import api from "../api/api"; // axios instance with baseURL + credentials
+import api from "../../api/api"; // axios instance with baseURL + credentials
 
 export default function LoginPage({ onLogin }) {
   const [mobile, setMobile] = useState("");
