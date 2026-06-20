@@ -11,9 +11,11 @@ import LoginPage from "./pages/auth/LoginPage";
 import UnifiedDashboard from "./pages/dashboards/UnifiedDashboard";
 import { ToastProvider } from "./components/common/ToastProvider";
 import GlobalLoader from "./components/common/GlobalLoader";
+import { API_BASE_URL } from "./config";
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [isBackendOffline, setIsBackendOffline] = useState(false);
 
   // OPTIONAL: restore from localStorage if you want persistence on refresh
   useEffect(() => {
@@ -37,15 +39,44 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const handleOffline = () => setIsBackendOffline(true);
+    const handleOnline = () => setIsBackendOffline(false);
+
+    window.addEventListener("backend-offline", handleOffline);
+    window.addEventListener("backend-online", handleOnline);
+
+    return () => {
+      window.removeEventListener("backend-offline", handleOffline);
+      window.removeEventListener("backend-online", handleOnline);
+    };
+  }, []);
+
+  useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.__fetchPatched) return;
     window.__fetchPatched = true;
     const originalFetch = window.fetch.bind(window);
     window.fetch = (...args) => {
+      const url = typeof args[0] === "string" ? args[0] : (args[0] instanceof Request ? args[0].url : "");
+      const isBackend = url.includes(API_BASE_URL) || url.startsWith("/api");
+
       window.dispatchEvent(new CustomEvent("app-loading", { detail: 1 }));
-      return originalFetch(...args).finally(() => {
-        window.dispatchEvent(new CustomEvent("app-loading", { detail: -1 }));
-      });
+      return originalFetch(...args)
+        .then((response) => {
+          if (isBackend) {
+            window.dispatchEvent(new CustomEvent("backend-online"));
+          }
+          return response;
+        })
+        .catch((error) => {
+          if (isBackend) {
+            window.dispatchEvent(new CustomEvent("backend-offline"));
+          }
+          throw error;
+        })
+        .finally(() => {
+          window.dispatchEvent(new CustomEvent("app-loading", { detail: -1 }));
+        });
     };
   }, []);
 
@@ -93,6 +124,12 @@ export default function App() {
   return (
     <ToastProvider>
       <GlobalLoader />
+      {isBackendOffline && (
+        <div className="backend-offline-banner">
+          <i className="ri-error-warning-line text-lg"></i>
+          <span>Backend server is offline. Please check your connection or restart the server.</span>
+        </div>
+      )}
       <Router>
         <Routes>
           {/* Default route */}

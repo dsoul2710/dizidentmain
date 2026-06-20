@@ -2059,3 +2059,34 @@ h6 {
 .text-xxs {
   font-size: 0.68rem !important;
 }
+
+/* Backend Offline Banner */
+.backend-offline-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--bs-danger, #ef4444);
+  color: #ffffff;
+  padding: 10px 16px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  z-index: 99999;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  animation: bannerSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+@keyframes bannerSlideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+

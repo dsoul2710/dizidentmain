@@ -245,6 +245,7 @@ public class ServiceProviderService {
 
     private void syncModulePermissions(User user, java.util.Set<ServiceProviderType> types) {
         modulePermissionRepository.deleteByUserId(user.getId());
+        modulePermissionRepository.flush();
         
         java.util.List<String> spModules = new java.util.ArrayList<>();
         spModules.add("OVERVIEW");
