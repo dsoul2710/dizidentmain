@@ -6,6 +6,7 @@ import com.clinic.hms.dto.request.ServiceProviderUpdateRequest;
 import com.clinic.hms.dto.response.OrganizationResponse;
 import com.clinic.hms.dto.response.ServiceProviderResponse;
 import com.clinic.hms.entity.*;
+import com.clinic.hms.repository.ModulePermissionRepository;
 import com.clinic.hms.repository.ServiceProviderOrgMappingRepository;
 import com.clinic.hms.repository.ServiceProviderRepository;
 import com.clinic.hms.repository.UserRepository;
@@ -27,6 +28,7 @@ public class ServiceProviderService {
     private final UserRepository userRepository;
     private final SecurityUtils securityUtils;
     private final PasswordEncoder passwordEncoder;
+    private final ModulePermissionRepository modulePermissionRepository;
 
     @Transactional(readOnly = true)
     public List<OrganizationResponse> getMyClinics(Long userId) {
@@ -60,6 +62,9 @@ public class ServiceProviderService {
                         .providerName(sp.getProviderName())
                         .mobile(sp.getUser().getMobile())
                         .providerType(sp.getProviderType() != null ? sp.getProviderType().name() : null)
+                        .providerTypes(sp.getProviderTypes() != null 
+                                ? sp.getProviderTypes().stream().map(Enum::name).collect(java.util.stream.Collectors.toSet()) 
+                                : java.util.Collections.emptySet())
                         .address(sp.getAddress())
                         .uniqueId(sp.getUniqueId())
                         .isActive(sp.getUser().getIsActive())
@@ -96,10 +101,15 @@ public class ServiceProviderService {
 
         user = userRepository.save(user);
 
+        ServiceProviderType primaryType = req.getProviderTypes() != null && !req.getProviderTypes().isEmpty()
+                ? req.getProviderTypes().iterator().next()
+                : ServiceProviderType.OTHER;
+
         ServiceProvider sp = ServiceProvider.builder()
                 .user(user)
                 .providerName(req.getProviderName())
-                .providerType(req.getProviderType())
+                .providerType(primaryType)
+                .providerTypes(req.getProviderTypes() != null ? req.getProviderTypes() : new java.util.HashSet<>())
                 .address(req.getAddress())
                 .mobile(req.getMobile())
                 .uniqueId(generateUniqueProviderId())
@@ -112,11 +122,15 @@ public class ServiceProviderService {
 
         sp = serviceProviderRepository.save(sp);
 
+        // Sync permissions
+        syncModulePermissions(user, sp.getProviderTypes());
+
         return ServiceProviderResponse.builder()
                 .id(sp.getId())
                 .providerName(sp.getProviderName())
                 .mobile(user.getMobile())
                 .providerType(sp.getProviderType().name())
+                .providerTypes(sp.getProviderTypes().stream().map(Enum::name).collect(java.util.stream.Collectors.toSet()))
                 .address(sp.getAddress())
                 .uniqueId(sp.getUniqueId())
                 .isActive(user.getIsActive())
@@ -156,8 +170,15 @@ public class ServiceProviderService {
             sp.setProviderName(req.getProviderName().trim());
         }
 
-        if (req.getProviderType() != null) {
-            sp.setProviderType(req.getProviderType());
+        if (req.getProviderTypes() != null) {
+            sp.setProviderTypes(req.getProviderTypes());
+            ServiceProviderType primaryType = req.getProviderTypes().isEmpty()
+                    ? ServiceProviderType.OTHER
+                    : req.getProviderTypes().iterator().next();
+            sp.setProviderType(primaryType);
+            
+            // Sync permissions on update
+            syncModulePermissions(user, sp.getProviderTypes());
         }
 
         if (req.getAddress() != null) {
@@ -182,6 +203,7 @@ public class ServiceProviderService {
                 .providerName(sp.getProviderName())
                 .mobile(user.getMobile())
                 .providerType(sp.getProviderType().name())
+                .providerTypes(sp.getProviderTypes().stream().map(Enum::name).collect(java.util.stream.Collectors.toSet()))
                 .address(sp.getAddress())
                 .uniqueId(sp.getUniqueId())
                 .isActive(user.getIsActive())
@@ -219,5 +241,41 @@ public class ServiceProviderService {
             uniqueId = "SP-" + String.format("%06d", (int) (Math.random() * 1000000));
         } while (serviceProviderRepository.findByUniqueIdAndIsDeletedFalse(uniqueId).isPresent());
         return uniqueId;
+    }
+
+    private void syncModulePermissions(User user, java.util.Set<ServiceProviderType> types) {
+        modulePermissionRepository.deleteByUserId(user.getId());
+        
+        java.util.List<String> spModules = new java.util.ArrayList<>();
+        spModules.add("OVERVIEW");
+        spModules.add("CHAT");
+        if (types != null) {
+            for (ServiceProviderType type : types) {
+                switch (type) {
+                    case LAB -> spModules.add("LAB_ORDERS_MODULE");
+                    case BED_MANAGER -> spModules.add("BED_ALLOCATION_MODULE");
+                    case PHARMACY -> spModules.add("PHARMACY_ORDERS_MODULE");
+                    case RADIOLOGY -> spModules.add("RADIOLOGY_MODULE");
+                    case PATHOLOGY -> spModules.add("PATHOLOGY_MODULE");
+                    case BLOOD_BANK -> spModules.add("BLOOD_BANK_MODULE");
+                    case AMBULANCE -> spModules.add("AMBULANCE_MODULE");
+                    case ORTHODONTIC_LAB -> spModules.add("ORTHODONTIC_LAB_MODULE");
+                }
+            }
+        }
+        
+        LocalDateTime now = LocalDateTime.now();
+        for (String module : spModules) {
+            ModulePermission mp = ModulePermission.builder()
+                    .user(user)
+                    .moduleName(module)
+                    .canView(true)
+                    .canEdit(true)
+                    .canDelete(false)
+                    .createdAt(now)
+                    .updatedAt(now)
+                    .build();
+            modulePermissionRepository.save(mp);
+        }
     }
 }

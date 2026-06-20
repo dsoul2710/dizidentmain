@@ -35,4 +35,9 @@ public class User {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private java.util.List<ModulePermission> permissions = new java.util.ArrayList<>();
 }
+

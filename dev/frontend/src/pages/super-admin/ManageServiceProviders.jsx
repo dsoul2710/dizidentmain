@@ -11,7 +11,7 @@ export default function ManageServiceProviders() {
   const [providerName, setProviderName] = useState("");
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
-  const [providerType, setProviderType] = useState("LAB");
+  const [providerTypes, setProviderTypes] = useState(["LAB"]);
   const [address, setAddress] = useState("");
   const [isActive, setIsActive] = useState(true);
 
@@ -38,7 +38,7 @@ export default function ManageServiceProviders() {
     setProviderName("");
     setMobile("");
     setPassword("");
-    setProviderType("LAB");
+    setProviderTypes(["LAB"]);
     setAddress("");
     setIsActive(true);
     setModalOpen(true);
@@ -49,7 +49,7 @@ export default function ManageServiceProviders() {
     setProviderName(prov.providerName || "");
     setMobile(prov.mobile || "");
     setPassword("");
-    setProviderType(prov.providerType || "LAB");
+    setProviderTypes(prov.providerTypes || (prov.providerType ? [prov.providerType] : ["LAB"]));
     setAddress(prov.address || "");
     setIsActive(prov.isActive ?? true);
     setModalOpen(true);
@@ -61,14 +61,18 @@ export default function ManageServiceProviders() {
       alert("Provider Name and Mobile are required");
       return;
     }
+    if (!providerTypes || providerTypes.length === 0) {
+      alert("Please select at least one Provider Type");
+      return;
+    }
 
     try {
       if (editingProvider) {
-        const payload = { providerName, mobile, providerType, address, isActive };
+        const payload = { providerName, mobile, providerTypes, address, isActive };
         if (password) payload.password = password;
         await api.put(`/service-providers/${editingProvider.id}`, payload);
       } else {
-        await api.post("/service-providers", { providerName, mobile, password: password || "provider123", providerType, address });
+        await api.post("/service-providers", { providerName, mobile, password: password || "provider123", providerTypes, address });
       }
       setModalOpen(false);
       loadProviders();
@@ -114,7 +118,7 @@ export default function ManageServiceProviders() {
       list = list.filter((prov) => {
         const provName = (prov.providerName || "").toLowerCase();
         const provMobile = (prov.mobile || "").toLowerCase();
-        const provType = (prov.providerType || "").toLowerCase();
+        const provType = (prov.providerTypes ? prov.providerTypes.join(" ") : (prov.providerType || "")).toLowerCase();
         return provName.includes(q) || provMobile.includes(q) || provType.includes(q);
       });
     }
@@ -226,9 +230,19 @@ export default function ManageServiceProviders() {
                         <td>{prov.uniqueId || prov.id}</td>
                         <td className="fw-semibold text-primary-light">{prov.providerName}</td>
                         <td>
-                          <span className="badge bg-info-100 text-info px-2.5 py-1.5 radius-4 text-xs fw-semibold">
-                            {prov.providerType}
-                          </span>
+                          <div className="d-flex flex-wrap gap-1">
+                            {prov.providerTypes && prov.providerTypes.length > 0 ? (
+                              prov.providerTypes.map((type) => (
+                                <span key={type} className="badge bg-info-100 text-info px-2.5 py-1.5 radius-4 text-xs fw-semibold">
+                                  {type}
+                                </span>
+                              ))
+                            ) : (
+                              <span className="badge bg-info-100 text-info px-2.5 py-1.5 radius-4 text-xs fw-semibold">
+                                {prov.providerType || "OTHER"}
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td>{prov.mobile}</td>
                         <td>{prov.address || "-"}</td>
@@ -372,13 +386,29 @@ export default function ManageServiceProviders() {
                 />
               </div>
               <div className="colspan">
-                <label className="form-label fw-semibold text-sm text-primary-light">Provider Type</label>
-                <select className="form-select w-100" value={providerType} onChange={(e) => setProviderType(e.target.value)} required>
-                  <option value="LAB">LAB</option>
-                  <option value="PHARMACY">PHARMACY</option>
-                  <option value="BED_MANAGER">BED_MANAGER</option>
-                  <option value="OTHER">OTHER</option>
-                </select>
+                <label className="form-label fw-semibold text-sm text-primary-light">Provider Types (Select all that apply)</label>
+                <div className="d-flex flex-wrap gap-3 mt-1 p-2 border rounded" style={{ borderColor: "#e3e6ec" }}>
+                  {["LAB", "PHARMACY", "BED_MANAGER", "RADIOLOGY", "PATHOLOGY", "BLOOD_BANK", "AMBULANCE", "ORTHODONTIC_LAB", "OTHER"].map((type) => (
+                    <div key={type} className="form-check d-flex align-items-center gap-2" style={{ minWidth: "125px" }}>
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={`typeCheck-${type}`}
+                        checked={providerTypes.includes(type)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setProviderTypes((prev) => [...prev, type]);
+                          } else {
+                            setProviderTypes((prev) => prev.filter((t) => t !== type));
+                          }
+                        }}
+                      />
+                      <label className="form-check-label text-sm mb-0 cursor-pointer" htmlFor={`typeCheck-${type}`}>
+                        {type.replace("_", " ")}
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
               <div className="colspan">
                 <label className="form-label fw-semibold text-sm text-primary-light">Address</label>

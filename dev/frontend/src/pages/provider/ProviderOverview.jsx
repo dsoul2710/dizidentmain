@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 const formatValue = (val) =>
   typeof val === "number" ? val.toLocaleString("en-IN") : val;
@@ -7,27 +7,46 @@ const PROVIDER_TYPE_LABELS = {
   LAB: "Lab Partner",
   PHARMACY: "Pharmacy Partner",
   BED_MANAGER: "Bed Manager",
+  RADIOLOGY: "Radiology Partner",
+  PATHOLOGY: "Pathology Partner",
+  BLOOD_BANK: "Blood Bank Partner",
+  AMBULANCE: "Ambulance Partner",
+  ORTHODONTIC_LAB: "Orthodontic Lab Partner",
   OTHER: "Service Partner",
 };
 
 export default function ProviderOverview({ user }) {
-  const providerType = user?.providerType || "OTHER";
+  const types = useMemo(() => {
+    if (user?.providerTypes && user.providerTypes.length > 0) {
+      return Array.from(user.providerTypes);
+    }
+    return [user?.providerType || "OTHER"];
+  }, [user]);
+
+  const [activeTab, setActiveTab] = useState(types[0] || "OTHER");
+
+  // Reset activeTab if types list changes (e.g. on profile reload/re-login)
+  React.useEffect(() => {
+    if (types.length > 0 && !types.includes(activeTab)) {
+      setActiveTab(types[0]);
+    }
+  }, [types, activeTab]);
 
   const overviewMetrics = useMemo(() => {
     let metrics = [];
-    if (providerType === "LAB") {
+    if (activeTab === "LAB") {
       metrics = [
         { key: "pending", label: "Pending Lab Orders", value: 3, icon: "ri-flask-line", tone: "bg-warning-100 text-warning-600" },
         { key: "completed", label: "Completed Reports", value: 24, icon: "ri-checkbox-circle-line", tone: "bg-success-100 text-success-600" },
         { key: "critical", label: "Critical Notifications", value: 1, icon: "ri-alert-line", tone: "bg-danger-100 text-danger-600" },
       ];
-    } else if (providerType === "PHARMACY") {
+    } else if (activeTab === "PHARMACY") {
       metrics = [
         { key: "lowstock", label: "Low Stock Items", value: 8, icon: "ri-alert-line", tone: "bg-danger-100 text-danger-600" },
         { key: "rx", label: "Active Rx Orders", value: 5, icon: "ri-file-list-3-line", tone: "bg-primary-100 text-primary-600" },
         { key: "vendors", label: "Total Vendors", value: 4, icon: "ri-store-2-line", tone: "bg-success-100 text-success-600" },
       ];
-    } else if (providerType === "BED_MANAGER") {
+    } else if (activeTab === "BED_MANAGER") {
       metrics = [
         { key: "capacity", label: "Total Beds Capacity", value: 30, icon: "ri-hotel-bed-line", tone: "bg-primary-100 text-primary-600" },
         { key: "occupied", label: "Beds Occupied", value: 12, icon: "ri-user-shared-line", tone: "bg-warning-100 text-warning-600" },
@@ -45,32 +64,45 @@ export default function ProviderOverview({ user }) {
       maxVal > 0 ? Math.min(100, Math.round((value / maxVal) * 100)) : 0;
 
     return metrics.map((m) => ({ ...m, percent: pct(m.value) }));
-  }, [providerType]);
+  }, [activeTab]);
 
   const recentAlerts = useMemo(() => {
-    if (providerType === "LAB") {
+    if (activeTab === "LAB") {
       return [
         "CBC report pending upload for Misha Patient",
         "Thyroid profile requested by Dr. Mishan",
       ];
     }
-    if (providerType === "PHARMACY") {
+    if (activeTab === "PHARMACY") {
       return [
         "8 inventory items below minimum stock level",
         "5 prescriptions awaiting fulfillment",
       ];
     }
-    if (providerType === "BED_MANAGER") {
+    if (activeTab === "BED_MANAGER") {
       return [
         "12 beds currently occupied across the ward",
         "3 beds marked for cleaning/maintenance",
       ];
     }
     return ["No active alerts at this time."];
-  }, [providerType]);
+  }, [activeTab]);
 
   return (
     <section className="view show wowdash-users">
+      {types.length > 1 && (
+        <div className="d-flex flex-wrap gap-2 mb-4 border-bottom pb-3">
+          {types.map((t) => (
+            <button
+              key={t}
+              className={`btn btn-sm px-3 py-2 radius-4 fw-semibold ${activeTab === t ? "btn-primary text-white" : "btn-outline-secondary"}`}
+              onClick={() => setActiveTab(t)}
+            >
+              {PROVIDER_TYPE_LABELS[t] || t}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="row gy-4">
         {overviewMetrics.map((metric) => (
           <div className="col-xxl-3 col-sm-6" key={metric.key}>
@@ -108,9 +140,9 @@ export default function ProviderOverview({ user }) {
             <div className="card-body">
               <div className="d-flex flex-column gap-2 text-secondary-light">
                 <div className="d-flex justify-content-between gap-2">
-                  <span>Partner Type</span>
-                  <span className="fw-semibold text-primary-light">
-                    {PROVIDER_TYPE_LABELS[providerType] || providerType}
+                  <span>Partner Types</span>
+                  <span className="fw-semibold text-primary-light text-end">
+                    {types.map((t) => PROVIDER_TYPE_LABELS[t] || t).join(", ")}
                   </span>
                 </div>
                 <div className="d-flex justify-content-between gap-2">

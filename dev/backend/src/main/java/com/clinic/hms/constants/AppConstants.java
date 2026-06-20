@@ -130,4 +130,25 @@ public final class AppConstants {
         /** Upper bound (exclusive) used with Math.random() to produce the numeric part. */
         public static final int    RANGE  = 1_000_000;
     }
+
+    // -------------------------------------------------------------------------
+    // Service Provider Types
+    // -------------------------------------------------------------------------
+    public static final class ProviderTypes {
+        private ProviderTypes() {}
+
+        public static final String LAB          = "LAB";
+        public static final String PHARMACY     = "PHARMACY";
+        public static final String BEDS_MANAGER = "BEDS_MANAGER";
+        public static final String RADIOLOGY    = "RADIOLOGY";
+        public static final String PATHOLOGY    = "PATHOLOGY";
+        public static final String BLOOD_BANK   = "BLOOD_BANK";
+        public static final String AMBULANCE    = "AMBULANCE";
+        public static final String OTHER        = "OTHER";
+
+        public static final java.util.List<String> ALL = java.util.List.of(
+            LAB, PHARMACY, BEDS_MANAGER, RADIOLOGY, PATHOLOGY, BLOOD_BANK, AMBULANCE, OTHER
+        );
+    }
 }
+

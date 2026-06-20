@@ -8,11 +8,7 @@ import {
 } from "react-router-dom";
 
 import LoginPage from "./pages/auth/LoginPage";
-import Dashboard from "./pages/dashboards/Dashboard";
-import DoctorDashboard from "./pages/dashboards/DoctorDashboard";
-import PatientDashboard from "./pages/dashboards/PatientDashboard";
-import SuperAdminDashboard from "./pages/dashboards/SuperAdminDashboard";
-import ServiceProviderDashboard from "./pages/dashboards/ServiceProviderDashboard";
+import UnifiedDashboard from "./pages/dashboards/UnifiedDashboard";
 import { ToastProvider } from "./components/common/ToastProvider";
 import GlobalLoader from "./components/common/GlobalLoader";
 
@@ -91,12 +87,7 @@ export default function App() {
   // Helper to send logged-in user to correct dashboard
   const getDefaultRouteForUser = () => {
     if (!user) return "/login";
-    if (user.role === "SUPERADMIN") return "/super-admin/overview";
-    if (user.role === "ORG") return "/org/overview";
-    if (user.role === "DOCTOR") return "/doctor/overview";
-    if (user.role === "PATIENT") return "/patient/overview";
-    if (user.role === "SERVICE_PROVIDER") return "/provider/overview";
-    return "/login";
+    return "/dashboard/overview";
   };
 
   return (
@@ -122,60 +113,12 @@ export default function App() {
           }
         />
 
-        {/* Super Admin dashboard */}
+        {/* Unified Dashboard */}
         <Route
-          path="/super-admin/*"
+          path="/dashboard/*"
           element={
-            user?.role === "SUPERADMIN" ? (
-              <SuperAdminDashboard user={user} onLogout={handleLogout} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-
-        {/* Org dashboard */}
-        <Route
-          path="/org/*"
-          element={
-            user?.role === "ORG" ? (
-              <Dashboard user={user} onLogout={handleLogout} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-
-        {/* Doctor dashboard */}
-        <Route
-          path="/doctor/*"
-          element={
-            user?.role === "DOCTOR" ? (
-              <DoctorDashboard user={user} onLogout={handleLogout} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-
-        {/* Patient dashboard */}
-        <Route
-          path="/patient/*"
-          element={
-            user?.role === "PATIENT" ? (
-              <PatientDashboard user={user} onLogout={handleLogout} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-
-        {/* Service Provider dashboard */}
-        <Route
-          path="/provider/*"
-          element={
-            user?.role === "SERVICE_PROVIDER" ? (
-              <ServiceProviderDashboard user={user} onLogout={handleLogout} />
+            user ? (
+              <UnifiedDashboard user={user} onLogout={handleLogout} />
             ) : (
               <Navigate to="/login" replace />
             )

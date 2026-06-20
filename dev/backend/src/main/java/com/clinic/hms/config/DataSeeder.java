@@ -42,6 +42,7 @@ public class DataSeeder implements CommandLineRunner {
         OrgHospital defaultOrg = seedDefaultOrg();
         linkExistingData(defaultOrg);
         seedDefaultServiceProviders(defaultOrg);
+        migrateLegacyServiceProviderTypes();
     }
 
     private void seedSuperAdmin() {
@@ -242,108 +243,110 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void seedDefaultServiceProviders(OrgHospital defaultOrg) {
-        // 1. Seed LAB provider (7777777777 / provider123)
-        User labUser = userRepository.findByMobile("7777777777").orElse(null);
-        if (labUser == null) {
-            labUser = User.builder()
-                    .mobile("7777777777")
-                    .password(passwordEncoder.encode("provider123"))
-                    .role(UserRole.SERVICE_PROVIDER)
-                    .isActive(true)
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .build();
-            labUser = userRepository.save(labUser);
-            log.info("✅ Lab service provider user seeded (7777777777)");
-        } else {
-            labUser.setPassword(passwordEncoder.encode("provider123"));
-            if (labUser.getRole() != UserRole.SERVICE_PROVIDER) {
-                labUser.setRole(UserRole.SERVICE_PROVIDER);
-            }
-            labUser.setUpdatedAt(LocalDateTime.now());
-            labUser = userRepository.save(labUser);
-            log.info("✅ Refreshed lab service provider password");
-        }
-        ServiceProvider labProfile = serviceProviderRepository.findById(labUser.getId()).orElse(null);
-        if (labProfile == null) {
-            labProfile = ServiceProvider.builder()
-                    .user(labUser)
-                    .providerName("Default Lab Partner")
-                    .providerType(ServiceProviderType.LAB)
-                    .address("Suite 101, Med Plaza")
-                    .mobile("7777777777")
-                    .uniqueId("SP-000001")
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .createdByUserId(defaultOrg.getId())
-                    .isDeleted(false)
-                    .build();
-            labProfile = serviceProviderRepository.save(labProfile);
-            log.info("✅ Lab service provider profile seeded");
-        }
-        if (!serviceProviderOrgMappingRepository.existsByOrgAndServiceProvider(defaultOrg, labProfile)) {
-            ServiceProviderOrgMapping mapping = ServiceProviderOrgMapping.builder()
-                    .org(defaultOrg)
-                    .serviceProvider(labProfile)
-                    .status("ACTIVE")
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .createdByUserId(defaultOrg.getId())
-                    .build();
-            serviceProviderOrgMappingRepository.save(mapping);
-            log.info("🔗 Linked lab partner to Default Clinic Org");
-        }
+        List<SeedProvider> providers = List.of(
+            new SeedProvider("7777777701", "Default Lab Partner", ServiceProviderType.LAB, "Suite 101, Med Plaza", "SP-000101"),
+            new SeedProvider("7777777702", "Default Bed Manager", ServiceProviderType.BED_MANAGER, "Ward Accommodation Wing", "SP-000102"),
+            new SeedProvider("7777777703", "Default Pharmacy Partner", ServiceProviderType.PHARMACY, "Ground Floor, Clinic Wing", "SP-000103"),
+            new SeedProvider("7777777704", "Default Radiology Partner", ServiceProviderType.RADIOLOGY, "Basement X-Ray Lab", "SP-000104"),
+            new SeedProvider("7777777705", "Default Pathology Partner", ServiceProviderType.PATHOLOGY, "First Floor, Diagnostics Wing", "SP-000105"),
+            new SeedProvider("7777777706", "Default Blood Bank Partner", ServiceProviderType.BLOOD_BANK, "Red Cross Depot Wing", "SP-000106"),
+            new SeedProvider("7777777707", "Default Ambulance Partner", ServiceProviderType.AMBULANCE, "Emergency Bay, Entrance", "SP-000107"),
+            new SeedProvider("7777777708", "Default Orthodontic Lab Partner", ServiceProviderType.ORTHODONTIC_LAB, "Dental Lab, Block B", "SP-000108")
+        );
 
-        // 2. Seed PHARMACY provider (6666666666 / provider123)
-        User pharmUser = userRepository.findByMobile("6666666666").orElse(null);
-        if (pharmUser == null) {
-            pharmUser = User.builder()
-                    .mobile("6666666666")
-                    .password(passwordEncoder.encode("provider123"))
-                    .role(UserRole.SERVICE_PROVIDER)
-                    .isActive(true)
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .build();
-            pharmUser = userRepository.save(pharmUser);
-            log.info("✅ Pharmacy service provider user seeded (6666666666)");
-        } else {
-            pharmUser.setPassword(passwordEncoder.encode("provider123"));
-            if (pharmUser.getRole() != UserRole.SERVICE_PROVIDER) {
-                pharmUser.setRole(UserRole.SERVICE_PROVIDER);
+        for (SeedProvider spInfo : providers) {
+            User spUser = userRepository.findByMobile(spInfo.mobile).orElse(null);
+            if (spUser == null) {
+                spUser = User.builder()
+                        .mobile(spInfo.mobile)
+                        .password(passwordEncoder.encode("provider123"))
+                        .role(UserRole.SERVICE_PROVIDER)
+                        .isActive(true)
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
+                        .build();
+                spUser = userRepository.save(spUser);
+                log.info("✅ Service provider user seeded ({})", spInfo.mobile);
+            } else {
+                spUser.setPassword(passwordEncoder.encode("provider123"));
+                if (spUser.getRole() != UserRole.SERVICE_PROVIDER) {
+                    spUser.setRole(UserRole.SERVICE_PROVIDER);
+                }
+                spUser.setUpdatedAt(LocalDateTime.now());
+                spUser = userRepository.save(spUser);
+                log.info("✅ Refreshed service provider password ({})", spInfo.mobile);
             }
-            pharmUser.setUpdatedAt(LocalDateTime.now());
-            pharmUser = userRepository.save(pharmUser);
-            log.info("✅ Refreshed pharmacy service provider password");
+
+            ServiceProvider profile = serviceProviderRepository.findById(spUser.getId()).orElse(null);
+            if (profile == null) {
+                profile = ServiceProvider.builder()
+                        .user(spUser)
+                        .providerName(spInfo.name)
+                        .providerType(spInfo.type)
+                        .providerTypes(new java.util.HashSet<>(java.util.List.of(spInfo.type)))
+                        .address(spInfo.address)
+                        .mobile(spInfo.mobile)
+                        .uniqueId(spInfo.uniqueId)
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
+                        .createdByUserId(defaultOrg.getId())
+                        .isDeleted(false)
+                        .build();
+                profile = serviceProviderRepository.save(profile);
+                log.info("o. Service provider profile seeded for {}", spInfo.name);
+            } else {
+                profile.setProviderName(spInfo.name);
+                profile.setProviderType(spInfo.type);
+                if (profile.getProviderTypes() == null) {
+                    profile.setProviderTypes(new java.util.HashSet<>());
+                }
+                profile.getProviderTypes().add(spInfo.type);
+                profile.setAddress(spInfo.address);
+                profile.setMobile(spInfo.mobile);
+                profile.setUniqueId(spInfo.uniqueId);
+                profile.setUpdatedAt(LocalDateTime.now());
+                profile = serviceProviderRepository.save(profile);
+            }
+
+            if (!serviceProviderOrgMappingRepository.existsByOrgAndServiceProvider(defaultOrg, profile)) {
+                ServiceProviderOrgMapping mapping = ServiceProviderOrgMapping.builder()
+                        .org(defaultOrg)
+                        .serviceProvider(profile)
+                        .status("ACTIVE")
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
+                        .createdByUserId(defaultOrg.getId())
+                        .build();
+                serviceProviderOrgMappingRepository.save(mapping);
+                log.info("🔗 Linked partner {} to Default Clinic Org", spInfo.name);
+            }
         }
-        ServiceProvider pharmProfile = serviceProviderRepository.findById(pharmUser.getId()).orElse(null);
-        if (pharmProfile == null) {
-            pharmProfile = ServiceProvider.builder()
-                    .user(pharmUser)
-                    .providerName("Default Pharmacy Partner")
-                    .providerType(ServiceProviderType.PHARMACY)
-                    .address("Ground Floor, Clinic Wing")
-                    .mobile("6666666666")
-                    .uniqueId("SP-000002")
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .createdByUserId(defaultOrg.getId())
-                    .isDeleted(false)
-                    .build();
-            pharmProfile = serviceProviderRepository.save(pharmProfile);
-            log.info("✅ Pharmacy service provider profile seeded");
+    }
+
+    private static class SeedProvider {
+        String mobile;
+        String name;
+        ServiceProviderType type;
+        String address;
+        String uniqueId;
+
+        SeedProvider(String mobile, String name, ServiceProviderType type, String address, String uniqueId) {
+            this.mobile = mobile;
+            this.name = name;
+            this.type = type;
+            this.address = address;
+            this.uniqueId = uniqueId;
         }
-        if (!serviceProviderOrgMappingRepository.existsByOrgAndServiceProvider(defaultOrg, pharmProfile)) {
-            ServiceProviderOrgMapping mapping = ServiceProviderOrgMapping.builder()
-                    .org(defaultOrg)
-                    .serviceProvider(pharmProfile)
-                    .status("ACTIVE")
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .createdByUserId(defaultOrg.getId())
-                    .build();
-            serviceProviderOrgMappingRepository.save(mapping);
-            log.info("🔗 Linked pharmacy partner to Default Clinic Org");
+    }
+
+    private void migrateLegacyServiceProviderTypes() {
+        List<ServiceProvider> providers = serviceProviderRepository.findAll();
+        for (ServiceProvider sp : providers) {
+            if ((sp.getProviderTypes() == null || sp.getProviderTypes().isEmpty()) && sp.getProviderType() != null) {
+                sp.getProviderTypes().add(sp.getProviderType());
+                serviceProviderRepository.save(sp);
+                log.info("Migrated legacy provider type {} to set for service provider {}", sp.getProviderType(), sp.getProviderName());
+            }
         }
     }
 }

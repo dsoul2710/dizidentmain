@@ -29,6 +29,13 @@ public class ServiceProvider extends AuditableEntity {
     @Column(name = "provider_type", nullable = false, length = 50)
     private ServiceProviderType providerType;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "service_provider_types", joinColumns = @JoinColumn(name = "service_provider_id"))
+    @Column(name = "provider_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private java.util.Set<ServiceProviderType> providerTypes = new java.util.HashSet<>();
+
     @Column(length = 500)
     private String address;
 
