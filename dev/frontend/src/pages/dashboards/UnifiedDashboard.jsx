@@ -52,10 +52,10 @@ import ManageServiceProviders from "../super-admin/ManageServiceProviders.jsx";
 export function hasPermission(user, moduleName, action = "view") {
   if (!user) return false;
   if (user.role === "SUPERADMIN" || user.role === "SUPER_ADMIN") return true;
-  
+
   const perm = user.permissions?.find(p => p.moduleName === moduleName);
   if (!perm) return false;
-  
+
   if (action === "view") return perm.canView;
   if (action === "edit") return perm.canEdit;
   if (action === "delete") return perm.canDelete;
@@ -249,10 +249,10 @@ export default function UnifiedDashboard({ user, onLogout }) {
         const list =
           assignedId != null
             ? (data || []).filter(
-                (doc) =>
-                  String(doc?.id) === String(assignedId) ||
-                  String(doc?.userId) === String(assignedId)
-              )
+              (doc) =>
+                String(doc?.id) === String(assignedId) ||
+                String(doc?.userId) === String(assignedId)
+            )
             : data || [];
         const map = {};
         (list || []).forEach((doc) => {
@@ -461,7 +461,7 @@ export default function UnifiedDashboard({ user, onLogout }) {
   // --- DYNAMIC NAVIGATION MENU ITEMS ---
   const navItems = useMemo(() => {
     if (!user) return [];
-    
+
     const items = [
       { type: "link", label: "Overview", to: "/dashboard/overview", end: true, icon: "ri-home-5-line" }
     ];
@@ -481,13 +481,13 @@ export default function UnifiedDashboard({ user, onLogout }) {
     if (hasPermission(user, "PATIENTS", "view") && !isSuperAdmin) {
       items.push({ type: "group", label: "Patient Care" });
       items.push({ type: "link", label: "Patient Entry", to: "/dashboard/patients", icon: "ri-user-add-line" });
-      
+
       if (user.role === "ORG") {
         items.push({ type: "link", label: "Doctor Entry", to: "/dashboard/doctor", icon: "ri-stethoscope-line" });
         items.push({ type: "link", label: "Lab Entry", to: "/dashboard/lab", icon: "ri-flask-line" });
         items.push({ type: "link", label: "Vendor Entry", to: "/dashboard/vendor", icon: "ri-store-2-line" });
       }
-      
+
       if (user.role === "DOCTOR") {
         items.push({ type: "link", label: "Dental Care", to: "/dashboard/dental-care", icon: "ri-briefcase-line" });
       }
@@ -602,7 +602,7 @@ export default function UnifiedDashboard({ user, onLogout }) {
     >
       <Routes>
         <Route index element={<Navigate to="overview" replace />} />
-        
+
         {/* Dynamic Overview mapping */}
         <Route
           path="overview"
