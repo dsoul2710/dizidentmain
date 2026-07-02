@@ -1,5 +1,6 @@
 package com.clinic.hms.service;
 
+import com.clinic.hms.dto.response.ExamItemResponse;
 import com.clinic.hms.entity.ExamItemMaster;
 import com.clinic.hms.repository.ExamItemMasterRepository;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -30,6 +31,24 @@ public class ExamItemMasterService {
 
     @Value("classpath:data/exam_items_master.json")
     private Resource examItemsResource;
+
+    @Transactional(readOnly = true)
+    public List<ExamItemResponse> listActiveExamItems() {
+        return examItemMasterRepository.findByIsActiveTrueOrderByDisplayOrderAscIdAsc().stream()
+                .map(this::toResponse)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    private ExamItemResponse toResponse(ExamItemMaster item) {
+        ExamItemResponse dto = new ExamItemResponse();
+        dto.setId(item.getId());
+        dto.setItemKey(item.getItemKey());
+        dto.setTitle(item.getTitle());
+        dto.setDefaultText(item.getDefaultText());
+        dto.setDisplayOrder(item.getDisplayOrder());
+        dto.setIsActive(item.getIsActive());
+        return dto;
+    }
 
     @Transactional
     public void seedExamItemsFromFile() {

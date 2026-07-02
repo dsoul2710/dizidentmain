@@ -25,6 +25,9 @@ public class OrgHospital extends AuditableEntity {
     @Column(name = "org_name", nullable = false, length = 200)
     private String orgName;
 
+    @Column(name = "unique_id", nullable = true, unique = true, length = 20)
+    private String uniqueId; // Format: ORG-XXXXXX
+
     @Column(length = 500)
     private String address;
 

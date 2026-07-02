@@ -293,4 +293,30 @@ public class DoctorService {
                 .isActive(doctor.getUser().getIsActive())
                 .build();
     }
+
+    @Transactional(readOnly = true)
+    public List<com.clinic.hms.dto.response.OrganizationResponse> getMyClinicsForCurrentDoctor() {
+        User user = securityUtils.getCurrentUser();
+        if (user == null || user.getRole() != UserRole.DOCTOR) {
+            throw new SecurityException("Only authenticated doctors can fetch associated clinics");
+        }
+
+        Doctor doctor = doctorRepository.findByIdAndIsDeletedFalse(user.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Doctor profile not found"));
+
+        return doctorOrgMappingRepository.findByDoctor(doctor).stream()
+                .filter(m -> AppConstants.Status.ACTIVE.equalsIgnoreCase(m.getStatus()))
+                .map(mapping -> {
+                    OrgHospital org = mapping.getOrg();
+                    User orgUser = org.getUser();
+                    return com.clinic.hms.dto.response.OrganizationResponse.builder()
+                            .id(org.getId())
+                            .name(org.getOrgName())
+                            .mobile(orgUser.getMobile())
+                            .isActive(orgUser.getIsActive())
+                            .createdAt(org.getCreatedAt() != null ? org.getCreatedAt().toString() : null)
+                            .build();
+                })
+                .toList();
+    }
 }

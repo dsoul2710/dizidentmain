@@ -65,8 +65,8 @@ public class Bill {
     private Long createdByUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "org_user_id")
-    private OrgHospital org;
+    @JoinColumn(name = "owner_user_id")
+    private User owner;
 
     @PrePersist
     public void onCreate() {

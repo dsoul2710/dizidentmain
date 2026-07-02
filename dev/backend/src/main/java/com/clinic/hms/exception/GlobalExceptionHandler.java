@@ -1,14 +1,11 @@
 package com.clinic.hms.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,20 +22,6 @@ public class GlobalExceptionHandler {
 
     private static final String MDC_TRACE_ID_KEY = "traceId";
 
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class ErrorResponse {
-        private String timestamp;
-        private int status;
-        private String error;
-        private String message;
-        private String path;
-        private String traceId;
-        private Map<String, String> validationErrors;
-    }
-
     private String getTraceId() {
         String id = MDC.get(MDC_TRACE_ID_KEY);
         return id != null ? id : "N/A";
@@ -48,12 +31,68 @@ public class GlobalExceptionHandler {
         return LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(
+            InvalidCredentialsException ex, HttpServletRequest request) {
+        log.warn("Authentication failed for request {}", request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.builder()
+                .timestamp(getCurrentTimestamp())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .traceId(getTraceId())
+                .build());
+    }
+
+    @ExceptionHandler(InactiveUserException.class)
+    public ResponseEntity<ErrorResponse> handleInactiveUser(
+            InactiveUserException ex, HttpServletRequest request) {
+        log.warn("Inactive user login attempt for request {}", request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponse.builder()
+                .timestamp(getCurrentTimestamp())
+                .status(HttpStatus.FORBIDDEN.value())
+                .error(HttpStatus.FORBIDDEN.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .traceId(getTraceId())
+                .build());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(
+            AccessDeniedException ex, HttpServletRequest request) {
+        log.warn("Access denied for request {}", request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponse.builder()
+                .timestamp(getCurrentTimestamp())
+                .status(HttpStatus.FORBIDDEN.value())
+                .error(HttpStatus.FORBIDDEN.getReasonPhrase())
+                .message("Access denied")
+                .path(request.getRequestURI())
+                .traceId(getTraceId())
+                .build());
+    }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<ErrorResponse> handleSecurityException(
+            SecurityException ex, HttpServletRequest request) {
+        log.warn("Security violation for request {}: {}", request.getRequestURI(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponse.builder()
+                .timestamp(getCurrentTimestamp())
+                .status(HttpStatus.FORBIDDEN.value())
+                .error(HttpStatus.FORBIDDEN.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .traceId(getTraceId())
+                .build());
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
             IllegalArgumentException ex, HttpServletRequest request) {
-        
+
         log.error("Bad Request exception handled: {}", ex.getMessage());
-        
+
         ErrorResponse response = ErrorResponse.builder()
                 .timestamp(getCurrentTimestamp())
                 .status(HttpStatus.BAD_REQUEST.value())
@@ -62,14 +101,14 @@ public class GlobalExceptionHandler {
                 .path(request.getRequestURI())
                 .traceId(getTraceId())
                 .build();
-                
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(
             MethodArgumentNotValidException ex, HttpServletRequest request) {
-            
+
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
@@ -95,7 +134,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(
             Exception ex, HttpServletRequest request) {
-        
+
         log.error("Internal Server Error occurred during request {} : {}", request.getRequestURI(), ex.getMessage(), ex);
 
         ErrorResponse response = ErrorResponse.builder()

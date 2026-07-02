@@ -33,4 +33,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     long deleteByDoctor_Id(Long doctorUserId);
 
+    boolean existsByPatient_IdAndOwner_Id(Long patientId, Long ownerId);
+
+    boolean existsByPatient_IdAndDoctor_Id(Long patientId, Long doctorId);
+
+    List<Appointment> findByOwner_Id(Long ownerId);
+
 }

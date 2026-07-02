@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface OrgHospitalRepository extends JpaRepository<OrgHospital, Long> {
     Optional<OrgHospital> findByIdAndIsDeletedFalse(Long id);
     List<OrgHospital> findByIsDeletedFalse();
+    boolean existsByUniqueId(String uniqueId);
+    Optional<OrgHospital> findByUniqueId(String uniqueId);
 }

@@ -11,15 +11,15 @@ import java.util.List;
 
 public interface ChatThreadRepository extends JpaRepository<ChatThread, Long> {
 
-    List<ChatThread> findByTypeAndOrg_IdAndDoctor_IdOrderByUpdatedAtDesc(
+    List<ChatThread> findByTypeAndOwner_IdAndDoctor_IdOrderByUpdatedAtDesc(
             String type,
-            Long orgUserId,
+            Long ownerUserId,
             Long doctorUserId
     );
 
-    List<ChatThread> findByTypeAndOrg_IdAndPatient_IdOrderByUpdatedAtDesc(
+    List<ChatThread> findByTypeAndOwner_IdAndPatient_IdOrderByUpdatedAtDesc(
             String type,
-            Long orgUserId,
+            Long ownerUserId,
             Long patientUserId
     );
 

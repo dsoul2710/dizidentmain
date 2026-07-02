@@ -24,4 +24,6 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     @Modifying
     @Query(QueryConstants.Bill.CLEAR_DOCTOR)
     int clearDoctorByDoctorId(@Param("doctorUserId") Long doctorUserId);
+
+    List<Bill> findByOwner_Id(Long ownerId);
 }

@@ -8,7 +8,6 @@ import com.clinic.hms.dto.response.VisitResponse;
 import com.clinic.hms.dto.response.VisitDiagnosisResponse;
 import com.clinic.hms.dto.response.VisitExamItemResponse;
 import com.clinic.hms.entity.Visit;
-import com.clinic.hms.repository.VisitRepository;
 import com.clinic.hms.service.VisitService;
 import com.clinic.hms.service.VisitDiagnosisService;
 import com.clinic.hms.service.VisitExamService;
@@ -41,7 +40,6 @@ public class VisitController extends BaseController {
     private final VisitService visitService;
     private final VisitDiagnosisService visitDiagnosisService;
     private final VisitExamService visitExamService;
-    private final VisitRepository visitRepository;
 
     @Value("${file.upload.base-dir}")
     private String baseUploadDir;
@@ -85,24 +83,7 @@ public class VisitController extends BaseController {
 
     @GetMapping("/visits/{visitId}/diagnosis-detail")
     public ResponseEntity<VisitDiagnosisRequest> getDiagnosisDetail(@PathVariable Long visitId) {
-        Optional<Visit> visitOpt = visitRepository.findById(visitId);
-        if (visitOpt.isEmpty()) {
-            return ResponseEntity.ok(new VisitDiagnosisRequest());
-        }
-
-        Visit visit = visitOpt.get();
-
-        VisitDiagnosisRequest dto = new VisitDiagnosisRequest();
-        dto.setVisitId(visit.getId());
-        dto.setPatientUserId(visit.getPatient().getId());
-        dto.setOdontogramMode(visit.getOdontogramMode());
-        dto.setSelectedTeeth(parseCsv(visit.getOdontogramTeethJson()));
-        dto.setFreeDescription(visit.getDiagnosisFreeText());
-        dto.setFinalDescription(visit.getDiagnosisFinalText());
-        dto.setReportType(visit.getDiagnosisReportType());
-        dto.setReportNote(visit.getDiagnosisReportNote());
-
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(visitDiagnosisService.getDiagnosisDetail(visitId));
     }
 
     @PostMapping(value = "/visits/{visitId}/diagnosis-report", consumes = "multipart/form-data")
@@ -215,17 +196,5 @@ public class VisitController extends BaseController {
     ) {
         request.setVisitId(visitId);
         return ResponseEntity.ok(visitExamService.saveOrUpdate(request));
-    }
-
-    // ---------------- HELPER METHODS ----------------
-
-    private List<String> parseCsv(String csv) {
-        if (csv == null || csv.isBlank()) {
-            return Collections.emptyList();
-        }
-        return Arrays.stream(csv.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.toList());
     }
 }

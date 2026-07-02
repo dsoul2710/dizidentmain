@@ -14,8 +14,8 @@ public interface LabRepository extends JpaRepository<Lab, Long> {
     @Query(value = QueryConstants.Lab.SEARCH, countQuery = QueryConstants.Lab.SEARCH_COUNT)
     Page<Lab> searchLabs(@Param("q") String query, Pageable pageable);
 
-    java.util.List<Lab> findByOrg_Id(Long orgId);
+    java.util.List<Lab> findByOwner_Id(Long ownerId);
 
     @Query(value = QueryConstants.Lab.SEARCH_BY_ORG, countQuery = QueryConstants.Lab.SEARCH_BY_ORG_COUNT)
-    Page<Lab> searchLabsByOrg(@Param("orgId") Long orgId, @Param("q") String query, Pageable pageable);
+    Page<Lab> searchLabsByOrg(@Param("orgId") Long ownerId, @Param("q") String query, Pageable pageable);
 }

@@ -5,15 +5,11 @@ import com.clinic.hms.dto.request.PrescriptionRequest;
 import com.clinic.hms.dto.request.PrescriptionTemplateRequest;
 import com.clinic.hms.dto.response.PrescriptionResponse;
 import com.clinic.hms.entity.PrescriptionTemplate;
-import com.clinic.hms.entity.Doctor;
-import com.clinic.hms.repository.PrescriptionTemplateRepository;
-import com.clinic.hms.repository.DoctorRepository;
 import com.clinic.hms.service.PrescriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -21,74 +17,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PrescriptionController {
 
-    private final PrescriptionTemplateRepository templateRepository;
-    private final DoctorRepository doctorRepository;
     private final PrescriptionService prescriptionService;
-
-    // -----------------------------
-    // Rx Templates
-    // -----------------------------
 
     @GetMapping("/rx-templates")
     public ResponseEntity<List<PrescriptionTemplate>> getTemplates(
             @RequestParam(value = "doctorUserId", required = false) Long doctorUserId) {
-
-        List<PrescriptionTemplate> templates;
-        if (doctorUserId != null) {
-            templates = templateRepository.findByDoctor_IdOrDoctorIsNull(doctorUserId);
-        } else {
-            templates = templateRepository.findAll();
-        }
-        return ResponseEntity.ok(templates);
+        return ResponseEntity.ok(prescriptionService.listTemplates(doctorUserId));
     }
 
     @PostMapping("/rx-templates")
     public ResponseEntity<PrescriptionTemplate> createTemplate(
             @RequestBody PrescriptionTemplateRequest request) {
-
-        if (request.getMedicineName() == null || request.getMedicineName().isBlank()) {
+        try {
+            return ResponseEntity.ok(prescriptionService.createTemplate(request));
+        } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().build();
         }
-
-        Doctor doctor = null;
-        if (request.getDoctorUserId() != null) {
-            doctor = doctorRepository.findById(request.getDoctorUserId())
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "Doctor user not found: " + request.getDoctorUserId()));
-        }
-
-        PrescriptionTemplate template = PrescriptionTemplate.builder()
-                .name(request.getName() != null ? request.getName() : request.getMedicineName())
-                .medicineName(request.getMedicineName())
-                .medicineContents(request.getMedicineContents())
-                .medicineType(request.getMedicineType() != null ? request.getMedicineType() : "tab")
-                .volume(request.getVolume() != null ? request.getVolume() : "")
-                .dose(request.getDose() != null ? request.getDose() : "")
-                .days(request.getDays())
-                .timings(request.getTimings())
-                .duration(request.getDuration())
-                .instructions(request.getInstructions())
-                .doctor(doctor)
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        PrescriptionTemplate saved = templateRepository.save(template);
-        return ResponseEntity.ok(saved);
     }
-
-    // -----------------------------
-    // Prescriptions
-    // -----------------------------
 
     @PostMapping("/prescriptions")
     public ResponseEntity<PrescriptionResponse> createPrescription(
             @RequestBody PrescriptionRequest request) {
-
-        PrescriptionResponse prescription = prescriptionService.createPrescription(request);
-        return ResponseEntity.ok(prescription);
+        return ResponseEntity.ok(prescriptionService.createPrescription(request));
     }
 
-    // GET latest prescription for a visit
     @GetMapping("/visits/{visitId}/prescriptions/latest")
     public ResponseEntity<PrescriptionResponse> getLatestPrescription(
             @PathVariable Long visitId

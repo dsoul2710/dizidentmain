@@ -21,20 +21,49 @@ public final class QueryConstants {
 
         public static final String LIST =
                 "SELECT p FROM Patient p JOIN p.user u WHERE p.isDeleted = false " +
-                "AND (:orgId is null or exists (select 1 from PatientOrgMapping m where m.org.id = :orgId and m.patient.id = p.id and m.status = 'ACTIVE')) " +
-                "AND (:doctorId is null or exists (select 1 from PatientDoctorMapping pm where pm.doctor.id = :doctorId and pm.patient.id = p.id and pm.status = 'ACTIVE'))";
+                "AND (:orgId is null or exists (select 1 from com.clinic.hms.entity.PatientOrgMapping m where m.org.id = :orgId and m.patient.id = p.id and m.status = 'ACTIVE') " +
+                "  or exists (select 1 from com.clinic.hms.entity.Appointment a where a.patient.id = p.id and a.owner.id = :orgId) " +
+                "  or exists (select 1 from com.clinic.hms.entity.Visit v where v.patient.id = p.id and v.owner.id = :orgId) " +
+                "  or exists (select 1 from com.clinic.hms.entity.Appointment a, com.clinic.hms.entity.DoctorOrgMapping dom where a.patient.id = p.id and a.doctor.id = dom.doctor.id and dom.org.id = :orgId and dom.status = 'ACTIVE') " +
+                "  or exists (select 1 from com.clinic.hms.entity.Visit v, com.clinic.hms.entity.DoctorOrgMapping dom where v.patient.id = p.id and v.doctor.id = dom.doctor.id and dom.org.id = :orgId and dom.status = 'ACTIVE')) " +
+                "AND (:doctorId is null or exists (select 1 from com.clinic.hms.entity.PatientDoctorMapping pm where pm.doctor.id = :doctorId and pm.patient.id = p.id and pm.status = 'ACTIVE') " +
+                "  or exists (select 1 from com.clinic.hms.entity.Appointment a where a.patient.id = p.id and a.doctor.id = :doctorId) " +
+                "  or exists (select 1 from com.clinic.hms.entity.Visit v where v.patient.id = p.id and v.doctor.id = :doctorId)) " +
+                "AND (:providerId is null or exists (select 1 from com.clinic.hms.entity.PatientLabMapping lm where lm.lab.id = :providerId and lm.patient.id = p.id and lm.status = 'ACTIVE'))";
 
         public static final String SEARCH = """
                 select p from Patient p
                 join p.user u
                 where p.isDeleted = false
                   and (:orgId is null or exists (
-                        select 1 from com.clinic.hms.entity.PatientOrgMapping m \
+                        select 1 from com.clinic.hms.entity.PatientOrgMapping m
                         where m.org.id = :orgId and m.patient.id = p.id and m.status = 'ACTIVE'
+                      ) or exists (
+                        select 1 from com.clinic.hms.entity.Appointment a
+                        where a.patient.id = p.id and a.owner.id = :orgId
+                      ) or exists (
+                        select 1 from com.clinic.hms.entity.Visit v
+                        where v.patient.id = p.id and v.owner.id = :orgId
+                      ) or exists (
+                        select 1 from com.clinic.hms.entity.Appointment a, com.clinic.hms.entity.DoctorOrgMapping dom
+                        where a.patient.id = p.id and a.doctor.id = dom.doctor.id and dom.org.id = :orgId and dom.status = 'ACTIVE'
+                      ) or exists (
+                        select 1 from com.clinic.hms.entity.Visit v, com.clinic.hms.entity.DoctorOrgMapping dom
+                        where v.patient.id = p.id and v.doctor.id = dom.doctor.id and dom.org.id = :orgId and dom.status = 'ACTIVE'
                       ))
                   and (:doctorId is null or exists (
                         select 1 from com.clinic.hms.entity.PatientDoctorMapping pm
                         where pm.doctor.id = :doctorId and pm.patient.id = p.id and pm.status = 'ACTIVE'
+                      ) or exists (
+                        select 1 from com.clinic.hms.entity.Appointment a
+                        where a.patient.id = p.id and a.doctor.id = :doctorId
+                      ) or exists (
+                        select 1 from com.clinic.hms.entity.Visit v
+                        where v.patient.id = p.id and v.doctor.id = :doctorId
+                      ))
+                  and (:providerId is null or exists (
+                        select 1 from com.clinic.hms.entity.PatientLabMapping lm
+                        where lm.lab.id = :providerId and lm.patient.id = p.id and lm.status = 'ACTIVE'
                       ))
                   and (
                     :q is null or :q = '' or
@@ -51,12 +80,34 @@ public final class QueryConstants {
                 join p.user u
                 where p.isDeleted = false
                   and (:orgId is null or exists (
-                        select 1 from com.clinic.hms.entity.PatientOrgMapping m \
+                        select 1 from com.clinic.hms.entity.PatientOrgMapping m
                         where m.org.id = :orgId and m.patient.id = p.id and m.status = 'ACTIVE'
+                      ) or exists (
+                        select 1 from com.clinic.hms.entity.Appointment a
+                        where a.patient.id = p.id and a.owner.id = :orgId
+                      ) or exists (
+                        select 1 from com.clinic.hms.entity.Visit v
+                        where v.patient.id = p.id and v.owner.id = :orgId
+                      ) or exists (
+                        select 1 from com.clinic.hms.entity.Appointment a, com.clinic.hms.entity.DoctorOrgMapping dom
+                        where a.patient.id = p.id and a.doctor.id = dom.doctor.id and dom.org.id = :orgId and dom.status = 'ACTIVE'
+                      ) or exists (
+                        select 1 from com.clinic.hms.entity.Visit v, com.clinic.hms.entity.DoctorOrgMapping dom
+                        where v.patient.id = p.id and v.doctor.id = dom.doctor.id and dom.org.id = :orgId and dom.status = 'ACTIVE'
                       ))
                   and (:doctorId is null or exists (
                         select 1 from com.clinic.hms.entity.PatientDoctorMapping pm
                         where pm.doctor.id = :doctorId and pm.patient.id = p.id and pm.status = 'ACTIVE'
+                      ) or exists (
+                        select 1 from com.clinic.hms.entity.Appointment a
+                        where a.patient.id = p.id and a.doctor.id = :doctorId
+                      ) or exists (
+                        select 1 from com.clinic.hms.entity.Visit v
+                        where v.patient.id = p.id and v.doctor.id = :doctorId
+                      ))
+                  and (:providerId is null or exists (
+                        select 1 from com.clinic.hms.entity.PatientLabMapping lm
+                        where lm.lab.id = :providerId and lm.patient.id = p.id and lm.status = 'ACTIVE'
                       ))
                   and (
                     :q is null or :q = '' or
@@ -173,7 +224,7 @@ public final class QueryConstants {
 
         public static final String SEARCH_BY_ORG = """
                 select v from Vendor v
-                where (v.org.id = :orgId) and (:q is null or :q = '' or
+                where (v.owner.id = :orgId) and (:q is null or :q = '' or
                   lower(v.name) like lower(concat('%', :q, '%')) or
                   lower(v.address) like lower(concat('%', :q, '%')) or
                   lower(v.mobile) like lower(concat('%', :q, '%')) or
@@ -183,7 +234,7 @@ public final class QueryConstants {
 
         public static final String SEARCH_BY_ORG_COUNT = """
                 select count(v) from Vendor v
-                where (v.org.id = :orgId) and (:q is null or :q = '' or
+                where (v.owner.id = :orgId) and (:q is null or :q = '' or
                   lower(v.name) like lower(concat('%', :q, '%')) or
                   lower(v.address) like lower(concat('%', :q, '%')) or
                   lower(v.mobile) like lower(concat('%', :q, '%')) or
@@ -216,7 +267,7 @@ public final class QueryConstants {
 
         public static final String SEARCH_BY_ORG = """
                 select l from Lab l
-                where (l.org.id = :orgId) and (:q is null or :q = '' or
+                where (l.owner.id = :orgId) and (:q is null or :q = '' or
                   lower(l.name) like lower(concat('%', :q, '%')) or
                   lower(l.address) like lower(concat('%', :q, '%')) or
                   lower(l.mobile) like lower(concat('%', :q, '%')))
@@ -224,7 +275,7 @@ public final class QueryConstants {
 
         public static final String SEARCH_BY_ORG_COUNT = """
                 select count(l) from Lab l
-                where (l.org.id = :orgId) and (:q is null or :q = '' or
+                where (l.owner.id = :orgId) and (:q is null or :q = '' or
                   lower(l.name) like lower(concat('%', :q, '%')) or
                   lower(l.address) like lower(concat('%', :q, '%')) or
                   lower(l.mobile) like lower(concat('%', :q, '%')))

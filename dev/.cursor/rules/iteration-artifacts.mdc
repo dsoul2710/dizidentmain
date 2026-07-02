@@ -1,0 +1,54 @@
+---
+description: Iteration artifact folder naming and layout for AIdLC docs
+alwaysApply: true
+---
+
+# Iteration Artifacts Convention
+
+All AIdLC and planned-iteration **documentation** lives under:
+
+```text
+dev/artifacts/iteration/{timestamp}-{micro-description}/
+```
+
+## Folder naming
+
+| Part | Rule | Example |
+|------|------|---------|
+| `{timestamp}` | Unix epoch seconds (10 digits) at iteration start | `1783016581` |
+| `{micro-description}` | Lowercase kebab-case, 2–5 words, no spaces | `code-quality-security-hardening` |
+
+**Full example:** `1783016581-code-quality-security-hardening`
+
+Generate timestamp at folder creation:
+
+```powershell
+$ts = [int][double]::Parse((Get-Date -UFormat %s))
+$folder = "artifacts/iteration/${ts}-your-short-name"
+```
+
+## Required layout (inside each iteration folder)
+
+```text
+{timestamp}-{micro-description}/
+  README.md              # Iteration summary (scope, dates, status)
+  aidlc-state.md         # Workflow state
+  audit.md               # Append-only interaction log
+  inception/             # Requirements, design, plans
+  construction/          # Units, build-and-test, sign-off
+  operations/            # Optional placeholder
+```
+
+## Rules
+
+1. **Never** put application code in iteration folders — only docs/markdown.
+2. **One folder per iteration** — do not mix two iterations in one directory.
+3. **New iteration = new folder** — do not overwrite a completed iteration folder.
+4. **audit.md** — append only; never overwrite entire file.
+5. Point `aidlc-docs/README.md` or index to the current/latest iteration path.
+
+## When starting work
+
+1. Create `artifacts/iteration/{timestamp}-{slug}/` first.
+2. Initialize `aidlc-state.md` and `audit.md`.
+3. Log all workflow output under that folder, not under `aidlc-docs/` root.

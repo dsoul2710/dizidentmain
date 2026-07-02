@@ -30,38 +30,45 @@ public class AppointmentService {
     private final VisitRepository visitRepository;
     private final EventPushService eventPushService;
     private final com.clinic.hms.security.SecurityUtils securityUtils;
+    private final UserRepository userRepository;
+
+    private Long resolveOwnerId() {
+        try {
+            String role = securityUtils.getCurrentUserRole();
+            if (com.clinic.hms.constants.AppConstants.Roles.SERVICE_PROVIDER.equalsIgnoreCase(role)) {
+                return securityUtils.getCurrentUserId();
+            }
+            Long orgId = securityUtils.getActiveOrgId();
+            if (orgId != null) {
+                return orgId;
+            }
+        } catch (Exception e) {
+            // Ignore context exceptions
+        }
+        return securityUtils.getCurrentUserId();
+    }
 
     @Transactional(readOnly = true)
     public List<AppointmentResponse> listAppointmentsForDate(LocalDate date) {
-        Long orgId = null;
-        try {
-            orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore
-        }
-        final Long finalOrgId = orgId;
+        Long ownerId = resolveOwnerId();
+        final Long finalOwnerId = ownerId;
         return appointmentRepository.findByAppointmentDate(date)
                 .stream()
                 .filter(appointment -> !isCancelled(appointment))
-                .filter(appointment -> finalOrgId == null || (appointment.getOrg() != null && finalOrgId.equals(appointment.getOrg().getId())))
+                .filter(appointment -> finalOwnerId == null || (appointment.getOwner() != null && finalOwnerId.equals(appointment.getOwner().getId())))
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<AppointmentResponse> listAppointmentsInRange(LocalDate fromDate, LocalDate toDate) {
-        Long orgId = null;
-        try {
-            orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore
-        }
-        final Long finalOrgId = orgId;
+        Long ownerId = resolveOwnerId();
+        final Long finalOwnerId = ownerId;
         return appointmentRepository
                 .findByAppointmentDateBetweenOrderByAppointmentDateAscStartTimeAsc(fromDate, toDate)
                 .stream()
                 .filter(appointment -> !isCancelled(appointment))
-                .filter(appointment -> finalOrgId == null || (appointment.getOrg() != null && finalOrgId.equals(appointment.getOrg().getId())))
+                .filter(appointment -> finalOwnerId == null || (appointment.getOwner() != null && finalOwnerId.equals(appointment.getOwner().getId())))
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
@@ -96,21 +103,14 @@ public class AppointmentService {
                     .orElseThrow(() -> new IllegalArgumentException("Invalid visit id"));
         }
 
-        OrgHospital org = null;
-        try {
-            Long orgId = securityUtils.getActiveOrgId();
-            if (orgId != null) {
-                org = orgHospitalRepository.findById(orgId).orElse(null);
-            }
-        } catch (Exception e) {
-            // Ignore
-        }
+        Long ownerId = resolveOwnerId();
+        User owner = ownerId != null ? userRepository.findById(ownerId).orElse(null) : null;
 
         Appointment appointment = Appointment.builder()
                 .patient(patient)
                 .doctor(doctor)
                 .visit(visit)
-                .org(org)
+                .owner(owner)
                 .appointmentDate(date)
                 .startTime(startTime)
                 .endTime(endTime)

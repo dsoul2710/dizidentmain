@@ -14,8 +14,8 @@ public interface VendorRepository extends JpaRepository<Vendor, Long> {
     @Query(value = QueryConstants.Vendor.SEARCH, countQuery = QueryConstants.Vendor.SEARCH_COUNT)
     Page<Vendor> searchVendors(@Param("q") String query, Pageable pageable);
 
-    java.util.List<Vendor> findByOrg_Id(Long orgId);
+    java.util.List<Vendor> findByOwner_Id(Long ownerId);
 
     @Query(value = QueryConstants.Vendor.SEARCH_BY_ORG, countQuery = QueryConstants.Vendor.SEARCH_BY_ORG_COUNT)
-    Page<Vendor> searchVendorsByOrg(@Param("orgId") Long orgId, @Param("q") String query, Pageable pageable);
+    Page<Vendor> searchVendorsByOrg(@Param("orgId") Long ownerId, @Param("q") String query, Pageable pageable);
 }

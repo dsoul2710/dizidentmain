@@ -22,12 +22,17 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     Optional<Patient> findByUniqueIdAndIsDeletedFalse(String uniqueId);
 
     @Query(QueryConstants.Patient.LIST)
-    List<Patient> listPatients(@Param("orgId") Long orgId, @Param("doctorId") Long doctorId);
+    List<Patient> listPatients(
+            @Param("orgId") Long orgId,
+            @Param("doctorId") Long doctorId,
+            @Param("providerId") Long providerId
+    );
 
     @Query(value = QueryConstants.Patient.SEARCH, countQuery = QueryConstants.Patient.SEARCH_COUNT)
     Page<Patient> searchPatients(
             @Param("orgId") Long orgId,
             @Param("doctorId") Long doctorId,
+            @Param("providerId") Long providerId,
             @Param("q") String query,
             Pageable pageable
     );

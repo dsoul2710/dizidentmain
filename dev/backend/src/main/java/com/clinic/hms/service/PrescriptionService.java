@@ -3,6 +3,7 @@ package com.clinic.hms.service;
 import com.clinic.hms.constants.AppConstants;
 import com.clinic.hms.dto.request.PrescriptionItemRequest;
 import com.clinic.hms.dto.request.PrescriptionRequest;
+import com.clinic.hms.dto.request.PrescriptionTemplateRequest;
 import com.clinic.hms.dto.response.PrescriptionItemResponse;
 import com.clinic.hms.dto.response.PrescriptionResponse;
 import com.clinic.hms.entity.*;
@@ -26,6 +27,46 @@ public class PrescriptionService {
     private final PatientDoctorMappingRepository patientDoctorMappingRepository;
     private final PrescriptionRepository prescriptionRepository;
     private final PrescriptionItemRepository prescriptionItemRepository;
+    private final PrescriptionTemplateRepository templateRepository;
+
+    @Transactional(readOnly = true)
+    public List<PrescriptionTemplate> listTemplates(Long doctorUserId) {
+        if (doctorUserId != null) {
+            return templateRepository.findByDoctor_IdOrDoctorIsNull(doctorUserId);
+        }
+        return templateRepository.findAll();
+    }
+
+    @Transactional
+    public PrescriptionTemplate createTemplate(PrescriptionTemplateRequest request) {
+        if (request.getMedicineName() == null || request.getMedicineName().isBlank()) {
+            throw new IllegalArgumentException("Medicine name is required");
+        }
+
+        Doctor doctor = null;
+        if (request.getDoctorUserId() != null) {
+            doctor = doctorRepository.findById(request.getDoctorUserId())
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Doctor user not found: " + request.getDoctorUserId()));
+        }
+
+        PrescriptionTemplate template = PrescriptionTemplate.builder()
+                .name(request.getName() != null ? request.getName() : request.getMedicineName())
+                .medicineName(request.getMedicineName())
+                .medicineContents(request.getMedicineContents())
+                .medicineType(request.getMedicineType() != null ? request.getMedicineType() : "tab")
+                .volume(request.getVolume() != null ? request.getVolume() : "")
+                .dose(request.getDose() != null ? request.getDose() : "")
+                .days(request.getDays())
+                .timings(request.getTimings())
+                .duration(request.getDuration())
+                .instructions(request.getInstructions())
+                .doctor(doctor)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        return templateRepository.save(template);
+    }
 
     @Transactional(readOnly = true)
     public PrescriptionResponse getLatestByVisit(Long visitId) {

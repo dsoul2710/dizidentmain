@@ -41,6 +41,8 @@ public class PatientService {
     
     private final PatientOrgMappingRepository patientOrgMappingRepository;
     private final PatientDoctorMappingRepository patientDoctorMappingRepository;
+    private final AppointmentRepository appointmentRepository;
+    private final VisitRepository visitRepository;
     
     private final PasswordEncoder passwordEncoder;
     private final SecurityUtils securityUtils;
@@ -164,19 +166,132 @@ public class PatientService {
     public PatientResponse getPatientById(Long id) {
         Patient patient = patientRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new IllegalArgumentException("Patient profile not found or deleted"));
+        checkPatientAccess(patient);
         return toDto(patient);
+    }
+
+    public void checkPatientAccess(Patient patient) {
+        String role = null;
+        try {
+            role = securityUtils.getCurrentUserRole();
+        } catch (Exception e) {}
+
+        if (role == null) {
+            throw new SecurityException("Unauthorized access to patient details");
+        }
+
+        if (AppConstants.Roles.SUPER_ADMIN.equalsIgnoreCase(role) || "SUPERADMIN".equalsIgnoreCase(role)) {
+            return;
+        }
+
+        if (AppConstants.Roles.PATIENT.equalsIgnoreCase(role)) {
+            if (!patient.getId().equals(securityUtils.getCurrentUserId())) {
+                throw new SecurityException("Patients can only access their own profile");
+            }
+            return;
+        }
+
+        if (AppConstants.Roles.ORG_HOSPITAL.equalsIgnoreCase(role)) {
+            Long orgId = securityUtils.getCurrentUserId();
+            boolean hasMapping = patientOrgMappingRepository.existsByOrg_IdAndPatient_IdAndStatus(orgId, patient.getId(), AppConstants.Status.ACTIVE);
+            if (!hasMapping) {
+                boolean hasHistory = appointmentRepository.existsByPatient_IdAndOwner_Id(patient.getId(), orgId)
+                        || visitRepository.existsByPatient_IdAndOwner_Id(patient.getId(), orgId);
+                if (!hasHistory) {
+                    throw new SecurityException("Organization does not have access to this patient");
+                }
+            }
+            return;
+        }
+
+        if (AppConstants.Roles.DOCTOR.equalsIgnoreCase(role)) {
+            Long doctorId = securityUtils.getCurrentUserId();
+            Long activeOrgId = null;
+            try {
+                activeOrgId = securityUtils.getActiveOrgId();
+            } catch (Exception e) {}
+
+            boolean hasMapping = patientDoctorMappingRepository.existsByDoctorAndPatient(
+                    doctorRepository.getReferenceById(doctorId), patient
+            );
+            if (!hasMapping) {
+                boolean hasHistory = appointmentRepository.existsByPatient_IdAndDoctor_Id(patient.getId(), doctorId)
+                        || visitRepository.existsByPatient_IdAndDoctor_Id(patient.getId(), doctorId);
+                if (!hasHistory) {
+                    if (activeOrgId != null) {
+                        boolean isOrgMapped = patientOrgMappingRepository.existsByOrg_IdAndPatient_IdAndStatus(activeOrgId, patient.getId(), AppConstants.Status.ACTIVE);
+                        if (!isOrgMapped) {
+                            throw new SecurityException("Doctor does not have access to this patient");
+                        }
+                    } else {
+                        throw new SecurityException("Doctor does not have access to this patient");
+                    }
+                }
+            }
+            return;
+        }
+
+        if (AppConstants.Roles.SERVICE_PROVIDER.equalsIgnoreCase(role)) {
+            Long activeOrgId = null;
+            try {
+                activeOrgId = securityUtils.getActiveOrgId();
+            } catch (Exception e) {}
+            if (activeOrgId != null) {
+                boolean isOrgMapped = patientOrgMappingRepository.existsByOrg_IdAndPatient_IdAndStatus(activeOrgId, patient.getId(), AppConstants.Status.ACTIVE);
+                if (!isOrgMapped) {
+                    throw new SecurityException("Service Provider does not have access to this patient");
+                }
+            } else {
+                throw new SecurityException("Service Provider does not have access to this patient");
+            }
+            return;
+        }
+
+        throw new SecurityException("Access denied for patient details");
     }
 
     @Transactional(readOnly = true)
     public List<PatientResponse> listPatients(Long doctorId) {
-        Long orgId = null;
+        String role = null;
         try {
-            orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore if called outside request context (e.g. testing)
+            role = securityUtils.getCurrentUserRole();
+        } catch (Exception e) {}
+
+        if (role == null) {
+            return List.of();
         }
 
-        List<Patient> list = patientRepository.listPatients(orgId, doctorId);
+        Long orgId = null;
+        Long providerId = null;
+
+        if (AppConstants.Roles.SUPER_ADMIN.equalsIgnoreCase(role) || "SUPERADMIN".equalsIgnoreCase(role)) {
+            orgId = null;
+            providerId = null;
+        } else if (AppConstants.Roles.ORG_HOSPITAL.equalsIgnoreCase(role)) {
+            orgId = securityUtils.getCurrentUserId();
+            providerId = null;
+        } else if (AppConstants.Roles.DOCTOR.equalsIgnoreCase(role)) {
+            doctorId = securityUtils.getCurrentUserId();
+            try {
+                orgId = securityUtils.getActiveOrgId();
+            } catch (Exception e) {}
+            providerId = null;
+        } else if (AppConstants.Roles.SERVICE_PROVIDER.equalsIgnoreCase(role)) {
+            providerId = securityUtils.getCurrentUserId();
+            try {
+                orgId = securityUtils.getActiveOrgId();
+            } catch (Exception e) {}
+        } else if (AppConstants.Roles.PATIENT.equalsIgnoreCase(role)) {
+            Long patientId = securityUtils.getCurrentUserId();
+            return patientRepository.findByIdAndIsDeletedFalse(patientId)
+                    .stream()
+                    .map(this::toDto)
+                    .collect(Collectors.toList());
+        } else {
+            return List.of();
+        }
+
+        List<Patient> list = patientRepository.listPatients(orgId, doctorId, providerId);
         return list.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -188,14 +303,65 @@ public class PatientService {
         int safeSize = Math.max(pageSize, 1);
         PageRequest pageable = PageRequest.of(safePage - 1, safeSize, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Long orgId = null;
+        String role = null;
         try {
-            orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore if no active org is set
+            role = securityUtils.getCurrentUserRole();
+        } catch (Exception e) {}
+
+        if (role == null) {
+            return PagedResponse.<PatientResponse>builder()
+                    .items(List.of())
+                    .page(safePage)
+                    .pageSize(safeSize)
+                    .totalItems(0L)
+                    .totalPages(0)
+                    .build();
         }
 
-        Page<Patient> result = patientRepository.searchPatients(orgId, doctorId, search, pageable);
+        Long orgId = null;
+        Long providerId = null;
+
+        if (AppConstants.Roles.SUPER_ADMIN.equalsIgnoreCase(role) || "SUPERADMIN".equalsIgnoreCase(role)) {
+            orgId = null;
+            providerId = null;
+        } else if (AppConstants.Roles.ORG_HOSPITAL.equalsIgnoreCase(role)) {
+            orgId = securityUtils.getCurrentUserId();
+            providerId = null;
+        } else if (AppConstants.Roles.DOCTOR.equalsIgnoreCase(role)) {
+            doctorId = securityUtils.getCurrentUserId();
+            try {
+                orgId = securityUtils.getActiveOrgId();
+            } catch (Exception e) {}
+            providerId = null;
+        } else if (AppConstants.Roles.SERVICE_PROVIDER.equalsIgnoreCase(role)) {
+            providerId = securityUtils.getCurrentUserId();
+            try {
+                orgId = securityUtils.getActiveOrgId();
+            } catch (Exception e) {}
+        } else if (AppConstants.Roles.PATIENT.equalsIgnoreCase(role)) {
+            Long patientId = securityUtils.getCurrentUserId();
+            List<PatientResponse> items = patientRepository.findByIdAndIsDeletedFalse(patientId)
+                    .stream()
+                    .map(this::toDto)
+                    .collect(Collectors.toList());
+            return PagedResponse.<PatientResponse>builder()
+                    .items(items)
+                    .page(1)
+                    .pageSize(safeSize)
+                    .totalItems((long) items.size())
+                    .totalPages(1)
+                    .build();
+        } else {
+            return PagedResponse.<PatientResponse>builder()
+                    .items(List.of())
+                    .page(safePage)
+                    .pageSize(safeSize)
+                    .totalItems(0L)
+                    .totalPages(0)
+                    .build();
+        }
+
+        Page<Patient> result = patientRepository.searchPatients(orgId, doctorId, providerId, search, pageable);
         List<PatientResponse> items = result.getContent()
                 .stream()
                 .map(this::toDto)
@@ -402,6 +568,43 @@ public class PatientService {
         patientRepository.save(patient);
     }
 
+    @Transactional(readOnly = true)
+    public Patient requirePatientForFiles(Long id) {
+        return patientRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid patient details id"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> listReportFileNames(Long id) {
+        Patient patient = requirePatientForFiles(id);
+        return splitPaths(patient.getPastReportsFilePath()).stream()
+                .map(p -> Paths.get(p).getFileName().toString())
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public String getIdInsuranceFilePath(Long id) {
+        return requirePatientForFiles(id).getIdInsuranceFilePath();
+    }
+
+    @Transactional(readOnly = true)
+    public Path resolveReportFilePath(Long id, String fileName) {
+        Patient patient = requirePatientForFiles(id);
+        List<String> paths = splitPaths(patient.getPastReportsFilePath());
+        if (paths.isEmpty()) {
+            throw new IllegalArgumentException("No report files");
+        }
+        if (fileName != null && !fileName.isBlank()) {
+            for (String p : paths) {
+                Path candidate = Paths.get(p);
+                if (candidate.getFileName().toString().equals(fileName)) {
+                    return candidate;
+                }
+            }
+        }
+        return Paths.get(paths.get(0));
+    }
+
     private List<String> splitPaths(String csv) {
         if (csv == null || csv.isBlank()) return List.of();
         return java.util.Arrays.stream(csv.split(","))
@@ -449,5 +652,130 @@ public class PatientService {
             uniqueId = AppConstants.PatientId.PREFIX + String.format(AppConstants.PatientId.FORMAT, (int)(Math.random() * AppConstants.PatientId.RANGE));
         }
         return uniqueId;
+    }
+
+    /**
+     * Platform-wide lookup of a patient by unique ID (PAT-XXXXXX).
+     * Used by the "Import Existing Patient" feature for ORG and DOCTOR roles.
+     */
+    @Transactional(readOnly = true)
+    public PatientResponse lookupPatientByUniqueId(String uniqueId) {
+        Patient patient = patientRepository.findByUniqueIdAndIsDeletedFalse(uniqueId)
+                .orElse(null);
+        if (patient == null) {
+            return null;
+        }
+        return toDto(patient);
+    }
+
+    /**
+     * Import an existing patient into the caller's scope by creating the
+     * appropriate PatientOrgMapping and/or PatientDoctorMapping.
+     */
+    @Transactional
+    public PatientResponse importExistingPatient(Long patientUserId, Long assignedDoctorId) {
+        Patient patient = patientRepository.findByIdAndIsDeletedFalse(patientUserId)
+                .orElseThrow(() -> new IllegalArgumentException("Patient not found or deleted"));
+
+        LocalDateTime now = LocalDateTime.now();
+        Long currentUserId = null;
+        try {
+            currentUserId = securityUtils.getCurrentUserId();
+        } catch (Exception e) {}
+
+        String role = securityUtils.getCurrentUserRole();
+        if (role == null) {
+            throw new SecurityException("Unauthorized");
+        }
+
+        // ORG role: create PatientOrgMapping + optional PatientDoctorMapping
+        if (AppConstants.Roles.ORG_HOSPITAL.equalsIgnoreCase(role)) {
+            Long orgId = securityUtils.getCurrentUserId();
+            OrgHospital org = orgHospitalRepository.findById(orgId)
+                    .orElseThrow(() -> new IllegalArgumentException("Organization not found"));
+
+            boolean orgMappingExists = patientOrgMappingRepository
+                    .existsByOrg_IdAndPatient_IdAndStatus(orgId, patientUserId, AppConstants.Status.ACTIVE);
+            if (!orgMappingExists) {
+                PatientOrgMapping mapping = PatientOrgMapping.builder()
+                        .org(org)
+                        .patient(patient)
+                        .status(AppConstants.Status.ACTIVE)
+                        .createdAt(now)
+                        .updatedAt(now)
+                        .createdByUserId(currentUserId)
+                        .build();
+                patientOrgMappingRepository.save(mapping);
+            }
+
+            // Optional doctor assignment
+            if (assignedDoctorId != null) {
+                Doctor assignedDoc = doctorRepository.findById(assignedDoctorId).orElse(null);
+                if (assignedDoc != null) {
+                    boolean docMappingExists = patientDoctorMappingRepository
+                            .existsByDoctorAndPatient(assignedDoc, patient);
+                    if (!docMappingExists) {
+                        PatientDoctorMapping docMap = PatientDoctorMapping.builder()
+                                .doctor(assignedDoc)
+                                .patient(patient)
+                                .status(AppConstants.Status.ACTIVE)
+                                .createdAt(now)
+                                .updatedAt(now)
+                                .createdByUserId(currentUserId)
+                                .build();
+                        patientDoctorMappingRepository.save(docMap);
+                    }
+                }
+            }
+        }
+        // DOCTOR role: create PatientDoctorMapping + PatientOrgMapping if org context
+        else if (AppConstants.Roles.DOCTOR.equalsIgnoreCase(role)) {
+            Long doctorId = securityUtils.getCurrentUserId();
+            Doctor doctor = doctorRepository.findById(doctorId)
+                    .orElseThrow(() -> new IllegalArgumentException("Doctor profile not found"));
+
+            boolean docMappingExists = patientDoctorMappingRepository
+                    .existsByDoctorAndPatient(doctor, patient);
+            if (!docMappingExists) {
+                PatientDoctorMapping docMap = PatientDoctorMapping.builder()
+                        .doctor(doctor)
+                        .patient(patient)
+                        .status(AppConstants.Status.ACTIVE)
+                        .createdAt(now)
+                        .updatedAt(now)
+                        .createdByUserId(currentUserId)
+                        .build();
+                patientDoctorMappingRepository.save(docMap);
+            }
+
+            // Also create org mapping if doctor has active org context
+            try {
+                Long orgId = securityUtils.getActiveOrgId();
+                if (orgId != null) {
+                    boolean orgMappingExists = patientOrgMappingRepository
+                            .existsByOrg_IdAndPatient_IdAndStatus(orgId, patientUserId, AppConstants.Status.ACTIVE);
+                    if (!orgMappingExists) {
+                        OrgHospital org = orgHospitalRepository.findById(orgId).orElse(null);
+                        if (org != null) {
+                            PatientOrgMapping mapping = PatientOrgMapping.builder()
+                                    .org(org)
+                                    .patient(patient)
+                                    .status(AppConstants.Status.ACTIVE)
+                                    .createdAt(now)
+                                    .updatedAt(now)
+                                    .createdByUserId(currentUserId)
+                                    .build();
+                            patientOrgMappingRepository.save(mapping);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                // Ignore if no org context
+            }
+        } else {
+            throw new SecurityException("Only ORG and DOCTOR roles can import patients");
+        }
+
+        return toDto(patient);
     }
 }
