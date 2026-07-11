@@ -17,6 +17,7 @@ import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import com.clinic.hms.security.logto.LogtoJwtAuthenticationConverter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,9 +31,16 @@ public class SecurityConfig {
     private final MdcLoggingFilter mdcLoggingFilter;
     private final JsonAuthenticationEntryPoint authenticationEntryPoint;
     private final JsonAccessDeniedHandler accessDeniedHandler;
+    private final LogtoJwtAuthenticationConverter logtoJwtAuthenticationConverter;
 
     @Value("${app.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000}")
     private String allowedOrigins;
+
+    @Value("${app.logto.enabled:true}")
+    private boolean logtoEnabled;
+
+    @Value("${app.auth.legacy-enabled:true}")
+    private boolean legacyAuthEnabled;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -46,6 +54,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/logout").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/webhooks/logto").permitAll()
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
@@ -56,9 +65,20 @@ public class SecurityConfig {
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
-                )
-                .addFilterBefore(mdcLoggingFilter, SecurityContextHolderFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                );
+
+        if (logtoEnabled) {
+            http.oauth2ResourceServer(oauth2 -> oauth2
+                    .jwt(jwt -> jwt.jwtAuthenticationConverter(logtoJwtAuthenticationConverter))
+                    .authenticationEntryPoint(authenticationEntryPoint)
+                    .accessDeniedHandler(accessDeniedHandler));
+        }
+
+        http.addFilterBefore(mdcLoggingFilter, SecurityContextHolderFilter.class);
+
+        if (legacyAuthEnabled) {
+            http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        }
 
         return http.build();
     }

@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/reports/inventory")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('SUPER_ADMIN', 'SUPERADMIN', 'ORG_HOSPITAL', 'ORG', 'DOCTOR')")
+@PreAuthorize("@authorizationService.hasAnyScope('inventory:read', 'inventory:edit') or hasAnyRole('SUPER_ADMIN', 'SUPERADMIN', 'ORG_HOSPITAL', 'ORG', 'DOCTOR')")
 public class InventoryReportController {
 
     private final InventoryReportService inventoryReportService;

@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { LogtoProvider } from '@logto/react';
 import App from '@/app/App.jsx';
+import { logtoConfig, LOGTO_ENABLED } from '@/config/logto';
+import { AuthSessionProvider } from '@/features/auth/context/AuthSessionProvider';
+import { getLogtoAccessToken } from '@/features/auth/logto/tokenStore';
 import './assets/css/clinic-overrides.css';
 
-// Global Fetch Interceptor to inject cookies & active org headers
 const originalFetch = window.fetch;
 window.fetch = async function (input, init) {
   let url = "";
@@ -16,39 +19,38 @@ window.fetch = async function (input, init) {
   const isApiRequest = url.includes("/api/") || url.includes("/api");
 
   if (isApiRequest) {
+    const token = await getLogtoAccessToken();
+    const activeOrgId =
+      localStorage.getItem("hms_active_logto_org_id") ||
+      localStorage.getItem("hms_active_org_id");
+
     if (input instanceof Request) {
-      const activeOrgId = localStorage.getItem("hms_active_org_id");
       const newHeaders = new Headers(input.headers);
+      if (token) {
+        newHeaders.set("Authorization", `Bearer ${token}`);
+      }
       if (activeOrgId) {
         newHeaders.set("X-Active-Org-Id", activeOrgId);
       }
-      
-      const newInit = {
+
+      input = new Request(input, {
         ...init,
         credentials: "include",
-        headers: newHeaders
-      };
-      
-      input = new Request(input, newInit);
+        headers: newHeaders,
+      });
     } else {
       init = init || {};
       init.credentials = "include";
-      
-      const activeOrgId = localStorage.getItem("hms_active_org_id");
-      if (activeOrgId) {
-        if (!init.headers) {
-          init.headers = {};
-        }
-        if (init.headers instanceof Headers) {
-          init.headers.set("X-Active-Org-Id", activeOrgId);
-        } else if (Array.isArray(init.headers)) {
-          const exists = init.headers.some(h => h[0].toLowerCase() === "x-active-org-id");
-          if (!exists) {
-            init.headers.push(["X-Active-Org-Id", activeOrgId]);
-          }
-        } else {
-          init.headers["X-Active-Org-Id"] = activeOrgId;
-        }
+      init.headers = init.headers || {};
+      if (init.headers instanceof Headers) {
+        if (token) init.headers.set("Authorization", `Bearer ${token}`);
+        if (activeOrgId) init.headers.set("X-Active-Org-Id", activeOrgId);
+      } else if (Array.isArray(init.headers)) {
+        if (token) init.headers.push(["Authorization", `Bearer ${token}`]);
+        if (activeOrgId) init.headers.push(["X-Active-Org-Id", activeOrgId]);
+      } else {
+        if (token) init.headers["Authorization"] = `Bearer ${token}`;
+        if (activeOrgId) init.headers["X-Active-Org-Id"] = activeOrgId;
       }
     }
   }
@@ -56,8 +58,20 @@ window.fetch = async function (input, init) {
   return originalFetch(input, init);
 };
 
+const tree = LOGTO_ENABLED ? (
+  <LogtoProvider config={logtoConfig}>
+    <AuthSessionProvider>
+      <App />
+    </AuthSessionProvider>
+  </LogtoProvider>
+) : (
+  <AuthSessionProvider>
+    <App />
+  </AuthSessionProvider>
+);
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    {tree}
   </React.StrictMode>
 );

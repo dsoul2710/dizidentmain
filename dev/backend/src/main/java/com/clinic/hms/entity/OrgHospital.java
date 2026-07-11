@@ -33,4 +33,7 @@ public class OrgHospital extends AuditableEntity {
 
     @Column(name = "license_number", length = 100)
     private String licenseNumber;
+
+    @Column(name = "logto_org_id", unique = true, length = 64)
+    private String logtoOrgId;
 }

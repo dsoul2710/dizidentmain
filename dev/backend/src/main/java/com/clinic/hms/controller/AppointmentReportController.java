@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/reports/appointments")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('SUPER_ADMIN', 'SUPERADMIN', 'ORG_HOSPITAL', 'ORG', 'DOCTOR')")
+@PreAuthorize("@authorizationService.hasAnyScope('appointments:read', 'appointments:manage') or hasAnyRole('SUPER_ADMIN', 'SUPERADMIN', 'ORG_HOSPITAL', 'ORG', 'DOCTOR')")
 public class AppointmentReportController {
 
     private final AppointmentReportService appointmentReportService;

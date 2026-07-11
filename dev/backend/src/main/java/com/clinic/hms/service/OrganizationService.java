@@ -10,6 +10,7 @@ import com.clinic.hms.entity.UserRole;
 import com.clinic.hms.repository.OrgHospitalRepository;
 import com.clinic.hms.repository.UserRepository;
 import com.clinic.hms.security.SecurityUtils;
+import com.clinic.hms.service.logto.LogtoProvisioningService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class OrganizationService {
     private final OrgHospitalRepository orgHospitalRepository;
     private final SecurityUtils securityUtils;
     private final PasswordEncoder passwordEncoder;
+    private final LogtoProvisioningService logtoProvisioningService;
 
     @Transactional(readOnly = true)
     public List<OrganizationResponse> listOrganizations() {
@@ -74,6 +76,8 @@ public class OrganizationService {
                 .build();
 
         orgHospitalRepository.save(orgHospital);
+
+        logtoProvisioningService.syncHmsOrganizationToLogto(orgHospital.getId());
 
         return toResponse(orgHospital);
     }

@@ -22,6 +22,7 @@ import ChatBell from "@/shared/components/chat/ChatBell.jsx";
 import NotificationPanel from "@/shared/components/chat/NotificationPanel.jsx";
 import WowDashLayout from "@/shared/components/layout/WowDashLayout.jsx";
 import HeaderProfile from "@/shared/components/layout/HeaderProfile.jsx";
+import OrgSwitcher from "@/features/auth/components/OrgSwitcher.jsx";
 import HeaderPatientSelector from "@/shared/components/layout/HeaderPatientSelector.jsx";
 import useNotifications from "@/shared/hooks/useNotifications";
 import UserManager from "@/shared/components/common/UserManager.jsx";
@@ -604,6 +605,10 @@ export default function UnifiedDashboard({ user, onLogout }) {
               onClick={() => setNotificationPanelOpen(!notificationPanelOpen)}
             />
           )}
+          <OrgSwitcher
+            organizationIds={user?.organizationIds}
+            organizationRoles={user?.organizationRoles}
+          />
           <HeaderProfile
             name={user?.name || "User"}
             roleLabel={roleLabel}

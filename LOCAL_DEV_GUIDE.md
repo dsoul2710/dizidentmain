@@ -35,10 +35,19 @@ dizidentmain/
 ## 🎯 Workflow
 
 ### 1️⃣ Daily Local Development
+**Backend:**
 ```bash
 cd dev/backend
-./gradlew bootRun    # Backend: http://localhost:8080
+# Windows PowerShell
+$env:SPRING_PROFILES_ACTIVE="dev"
+.\gradlew.bat bootRun
 
+# Linux/macOS
+SPRING_PROFILES_ACTIVE=dev ./gradlew bootRun
+```
+
+**Frontend:**
+```bash
 cd dev/frontend
 npm run dev          # Frontend: http://localhost:5173
 ```
@@ -204,7 +213,15 @@ VITE_API_BASE=http://localhost:8080
 EOF
 
 # 3. Start developing
-cd dev/backend && ./gradlew bootRun
+# Backend:
+# (Windows)
+$env:SPRING_PROFILES_ACTIVE="dev"
+cd dev/backend && .\gradlew.bat bootRun
+
+# (Linux/macOS)
+cd dev/backend && SPRING_PROFILES_ACTIVE=dev ./gradlew bootRun
+
+# Frontend:
 cd dev/frontend && npm run dev
 ```
 

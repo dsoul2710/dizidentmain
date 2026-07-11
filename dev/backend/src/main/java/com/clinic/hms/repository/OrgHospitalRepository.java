@@ -10,4 +10,6 @@ public interface OrgHospitalRepository extends JpaRepository<OrgHospital, Long> 
     List<OrgHospital> findByIsDeletedFalse();
     boolean existsByUniqueId(String uniqueId);
     Optional<OrgHospital> findByUniqueId(String uniqueId);
+
+    Optional<OrgHospital> findByLogtoOrgIdAndIsDeletedFalse(String logtoOrgId);
 }

@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,35 +8,21 @@ import {
 } from "react-router-dom";
 
 import LoginPage from "@/features/auth/pages/LoginPage";
+import CallbackPage from "@/features/auth/pages/CallbackPage";
+import LogtoAccountPendingPage from "@/features/auth/pages/LogtoAccountPendingPage";
 import UnifiedDashboard from "@/features/dashboard/pages/UnifiedDashboard";
 import { ToastProvider } from "@/shared/components/common/ToastProvider";
 import GlobalLoader from "@/shared/components/common/GlobalLoader";
 import { API_BASE_URL } from "@/config";
+import { useAuthSession } from "@/features/auth/context/AuthSessionProvider";
+import { LOGTO_ENABLED } from "@/config/logto";
 
-export default function App() {
-  const [user, setUser] = useState(null);
+function AppRoutes() {
+  const { user, sessionLoading, logout, refreshSession, isLogtoAuthenticated } = useAuthSession();
   const [isBackendOffline, setIsBackendOffline] = useState(false);
 
-  // OPTIONAL: restore from localStorage if you want persistence on refresh
-  useEffect(() => {
-    const saved = localStorage.getItem("hms_user");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        let role = parsed.role;
-        if (role === "SUPER_ADMIN") role = "SUPERADMIN";
-        if (role === "ORG_HOSPITAL") role = "ORG";
-        const normalized = {
-          ...parsed,
-          id: parsed.id ?? parsed.userId ?? null,
-          role,
-        };
-        setUser(normalized);
-      } catch {
-        // ignore parse errors
-      }
-    }
-  }, []);
+  const isLoggedIn = !!user || (LOGTO_ENABLED && isLogtoAuthenticated);
+  const needsAccountLink = !!user && user.linked === false;
 
   useEffect(() => {
     const handleOffline = () => setIsBackendOffline(true);
@@ -80,91 +66,78 @@ export default function App() {
     };
   }, []);
 
-  const handleLogin = (userObj) => {
-    // Normalize so we always have user.id = backend users.id
-    let role = userObj.role;
-    if (role === "SUPER_ADMIN") role = "SUPERADMIN";
-    if (role === "ORG_HOSPITAL") role = "ORG";
-    const normalized = {
-      ...userObj,
-      id: userObj.id ?? userObj.userId ?? null,
-      role,
-    };
-
-    setUser(normalized);
-    localStorage.setItem("hms_user", JSON.stringify(normalized));
-  };
-  const handleLogout = () => {
-    // Clear user state
-    setUser(null);
-
-    // Clear localStorage
-    localStorage.clear();
-
-    // Clear all cookies
-    document.cookie.split(";").forEach((c) => {
-      const eqPos = c.indexOf("=");
-      const name = eqPos > -1 ? c.substr(0, eqPos).trim() : c.trim();
-      if (name) {
-        // Set expiry to past date to delete the cookie
-        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
-      }
-    });
-
-    // Call Spring Boot logout endpoint if available
-    // await fetch(`${API_BASE_URL}/auth/logout`, { method: 'POST' });
-  };
-
-  // Helper to send logged-in user to correct dashboard
   const getDefaultRouteForUser = () => {
-    if (!user) return "/login";
+    if (!isLoggedIn) return "/login";
     return "/dashboard/overview";
   };
 
+  if (sessionLoading && LOGTO_ENABLED && isLogtoAuthenticated) {
+    return (
+      <div className="p-32 text-center">
+        <p>Loading session…</p>
+      </div>
+    );
+  }
+
   return (
-    <ToastProvider>
-      <GlobalLoader />
+    <>
       {isBackendOffline && (
         <div className="backend-offline-banner">
           <i className="ri-error-warning-line text-lg"></i>
           <span>Backend server is offline. Please check your connection or restart the server.</span>
         </div>
       )}
-      <Router>
-        <Routes>
-          {/* Default route */}
-          <Route
-            path="/"
-            element={<Navigate to={getDefaultRouteForUser()} replace />}
-          />
+      <Routes>
+        <Route path="/" element={<Navigate to={getDefaultRouteForUser()} replace />} />
 
-        {/* Login */}
+        <Route path="/callback" element={<CallbackPage />} />
+
         <Route
           path="/login"
           element={
-            user ? (
+            isLoggedIn ? (
               <Navigate to={getDefaultRouteForUser()} replace />
+            ) : sessionLoading ? (
+              <div className="p-32 text-center"><p>Loading session…</p></div>
             ) : (
-              <LoginPage onLogin={handleLogin} />
+              <LoginPage />
             )
           }
         />
 
-        {/* Unified Dashboard */}
         <Route
           path="/dashboard/*"
           element={
-            user ? (
-              <UnifiedDashboard user={user} onLogout={handleLogout} />
+            sessionLoading && isLogtoAuthenticated ? (
+              <div className="p-32 text-center"><p>Loading profile…</p></div>
+            ) : needsAccountLink ? (
+              <LogtoAccountPendingPage
+                user={user}
+                onLogout={logout}
+                onRetry={refreshSession}
+              />
+            ) : user ? (
+              <UnifiedDashboard user={user} onLogout={logout} />
+            ) : isLoggedIn ? (
+              <div className="p-32 text-center"><p>Loading profile…</p></div>
             ) : (
               <Navigate to="/login" replace />
             )
           }
         />
 
-        {/* Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <ToastProvider>
+      <GlobalLoader />
+      <Router>
+        <AppRoutes />
       </Router>
     </ToastProvider>
   );

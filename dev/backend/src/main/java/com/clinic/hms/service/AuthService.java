@@ -2,6 +2,7 @@ package com.clinic.hms.service;
 
 import com.clinic.hms.dto.request.LoginRequest;
 import com.clinic.hms.dto.response.LoginResponse;
+import com.clinic.hms.dto.response.MeResponse;
 import com.clinic.hms.dto.response.ModulePermissionResponse;
 import com.clinic.hms.entity.*;
 import com.clinic.hms.exception.InactiveUserException;
@@ -9,11 +10,15 @@ import com.clinic.hms.exception.InvalidCredentialsException;
 import com.clinic.hms.repository.*;
 import com.clinic.hms.security.JwtUtil;
 import com.clinic.hms.security.LegacyCompatiblePasswordEncoder;
+import com.clinic.hms.security.CustomUserDetails;
+import com.clinic.hms.security.logto.LogtoTokenClaims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,6 +91,67 @@ public class AuthService {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(body);
+    }
+
+    public MeResponse getCurrentProfile(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new InvalidCredentialsException();
+        }
+
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof CustomUserDetails details) {
+            User user = userRepository.findById(details.getId())
+                    .orElseThrow(InvalidCredentialsException::new);
+            ProfileInfo profile = resolveProfile(user);
+            List<ModulePermissionResponse> permissions = getOrBootstrapPermissions(user);
+            return MeResponse.builder()
+                    .logtoSub(user.getLogtoUserId())
+                    .hmsUserId(user.getId())
+                    .mobile(user.getMobile())
+                    .role(user.getRole().name())
+                    .displayName(profile.name())
+                    .providerType(profile.providerType())
+                    .providerTypes(profile.providerTypes())
+                    .linked(true)
+                    .modulePermissions(permissions)
+                    .build();
+        }
+
+        if (principal instanceof Jwt jwt) {
+            LogtoTokenClaims claims = new LogtoTokenClaims(jwt);
+            User linked = userRepository.findByLogtoUserId(jwt.getSubject()).orElse(null);
+            if (linked != null) {
+                ProfileInfo profile = resolveProfile(linked);
+                List<ModulePermissionResponse> permissions = getOrBootstrapPermissions(linked);
+                return MeResponse.builder()
+                        .logtoSub(jwt.getSubject())
+                        .hmsUserId(linked.getId())
+                        .mobile(linked.getMobile())
+                        .role(linked.getRole().name())
+                        .displayName(profile.name())
+                        .providerType(profile.providerType())
+                        .providerTypes(profile.providerTypes())
+                        .linked(true)
+                        .scopes(claims.getScopes())
+                        .roles(claims.getRoles())
+                        .organizationIds(claims.getOrganizationIds())
+                        .organizationRoles(claims.getOrganizationRoles())
+                        .modulePermissions(permissions)
+                        .build();
+            }
+
+            return MeResponse.builder()
+                    .logtoSub(jwt.getSubject())
+                    .linked(false)
+                    .scopes(claims.getScopes())
+                    .roles(claims.getRoles())
+                    .organizationIds(claims.getOrganizationIds())
+                    .organizationRoles(claims.getOrganizationRoles())
+                    .modulePermissions(List.of())
+                    .build();
+        }
+
+        throw new InvalidCredentialsException();
     }
 
     public ResponseEntity<Void> logout() {

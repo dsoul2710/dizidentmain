@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByMobile(String mobile);
 
+    Optional<User> findByLogtoUserId(String logtoUserId);
+
     boolean existsByMobile(String mobile);
 
     List<User> findByRole(UserRole role);

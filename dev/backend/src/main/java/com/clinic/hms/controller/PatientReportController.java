@@ -15,7 +15,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/reports/patients")
 @RequiredArgsConstructor
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("@authorizationService.hasScope('patients:read') or isAuthenticated()")
 public class PatientReportController {
 
     private final PatientReportService patientReportService;

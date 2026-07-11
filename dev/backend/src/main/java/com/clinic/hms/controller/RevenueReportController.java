@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/reports/revenue")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('SUPER_ADMIN', 'SUPERADMIN', 'ORG_HOSPITAL', 'ORG', 'DOCTOR')")
+@PreAuthorize("@authorizationService.hasAnyScope('billing:read', 'billing:manage') or hasAnyRole('SUPER_ADMIN', 'SUPERADMIN', 'ORG_HOSPITAL', 'ORG', 'DOCTOR')")
 public class RevenueReportController {
 
     private final RevenueReportService revenueReportService;

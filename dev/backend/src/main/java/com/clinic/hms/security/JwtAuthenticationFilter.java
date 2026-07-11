@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.*;
@@ -20,6 +21,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService userDetailsService;
+
+    @Value("${app.auth.legacy-enabled:true}")
+    private boolean legacyAuthEnabled;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        if (!legacyAuthEnabled) {
+            return true;
+        }
+        String authHeader = request.getHeader("Authorization");
+        return authHeader != null && authHeader.startsWith("Bearer ");
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

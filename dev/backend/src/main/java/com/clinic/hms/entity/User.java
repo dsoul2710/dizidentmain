@@ -20,7 +20,7 @@ public class User {
     @Column(nullable = false, length = 15, unique = true)
     private String mobile;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 100)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -35,6 +35,9 @@ public class User {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @Column(name = "logto_user_id", unique = true, length = 64)
+    private String logtoUserId;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
