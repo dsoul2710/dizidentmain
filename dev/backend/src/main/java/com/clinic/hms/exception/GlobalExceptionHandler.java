@@ -87,6 +87,21 @@ public class GlobalExceptionHandler {
                 .build());
     }
 
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ErrorResponse> handleApiException(
+            ApiException ex, HttpServletRequest request) {
+        HttpStatus status = ex.getStatus();
+        log.warn("API exception {} for request {}: {}", status.value(), request.getRequestURI(), ex.getMessage());
+        return ResponseEntity.status(status).body(ErrorResponse.builder()
+                .timestamp(getCurrentTimestamp())
+                .status(status.value())
+                .error(status.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .traceId(getTraceId())
+                .build());
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(
             IllegalArgumentException ex, HttpServletRequest request) {

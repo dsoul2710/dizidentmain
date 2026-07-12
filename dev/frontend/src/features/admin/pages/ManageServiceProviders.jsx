@@ -1,10 +1,20 @@
 import React, { useEffect, useMemo, useState } from "react";
 import api from "@/api/client";
+import { unlinkProvider } from "@/features/admin/api/serviceProvidersApi";
+import OnboardByUniqueIdModal from "@/shared/components/affiliation/OnboardByUniqueIdModal";
+import OperationScopeBadge from "@/shared/components/attribution/OperationScopeBadge";
+import { useToast } from "@/shared/components/common/ToastProvider";
+import { useAuth } from "@/shared/hooks/useAuth";
 
 export default function ManageServiceProviders() {
+  const toast = useToast();
+  const { user } = useAuth();
+  const isSuperAdmin =
+    user?.role === "SUPER_ADMIN" || user?.role === "SUPERADMIN";
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [onboardOpen, setOnboardOpen] = useState(false);
   const [editingProvider, setEditingProvider] = useState(null);
 
   // Form states
@@ -14,12 +24,20 @@ export default function ManageServiceProviders() {
   const [providerTypes, setProviderTypes] = useState(["LAB"]);
   const [address, setAddress] = useState("");
   const [isActive, setIsActive] = useState(true);
+  const [operationScope, setOperationScope] = useState("INDEPENDENT");
+  const [hospitalOrgId, setHospitalOrgId] = useState("");
+  const [hospitals, setHospitals] = useState([]);
 
   // Search, Status and Pagination states
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    if (!isSuperAdmin) return;
+    api.get("/organizations").then((res) => setHospitals(res.data || [])).catch(() => {});
+  }, [isSuperAdmin]);
 
   const loadProviders = () => {
     setLoading(true);
@@ -41,6 +59,8 @@ export default function ManageServiceProviders() {
     setProviderTypes(["LAB"]);
     setAddress("");
     setIsActive(true);
+    setOperationScope("INDEPENDENT");
+    setHospitalOrgId("");
     setModalOpen(true);
   };
 
@@ -52,33 +72,71 @@ export default function ManageServiceProviders() {
     setProviderTypes(prov.providerTypes || (prov.providerType ? [prov.providerType] : ["LAB"]));
     setAddress(prov.address || "");
     setIsActive(prov.isActive ?? true);
+    setOperationScope(prov.operationScope || "INDEPENDENT");
+    setHospitalOrgId("");
     setModalOpen(true);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!providerName || !mobile) {
-      alert("Provider Name and Mobile are required");
+      toast?.error("Provider Name and Mobile are required");
       return;
     }
     if (!providerTypes || providerTypes.length === 0) {
-      alert("Please select at least one Provider Type");
+      toast?.error("Please select at least one Provider Type");
       return;
     }
 
     try {
       if (editingProvider) {
+        if (isSuperAdmin) {
+          const prevScope = editingProvider.operationScope || "INDEPENDENT";
+          if (operationScope !== prevScope && operationScope === "INTERNAL" && !hospitalOrgId) {
+            toast?.error("Select a hospital for INTERNAL scope");
+            return;
+          }
+        }
         const payload = { providerName, mobile, providerTypes, address, isActive };
         if (password) payload.password = password;
         await api.put(`/service-providers/${editingProvider.id}`, payload);
+
+        if (isSuperAdmin) {
+          const prevScope = editingProvider.operationScope || "INDEPENDENT";
+          if (operationScope !== prevScope) {
+            const body = { operationScope };
+            if (operationScope === "INTERNAL") {
+              body.hospitalOrgId = Number(hospitalOrgId);
+            }
+            await api.post(`/service-providers/${editingProvider.id}/operation-scope`, body);
+          }
+        }
       } else {
-        await api.post("/service-providers", { providerName, mobile, password: password || "provider123", providerTypes, address });
+        const payload = {
+          providerName,
+          mobile,
+          password: password || "provider123",
+          providerTypes,
+          address,
+        };
+        if (isSuperAdmin) {
+          payload.operationScope = operationScope;
+          if (operationScope === "INTERNAL") {
+            if (!hospitalOrgId) {
+              toast?.error("Select a hospital for INTERNAL scope");
+              return;
+            }
+            payload.hospitalOrgId = Number(hospitalOrgId);
+          }
+        }
+        await api.post("/service-providers", payload);
       }
       setModalOpen(false);
       loadProviders();
+      toast?.success(editingProvider ? "Provider updated" : "Provider created");
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Action failed. Please verify inputs.");
+      toast?.error(err.response?.data?.message || "Action failed. Please verify inputs.");
     }
   };
 
@@ -90,7 +148,7 @@ export default function ManageServiceProviders() {
       loadProviders();
     } catch (err) {
       console.error(err);
-      alert("Failed to toggle provider status.");
+      toast?.error("Failed to toggle provider status.");
     }
   };
 
@@ -101,7 +159,27 @@ export default function ManageServiceProviders() {
       loadProviders();
     } catch (err) {
       console.error(err);
-      alert("Failed to delete service provider.");
+      toast?.error("Failed to delete service provider.");
+    }
+  };
+
+  const handleUnlink = async (prov) => {
+    if (
+      !window.confirm(
+        `Unlink ${prov.providerName} from this clinic? Their account remains.`
+      )
+    ) {
+      return;
+    }
+    try {
+      await unlinkProvider(prov.id);
+      toast?.success("Provider unlinked");
+      loadProviders();
+    } catch (err) {
+      const status = err?.response?.status;
+      if (status === 404) toast?.error("Provider not found");
+      else if (status === 403) toast?.error("Not allowed");
+      else toast?.error(err?.response?.data?.message || "Unlink failed");
     }
   };
 
@@ -119,7 +197,8 @@ export default function ManageServiceProviders() {
         const provName = (prov.providerName || "").toLowerCase();
         const provMobile = (prov.mobile || "").toLowerCase();
         const provType = (prov.providerTypes ? prov.providerTypes.join(" ") : (prov.providerType || "")).toLowerCase();
-        return provName.includes(q) || provMobile.includes(q) || provType.includes(q);
+        const provUid = (prov.uniqueId || "").toLowerCase();
+        return provName.includes(q) || provMobile.includes(q) || provType.includes(q) || provUid.includes(q);
       });
     }
     if (statusFilter === "ACTIVE") {
@@ -190,13 +269,24 @@ export default function ManageServiceProviders() {
               <option value="SUSPENDED">Suspended</option>
             </select>
           </div>
-          <button
-            type="button"
-            className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
-            onClick={openAddModal}
-          >
-            <i className="ri-add-line"></i> Add Service Provider
-          </button>
+          <div className="d-flex align-items-center gap-2 flex-wrap">
+            {!isSuperAdmin && (
+              <button
+                type="button"
+                className="btn btn-outline-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
+                onClick={() => setOnboardOpen(true)}
+              >
+                <i className="ri-link"></i> Add existing (Unique ID)
+              </button>
+            )}
+            <button
+              type="button"
+              className="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2"
+              onClick={openAddModal}
+            >
+              <i className="ri-add-line"></i> Add Service Provider
+            </button>
+          </div>
         </div>
 
         <div className="card-body p-24">
@@ -204,7 +294,7 @@ export default function ManageServiceProviders() {
             <div className="p-4 text-secondary">Loading provider list...</div>
           ) : filteredProviders.length === 0 ? (
             <div className="p-4 text-secondary text-center">
-              No service providers found.
+              No service providers found. Link by unique ID (`SP-######`) or create an internal provider.
             </div>
           ) : (
             <>
@@ -213,9 +303,10 @@ export default function ManageServiceProviders() {
                   <thead>
                     <tr>
                       <th>S.L</th>
-                      <th>ID</th>
+                      <th>Unique ID</th>
                       <th>Provider Name</th>
                       <th>Provider Type</th>
+                      <th>Scope</th>
                       <th>Mobile Contact</th>
                       <th>Address</th>
                       <th>Status</th>
@@ -244,6 +335,9 @@ export default function ManageServiceProviders() {
                             )}
                           </div>
                         </td>
+                        <td>
+                          <OperationScopeBadge operationScope={prov.operationScope} />
+                        </td>
                         <td>{prov.mobile}</td>
                         <td>{prov.address || "-"}</td>
                         <td>
@@ -262,6 +356,13 @@ export default function ManageServiceProviders() {
                               onClick={() => openEditModal(prov)}
                             >
                               Edit
+                            </button>
+                            <button
+                              type="button"
+                              className="btn sm"
+                              onClick={() => handleUnlink(prov)}
+                            >
+                              Unlink
                             </button>
                             <button
                               type="button"
@@ -350,7 +451,9 @@ export default function ManageServiceProviders() {
               <div>
                 <h3 className="wow-modal-title">{editingProvider ? "Edit Service Provider" : "Create Service Provider"}</h3>
                 <p className="wow-modal-subtitle">
-                  {editingProvider ? "Update service provider details and credentials." : "Register a new service provider."}
+                  {editingProvider
+                    ? "Update service provider details and credentials."
+                    : "Register a new hospital service provider (internal scope)."}
                 </p>
               </div>
               <button
@@ -420,6 +523,45 @@ export default function ManageServiceProviders() {
                   onChange={(e) => setAddress(e.target.value)}
                 />
               </div>
+              {isSuperAdmin && (
+                <>
+                  <div className="colspan">
+                    <label className="form-label fw-semibold text-sm text-primary-light" htmlFor="sp-scope">
+                      Operation scope
+                    </label>
+                    <select
+                      id="sp-scope"
+                      className="form-select w-100"
+                      value={operationScope}
+                      onChange={(e) => setOperationScope(e.target.value)}
+                    >
+                      <option value="INDEPENDENT">Independent</option>
+                      <option value="INTERNAL">Internal</option>
+                    </select>
+                  </div>
+                  {operationScope === "INTERNAL" && (
+                    <div className="colspan">
+                      <label className="form-label fw-semibold text-sm text-primary-light" htmlFor="sp-hospital">
+                        Hospital{editingProvider ? " (required when changing to Internal)" : ""}
+                      </label>
+                      <select
+                        id="sp-hospital"
+                        className="form-select w-100"
+                        value={hospitalOrgId}
+                        onChange={(e) => setHospitalOrgId(e.target.value)}
+                        required={!editingProvider || operationScope === "INTERNAL"}
+                      >
+                        <option value="">Select hospital…</option>
+                        {hospitals.map((h) => (
+                          <option key={h.id} value={h.id}>
+                            {h.name || `Org ${h.id}`}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                </>
+              )}
               <div className="colspan">
                 <label className="form-label fw-semibold text-sm text-primary-light">
                   Password {editingProvider && <span className="text-secondary-light fw-normal">(leave blank to keep unchanged)</span>}
@@ -453,6 +595,14 @@ export default function ManageServiceProviders() {
             </form>
           </div>
         </div>
+      )}
+
+      {onboardOpen && !isSuperAdmin && (
+        <OnboardByUniqueIdModal
+          entityType="provider"
+          onClose={() => setOnboardOpen(false)}
+          onSuccess={loadProviders}
+        />
       )}
     </div>
   );

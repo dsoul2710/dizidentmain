@@ -35,9 +35,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_hms
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-root}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SERVER_PORT: 8080
       JWT_SECRET: ${JWT_SECRET:-dev_local_jwt_secret_key_must_be_at_least_32_characters_long}
       FILE_UPLOAD_BASE_DIR: /app/uploads
+      # Logto disabled for Docker bring-up; re-enable with APP_LOGTO_ENABLED=true
+      APP_LOGTO_ENABLED: "false"
+      APP_AUTH_LEGACY_ENABLED: "true"
     ports:
       - "8080:8080"
     volumes:
@@ -51,8 +55,8 @@ services:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 30s
       timeout: 10s
-      retries: 3
-      start_period: 60s
+      retries: 5
+      start_period: 120s
 
   # Frontend React Application
   frontend:
@@ -60,9 +64,10 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_BASE: ${VITE_API_BASE:-http://localhost:8080}
+        VITE_API_BASE: http://localhost:8080
         VITE_CLIENT_ID: dev
         VITE_CLIENT_NAME: "Dev Environment"
+        VITE_LOGTO_ENABLED: "false"
     container_name: dev-frontend
     restart: unless-stopped
     ports:
@@ -72,7 +77,7 @@ services:
     depends_on:
       - backend
     healthcheck:
-      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health" ]
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/health" ]
       interval: 30s
       timeout: 10s
       retries: 3

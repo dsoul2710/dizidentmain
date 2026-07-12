@@ -608,6 +608,7 @@ export default function UnifiedDashboard({ user, onLogout }) {
           <OrgSwitcher
             organizationIds={user?.organizationIds}
             organizationRoles={user?.organizationRoles}
+            userRole={user?.role}
           />
           <HeaderProfile
             name={user?.name || "User"}

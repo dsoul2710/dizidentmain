@@ -5,6 +5,7 @@ import App from '@/app/App.jsx';
 import { logtoConfig, LOGTO_ENABLED } from '@/config/logto';
 import { AuthSessionProvider } from '@/features/auth/context/AuthSessionProvider';
 import { getLogtoAccessToken } from '@/features/auth/logto/tokenStore';
+import { resolveActiveOrgHeaderValue } from '@/shared/orgContextStorage';
 import './assets/css/clinic-overrides.css';
 
 const originalFetch = window.fetch;
@@ -20,9 +21,7 @@ window.fetch = async function (input, init) {
 
   if (isApiRequest) {
     const token = await getLogtoAccessToken();
-    const activeOrgId =
-      localStorage.getItem("hms_active_logto_org_id") ||
-      localStorage.getItem("hms_active_org_id");
+    const activeOrgId = resolveActiveOrgHeaderValue();
 
     if (input instanceof Request) {
       const newHeaders = new Headers(input.headers);

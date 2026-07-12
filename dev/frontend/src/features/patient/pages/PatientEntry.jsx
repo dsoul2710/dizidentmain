@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import api from "@/api/client";
 import { API_BASE_URL } from "@/config";
 import { formatDateDMY } from "@/shared/utils/dateFormat";
+import SourceOrgBadge from "@/shared/components/attribution/SourceOrgBadge";
 import "@/assets/css/wowdash-users.css";
 import { useNavigate } from "react-router-dom";
 
@@ -826,13 +827,14 @@ useEffect(() => {
                   <th>Referred By</th>
                   <th>Primary Complaint</th>
                   <th>Assigned Doctor</th>
+                  <th>Source</th>
                   <th className="text-right">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredPatients.length === 0 && (
                   <tr>
-                    <td colSpan={10} style={{ textAlign: "center", fontSize: 12 }}>
+                    <td colSpan={11} style={{ textAlign: "center", fontSize: 12 }}>
                       {patientSearch ? "No patients found." : "No patients added yet."}
                     </td>
                   </tr>
@@ -852,6 +854,12 @@ useEffect(() => {
                       <td>{p.referred_by || "-"}</td>
                       <td>{p.primary_complaint || "-"}</td>
                       <td>{getAssignedDoctorName(p)}</td>
+                      <td>
+                        <SourceOrgBadge
+                          sourceType={p.sourceType}
+                          sourceOrgName={p.sourceOrgName}
+                        />
+                      </td>
                       <td className="text-right">
                         <div className="table-actions">
                           <button

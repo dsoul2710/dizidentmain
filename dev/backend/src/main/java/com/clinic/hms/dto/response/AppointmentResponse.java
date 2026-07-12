@@ -1,4 +1,3 @@
-// src/main/java/com/clinic/hms/dto/response/AppointmentResponse.java
 package com.clinic.hms.dto.response;
 
 import lombok.Builder;
@@ -24,4 +23,8 @@ public class AppointmentResponse {
 
     private String description; // from reason/notes
     private String status;      // BOOKED / CANCELLED / etc.
+
+    private Long sourceOrgId;
+    private String sourceOrgName;
+    private SourceType sourceType;
 }

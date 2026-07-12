@@ -160,7 +160,8 @@ public class UserService {
             modules = List.of("OVERVIEW", "PATIENTS", "APPOINTMENTS", "PRESCRIPTION", "CONSENT_FORMS", "CHAT");
             canEdit = true;
         } else if (role == UserRole.SERVICE_PROVIDER) {
-            modules = List.of("OVERVIEW", "LAB_ENTRY", "CHAT");
+            // INVENTORY included (default view off) so SA can grant without pharmacy coupling (US-S8)
+            modules = List.of("OVERVIEW", "LAB_ENTRY", "CHAT", "INVENTORY");
             canEdit = true;
         } else if (role == UserRole.PATIENT) {
             modules = List.of("OVERVIEW", "APPOINTMENTS", "PRESCRIPTION", "BILLING_FINANCE", "CHAT");
@@ -169,11 +170,18 @@ public class UserService {
         LocalDateTime now = LocalDateTime.now();
         List<ModulePermission> list = new ArrayList<>();
         for (String module : modules) {
+            boolean view = true;
+            boolean edit = canEdit;
+            // Inventory is grantable for SPs; bootstrap as off until SA enables
+            if (role == UserRole.SERVICE_PROVIDER && "INVENTORY".equals(module)) {
+                view = false;
+                edit = false;
+            }
             ModulePermission mp = ModulePermission.builder()
                     .user(user)
                     .moduleName(module)
-                    .canView(true)
-                    .canEdit(canEdit)
+                    .canView(view)
+                    .canEdit(edit)
                     .canDelete(canDelete)
                     .createdAt(now)
                     .updatedAt(now)

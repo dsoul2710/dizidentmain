@@ -1,4 +1,5 @@
 package com.clinic.hms.dto.response;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
@@ -44,4 +45,8 @@ public class PatientResponse {
 
     @JsonProperty("unique_id")
     private String uniqueId;
+
+    private Long sourceOrgId;
+    private String sourceOrgName;
+    private SourceType sourceType;
 }

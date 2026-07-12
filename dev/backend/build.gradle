@@ -54,6 +54,15 @@ dependencies {
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-scalar:2.8.14'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14'
+
+    // Schema migrations (multi-org attribution)
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+
+    // Property-based tests (P-ATTR-1 / P-ATTR-2)
+    testImplementation 'com.pholser:junit-quickcheck-core:1.0'
+    testImplementation 'com.pholser:junit-quickcheck-generators:1.0'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine'
 }
 
 

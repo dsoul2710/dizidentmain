@@ -49,6 +49,11 @@ public class ServiceOrder {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    /** Hospital that originated this order when created under org context. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_org_id")
+    private OrgHospital sourceOrg;
+
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();

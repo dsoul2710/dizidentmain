@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import api from "@/api/client";
 import { formatDateDMY } from "@/shared/utils/dateFormat";
+import SourceOrgBadge from "@/shared/components/attribution/SourceOrgBadge";
 
 export default function DoctorOverview({ user, activeOrgId }) {
   const [loading, setLoading] = useState(false);
@@ -128,6 +129,11 @@ export default function DoctorOverview({ user, activeOrgId }) {
             {dateLabel}
             {slot && ` · ${slot}`}
           </p>
+          {(appt.sourceType || appt.sourceOrgName) && (
+            <div className="mt-1">
+              <SourceOrgBadge sourceType={appt.sourceType} sourceOrgName={appt.sourceOrgName} />
+            </div>
+          )}
         </div>
         <span className={`badge bg-light-${badgeColor} text-${badgeColor} ms-2 flex-shrink-0 text-xs`}>
           {status}

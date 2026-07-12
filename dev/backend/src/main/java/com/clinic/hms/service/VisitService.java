@@ -21,6 +21,7 @@ public class VisitService {
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
     private final EventPushService eventPushService;
+    private final com.clinic.hms.service.attribution.SourceOrgResolver sourceOrgResolver;
 
     @Transactional
     public VisitResponse createVisit(VisitCreateRequest req) {
@@ -43,6 +44,7 @@ public class VisitService {
                 .chiefComplaint(req.getChiefComplaint())
                 .notes(req.getNotes())
                 .status("OPEN")
+                .sourceOrg(sourceOrgResolver.resolveSourceOrgForCreate())
                 .createdAt(now)
                 .updatedAt(now)
                 .createdByUserId(req.getCreatedByUserId())
@@ -86,6 +88,7 @@ public class VisitService {
                 .chiefComplaint(null)
                 .notes(null)
                 .status("OPEN")
+                .sourceOrg(sourceOrgResolver.resolveSourceOrgForCreate())
                 .createdAt(now)
                 .updatedAt(now)
                 .createdByUserId(patientUserId)
@@ -127,6 +130,7 @@ public class VisitService {
     private VisitResponse toDto(Visit v) {
         Patient patient = v.getPatient();
         Doctor doctor = v.getDoctor();
+        var attribution = com.clinic.hms.service.attribution.SourceAttributionMapper.fromOrg(v.getSourceOrg());
 
         return VisitResponse.builder()
                 .id(v.getId())
@@ -140,6 +144,9 @@ public class VisitService {
                 .chiefComplaint(v.getChiefComplaint())
                 .notes(v.getNotes())
                 .status(v.getStatus())
+                .sourceOrgId(attribution.getSourceOrgId())
+                .sourceOrgName(attribution.getSourceOrgName())
+                .sourceType(attribution.getSourceType())
                 .build();
     }
 }

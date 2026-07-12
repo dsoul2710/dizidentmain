@@ -72,4 +72,9 @@ public class Visit {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_user_id")
     private User owner;
+
+    /** Hospital that originated this visit when created under org context. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_org_id")
+    private OrgHospital sourceOrg;
 }

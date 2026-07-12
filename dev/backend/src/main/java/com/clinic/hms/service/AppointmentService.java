@@ -31,6 +31,7 @@ public class AppointmentService {
     private final EventPushService eventPushService;
     private final com.clinic.hms.security.SecurityUtils securityUtils;
     private final UserRepository userRepository;
+    private final com.clinic.hms.service.attribution.SourceOrgResolver sourceOrgResolver;
 
     private Long resolveOwnerId() {
         try {
@@ -105,12 +106,14 @@ public class AppointmentService {
 
         Long ownerId = resolveOwnerId();
         User owner = ownerId != null ? userRepository.findById(ownerId).orElse(null) : null;
+        OrgHospital sourceOrg = sourceOrgResolver.resolveSourceOrgForCreate();
 
         Appointment appointment = Appointment.builder()
                 .patient(patient)
                 .doctor(doctor)
                 .visit(visit)
                 .owner(owner)
+                .sourceOrg(sourceOrg)
                 .appointmentDate(date)
                 .startTime(startTime)
                 .endTime(endTime)
@@ -204,6 +207,7 @@ public class AppointmentService {
     private AppointmentResponse toDto(Appointment a) {
         Patient patient = a.getPatient();
         Doctor doctor = a.getDoctor();
+        var attribution = com.clinic.hms.service.attribution.SourceAttributionMapper.fromOrg(a.getSourceOrg());
 
         return AppointmentResponse.builder()
                 .id(a.getId())
@@ -217,6 +221,9 @@ public class AppointmentService {
                 .visitId(a.getVisit() != null ? a.getVisit().getId() : null)
                 .description(a.getReason())
                 .status(a.getStatus())
+                .sourceOrgId(attribution.getSourceOrgId())
+                .sourceOrgName(attribution.getSourceOrgName())
+                .sourceType(attribution.getSourceType())
                 .build();
     }
 }

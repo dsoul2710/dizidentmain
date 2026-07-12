@@ -25,10 +25,15 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.clinic.hms.dto.response.SourceAttribution;
+import com.clinic.hms.service.attribution.SourceAttributionMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -292,9 +297,10 @@ public class PatientService {
         }
 
         List<Patient> list = patientRepository.listPatients(orgId, doctorId, providerId);
-        return list.stream()
+        List<PatientResponse> responses = list.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+        return enrichPatientSources(responses, doctorId);
     }
 
     @Transactional(readOnly = true)
@@ -366,6 +372,7 @@ public class PatientService {
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+        items = enrichPatientSources(items, doctorId);
 
         return PagedResponse.<PatientResponse>builder()
                 .items(items)
@@ -624,6 +631,8 @@ public class PatientService {
                 .findFirst()
                 .orElse(null);
 
+        SourceAttribution attribution = SourceAttributionMapper.ownPractice();
+
         return PatientResponse.builder()
                 .id(p.getId())
                 .name(p.getFullName())
@@ -643,7 +652,46 @@ public class PatientService {
                 .hasReportFile(p.getPastReportsFilePath() != null && !p.getPastReportsFilePath().isBlank())
                 .isActive(u.getIsActive())
                 .uniqueId(p.getUniqueId())
+                .sourceOrgId(attribution.getSourceOrgId())
+                .sourceOrgName(attribution.getSourceOrgName())
+                .sourceType(attribution.getSourceType())
                 .build();
+    }
+
+    /**
+     * Batch-enrich patient DTOs with primary/latest hospital source from appointments
+     * for the given doctor (BR-3).
+     */
+    private List<PatientResponse> enrichPatientSources(List<PatientResponse> responses, Long doctorId) {
+        if (responses == null || responses.isEmpty() || doctorId == null) {
+            return responses;
+        }
+        List<Long> patientIds = responses.stream()
+                .map(PatientResponse::getId)
+                .filter(id -> id != null)
+                .toList();
+        if (patientIds.isEmpty()) {
+            return responses;
+        }
+
+        List<Appointment> sourced = appointmentRepository.findSourcedByDoctorAndPatientIds(doctorId, patientIds);
+        Map<Long, SourceAttribution> byPatient = new HashMap<>();
+        for (Appointment a : sourced) {
+            if (a.getPatient() == null || a.getPatient().getId() == null) {
+                continue;
+            }
+            Long pid = a.getPatient().getId();
+            // Query ordered latest-first; keep first seen per patient
+            byPatient.putIfAbsent(pid, SourceAttributionMapper.fromOrg(a.getSourceOrg()));
+        }
+
+        for (PatientResponse r : responses) {
+            SourceAttribution attr = byPatient.getOrDefault(r.getId(), SourceAttributionMapper.ownPractice());
+            r.setSourceOrgId(attr.getSourceOrgId());
+            r.setSourceOrgName(attr.getSourceOrgName());
+            r.setSourceType(attr.getSourceType());
+        }
+        return responses;
     }
 
     private String generateUniquePatientId() {

@@ -15,6 +15,17 @@ import { setLogtoTokenProvider } from "@/features/auth/logto/tokenStore";
 const STORAGE_KEY = "hms_user";
 const LOGTO_ORG_KEY = "hms_active_logto_org_id";
 
+/** Stub when LogtoProvider is not mounted (VITE_LOGTO_ENABLED=false). */
+const DISABLED_LOGTO = {
+  isAuthenticated: false,
+  isLoading: false,
+  signIn: async () => {},
+  signOut: async () => {},
+  getAccessToken: async () => null,
+  getOrganizationToken: async () => null,
+  getIdTokenClaims: async () => null,
+};
+
 function normalizeUser(userObj) {
   if (!userObj) return null;
   let role = userObj.role;
@@ -58,8 +69,7 @@ async function buildFallbackLogtoUser(logtoClient) {
 
 const AuthSessionContext = createContext(null);
 
-export function AuthSessionProvider({ children }) {
-  const logto = useLogto();
+function AuthSessionProviderInner({ children, logto }) {
   const logtoRef = useRef(logto);
   logtoRef.current = logto;
 
@@ -221,6 +231,26 @@ export function AuthSessionProvider({ children }) {
 
   return (
     <AuthSessionContext.Provider value={value}>{children}</AuthSessionContext.Provider>
+  );
+}
+
+function AuthSessionProviderWithLogto({ children }) {
+  const logto = useLogto();
+  return (
+    <AuthSessionProviderInner logto={logto}>{children}</AuthSessionProviderInner>
+  );
+}
+
+export function AuthSessionProvider({ children }) {
+  if (LOGTO_ENABLED) {
+    return (
+      <AuthSessionProviderWithLogto>{children}</AuthSessionProviderWithLogto>
+    );
+  }
+  return (
+    <AuthSessionProviderInner logto={DISABLED_LOGTO}>
+      {children}
+    </AuthSessionProviderInner>
   );
 }
 

@@ -33,4 +33,9 @@ public class Doctor extends AuditableEntity {
 
     @Column(name = "unique_id", nullable = false, unique = true, length = 20)
     private String uniqueId; // Format: DOC-XXXXXX
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "operation_scope", nullable = false, length = 20)
+    @Builder.Default
+    private OperationScope operationScope = OperationScope.INDEPENDENT;
 }

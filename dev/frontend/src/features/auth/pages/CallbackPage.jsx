@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useHandleSignInCallback } from "@logto/react";
-import { LOGTO_API_RESOURCE } from "@/config/logto";
+import { LOGTO_API_RESOURCE, LOGTO_ENABLED } from "@/config/logto";
 
 function getOAuthErrorHelp(error, description) {
   if (error !== "invalid_target") {
@@ -15,13 +15,12 @@ function getOAuthErrorHelp(error, description) {
       </p>
       <ol className="mb-8 ps-20">
         <li>
-          API identifier must be exactly: <code>{LOGTO_API_RESOURCE}</code> (port{" "}
-          <strong>8081</strong>, not 8881)
+          API identifier must be exactly: <code>{LOGTO_API_RESOURCE}</code>
         </li>
         <li>Delete any duplicate API resource with a wrong identifier</li>
         <li>Mark the correct one as <strong>Default API</strong></li>
         <li>Permissions: <code>read:profile</code>, <code>write:profile</code></li>
-        <li>SPA CORS: <code>http://localhost:5173</code></li>
+        <li>SPA CORS: match your frontend origin</li>
         <li>Clear browser site data and retry</li>
       </ol>
       {description && (
@@ -31,14 +30,13 @@ function getOAuthErrorHelp(error, description) {
   );
 }
 
-export default function CallbackPage() {
+function LogtoCallbackHandler() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const urlError = searchParams.get("error");
   const urlErrorDescription = searchParams.get("error_description");
 
   const { isLoading, error } = useHandleSignInCallback(() => {
-    // App bootstrap loads /auth/me; avoid racing an immediate dashboard render.
     navigate("/", { replace: true });
   });
 
@@ -71,4 +69,20 @@ export default function CallbackPage() {
   }
 
   return null;
+}
+
+export default function CallbackPage() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!LOGTO_ENABLED) {
+      navigate("/login", { replace: true });
+    }
+  }, [navigate]);
+
+  if (!LOGTO_ENABLED) {
+    return null;
+  }
+
+  return <LogtoCallbackHandler />;
 }

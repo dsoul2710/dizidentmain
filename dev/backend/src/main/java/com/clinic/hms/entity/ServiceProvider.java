@@ -47,4 +47,9 @@ public class ServiceProvider extends AuditableEntity {
 
     @Column(name = "unique_id", nullable = false, unique = true, length = 20)
     private String uniqueId; // Format: SP-XXXXXX
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "operation_scope", nullable = false, length = 20)
+    @Builder.Default
+    private OperationScope operationScope = OperationScope.INDEPENDENT;
 }

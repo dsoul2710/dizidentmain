@@ -1,4 +1,3 @@
-// src/main/java/com/clinic/hms/dto/VisitResponseDto.java
 package com.clinic.hms.dto.response;
 
 import lombok.Builder;
@@ -22,4 +21,8 @@ public class VisitResponse {
     private String chiefComplaint;
     private String notes;
     private String status;        // OPEN / COMPLETED / CANCELLED
+
+    private Long sourceOrgId;
+    private String sourceOrgName;
+    private SourceType sourceType;
 }

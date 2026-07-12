@@ -1,20 +1,22 @@
 import { useCallback, useState } from "react";
-
-const ORG_KEY = "hms_active_org_id";
-const LOGTO_ORG_KEY = "hms_active_logto_org_id";
+import {
+  LOGTO_ORG_KEY,
+  ORG_KEY,
+  OWN_PRACTICE_VALUE,
+  readStoredOrgRaw,
+  resolveActiveOrgHeaderValue,
+} from "@/shared/orgContextStorage";
 
 /**
  * Active org context for multi-tenant API calls (X-Active-Org-Id header).
+ * null = Own practice (INDEPENDENT doctor/SP).
  */
 export function useOrgContext() {
-  const [activeOrgId, setActiveOrgIdState] = useState(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem(LOGTO_ORG_KEY) || localStorage.getItem(ORG_KEY);
-  });
+  const [activeOrgId, setActiveOrgIdState] = useState(() => resolveActiveOrgHeaderValue());
 
   const setActiveOrgId = useCallback((orgId) => {
-    if (orgId == null || orgId === "") {
-      localStorage.removeItem(ORG_KEY);
+    if (orgId == null || orgId === "" || orgId === OWN_PRACTICE_VALUE) {
+      localStorage.setItem(ORG_KEY, OWN_PRACTICE_VALUE);
       localStorage.removeItem(LOGTO_ORG_KEY);
       setActiveOrgIdState(null);
     } else {
@@ -24,5 +26,11 @@ export function useOrgContext() {
     }
   }, []);
 
-  return { activeOrgId, setActiveOrgId };
+  return { activeOrgId, setActiveOrgId, isOwnPractice: isOwnPracticeFromState(activeOrgId) };
+}
+
+function isOwnPracticeFromState(activeOrgId) {
+  if (activeOrgId == null || activeOrgId === "") return true;
+  if (activeOrgId === OWN_PRACTICE_VALUE) return true;
+  return readStoredOrgRaw() === OWN_PRACTICE_VALUE;
 }

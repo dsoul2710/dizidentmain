@@ -1,6 +1,7 @@
 // src/main/java/com/clinic/hms/dto/response/DoctorResponse.java
 package com.clinic.hms.dto.response;
 
+import com.clinic.hms.entity.OperationScope;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,4 +16,5 @@ public class DoctorResponse {
     private String createdAt;   // ISO string for frontend table
     private String uniqueId;
     private Boolean isActive;
+    private OperationScope operationScope;
 }

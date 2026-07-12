@@ -8,15 +8,27 @@ import {
 } from "@/config/logto";
 import { useAuthSession } from "@/features/auth/context/AuthSessionProvider";
 
+function LogtoSignInButton() {
+  const { signIn } = useLogto();
+  return (
+    <button
+      type="button"
+      className="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12"
+      onClick={() => signIn(LOGTO_CALLBACK_URI)}
+    >
+      Sign in with Logto
+    </button>
+  );
+}
+
 export default function LoginPage() {
-  const { signIn, isAuthenticated } = useLogto();
-  const { loginLegacy, user } = useAuthSession();
+  const { loginLegacy, user, isLogtoAuthenticated } = useAuthSession();
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  if (user || isAuthenticated) {
+  if (user || isLogtoAuthenticated) {
     return null;
   }
 
@@ -39,10 +51,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleLogtoSignIn = () => {
-    signIn(LOGTO_CALLBACK_URI);
-  };
-
   return (
     <section className="auth bg-base d-flex flex-wrap">
       <div className="auth-left d-lg-block d-none">
@@ -58,21 +66,19 @@ export default function LoginPage() {
             </a>
             <h4 className="mb-12">Sign In to your Account</h4>
             <p className="mb-32 text-secondary-light text-lg">
-              Welcome back! Sign in with Logto or use legacy credentials.
+              {LOGTO_ENABLED
+                ? "Welcome back! Sign in with Logto or use legacy credentials."
+                : "Welcome back! Sign in with your mobile and password."}
             </p>
           </div>
 
           {LOGTO_ENABLED && (
             <>
-              <button
-                type="button"
-                className="btn btn-primary text-sm btn-sm px-12 py-16 w-100 radius-12"
-                onClick={handleLogtoSignIn}
-              >
-                Sign in with Logto
-              </button>
+              <LogtoSignInButton />
               {LEGACY_AUTH_ENABLED && (
-                <p className="text-center text-secondary-light my-16 text-sm">or continue with mobile</p>
+                <p className="text-center text-secondary-light my-16 text-sm">
+                  or continue with mobile
+                </p>
               )}
             </>
           )}

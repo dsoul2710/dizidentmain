@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "@/api/client";
+import SourceOrgBadge from "@/shared/components/attribution/SourceOrgBadge";
 
 export default function BedsAllocationView() {
   const [beds, setBeds] = useState(() => {
@@ -10,6 +11,8 @@ export default function BedsAllocationView() {
         name: `Bed-0${i}`,
         status: i % 4 === 0 ? "OCCUPIED" : i % 7 === 0 ? "CLEANING" : "AVAILABLE",
         patient: i % 4 === 0 ? "John Patient" : "",
+        sourceType: i % 4 === 0 ? "HOSPITAL" : undefined,
+        sourceOrgName: i % 4 === 0 ? "City Dental" : undefined,
       });
     }
     return list;
@@ -113,6 +116,11 @@ export default function BedsAllocationView() {
                         style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
                       >
                         {b.patient}
+                      </div>
+                    )}
+                    {b.sourceType && (
+                      <div className="mt-1">
+                        <SourceOrgBadge sourceType={b.sourceType} sourceOrgName={b.sourceOrgName} />
                       </div>
                     )}
                   </div>

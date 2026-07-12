@@ -1,6 +1,7 @@
 import axios from "axios";
 import { API_BASE_URL } from "@/config";
 import { getLogtoAccessToken } from "@/features/auth/logto/tokenStore";
+import { resolveActiveOrgHeaderValue } from "@/shared/orgContextStorage";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -17,9 +18,7 @@ api.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`;
       }
 
-      const activeOrgId =
-        localStorage.getItem("hms_active_logto_org_id") ||
-        localStorage.getItem("hms_active_org_id");
+      const activeOrgId = resolveActiveOrgHeaderValue();
       if (activeOrgId) {
         config.headers["X-Active-Org-Id"] = activeOrgId;
       }

@@ -1,13 +1,14 @@
 import React, { useState } from "react";
+import SourceOrgBadge from "@/shared/components/attribution/SourceOrgBadge";
 
 export default function LabOrdersView() {
   const [orders, setOrders] = useState(() => {
     const saved = localStorage.getItem("hms_lab_orders");
     if (saved) return JSON.parse(saved);
     return [
-      { id: "LAB-29381", patient: "Misha Patient", testName: "CBC (Complete Blood Count)", doctor: "Dr. Mishan", status: "PENDING", date: "2026-06-18", findings: "" },
-      { id: "LAB-29382", patient: "Jane Smith", testName: "Thyroid Profile (T3, T4, TSH)", doctor: "Dr. Mishan", status: "PENDING", date: "2026-06-17", findings: "" },
-      { id: "LAB-29383", patient: "Alice Brown", testName: "HbA1c (Glycated Hemoglobin)", doctor: "Dr. Mishan", status: "COMPLETED", date: "2026-06-15", findings: "HbA1c: 5.8% (Normal)" },
+      { id: "LAB-29381", patient: "Misha Patient", testName: "CBC (Complete Blood Count)", doctor: "Dr. Mishan", status: "PENDING", date: "2026-06-18", findings: "", sourceType: "HOSPITAL", sourceOrgName: "City Dental" },
+      { id: "LAB-29382", patient: "Jane Smith", testName: "Thyroid Profile (T3, T4, TSH)", doctor: "Dr. Mishan", status: "PENDING", date: "2026-06-17", findings: "", sourceType: "HOSPITAL", sourceOrgName: "City Dental" },
+      { id: "LAB-29383", patient: "Alice Brown", testName: "HbA1c (Glycated Hemoglobin)", doctor: "Dr. Mishan", status: "COMPLETED", date: "2026-06-15", findings: "HbA1c: 5.8% (Normal)", sourceType: "OWN_PRACTICE" },
     ];
   });
 
@@ -83,6 +84,7 @@ export default function LabOrdersView() {
                     <th>Patient</th>
                     <th>Test Name</th>
                     <th>Prescribing Doctor</th>
+                    <th>Source</th>
                     <th>Request Date</th>
                     <th>Status</th>
                     <th className="text-right">Actions</th>
@@ -91,7 +93,7 @@ export default function LabOrdersView() {
                 <tbody>
                   {orders.length === 0 && (
                     <tr>
-                      <td colSpan="7" style={{ textAlign: "center", fontSize: 12 }}>
+                      <td colSpan="8" style={{ textAlign: "center", fontSize: 12 }}>
                         No lab orders in queue.
                       </td>
                     </tr>
@@ -102,6 +104,9 @@ export default function LabOrdersView() {
                       <td>{o.patient}</td>
                       <td>{o.testName}</td>
                       <td>{o.doctor}</td>
+                      <td>
+                        <SourceOrgBadge sourceType={o.sourceType} sourceOrgName={o.sourceOrgName} />
+                      </td>
                       <td>{o.date}</td>
                       <td>{renderStatusPill(o.status)}</td>
                       <td className="text-right">

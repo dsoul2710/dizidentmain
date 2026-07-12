@@ -1,11 +1,13 @@
-// src/main/java/com/clinic/hms/repository/AppointmentRepository.java
 package com.clinic.hms.repository;
 
 import com.clinic.hms.entity.Appointment;
 import com.clinic.hms.entity.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
@@ -39,4 +41,20 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     List<Appointment> findByOwner_Id(Long ownerId);
 
+    /**
+     * Appointments with a source org for the given doctor and patients,
+     * ordered so the first per patient is the latest by date/time.
+     */
+    @Query("""
+            select a from Appointment a
+            left join fetch a.sourceOrg
+            where a.doctor.id = :doctorId
+              and a.patient.id in :patientIds
+              and a.sourceOrg is not null
+            order by a.appointmentDate desc, a.startTime desc
+            """)
+    List<Appointment> findSourcedByDoctorAndPatientIds(
+            @Param("doctorId") Long doctorId,
+            @Param("patientIds") Collection<Long> patientIds
+    );
 }
