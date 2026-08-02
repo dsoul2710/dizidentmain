@@ -1,0 +1,442 @@
+{
+  "generatedAt": "2026-07-25T18:30:00",
+  "users": [
+    {
+      "mobile": "9999999999",
+      "role": "SUPER_ADMIN",
+      "isActive": true,
+      "superAdmin": { "fullName": "System Administrator" }
+    },
+    {
+      "mobile": "8888888801",
+      "role": "ORG_HOSPITAL",
+      "isActive": true,
+      "orgHospital": { "orgName": "Clinic Org #1", "uniqueId": "ORG-000001" }
+    },
+    {
+      "mobile": "8888888802",
+      "role": "ORG_HOSPITAL",
+      "isActive": true,
+      "orgHospital": { "orgName": "Clinic Org #2", "uniqueId": "ORG-000002" }
+    },
+    {
+      "mobile": "8888888803",
+      "role": "ORG_HOSPITAL",
+      "isActive": true,
+      "orgHospital": { "orgName": "Clinic Org #3", "uniqueId": "ORG-000003" }
+    },
+    {
+      "mobile": "8888888804",
+      "role": "ORG_HOSPITAL",
+      "isActive": true,
+      "orgHospital": { "orgName": "Clinic Org #4", "uniqueId": "ORG-000004" }
+    },
+    {
+      "mobile": "8888888805",
+      "role": "ORG_HOSPITAL",
+      "isActive": true,
+      "orgHospital": { "orgName": "Clinic Org #5", "uniqueId": "ORG-000005" }
+    },
+    {
+      "mobile": "6666666601",
+      "role": "DOCTOR",
+      "isActive": true,
+      "doctor": {
+        "fullName": "Doctor #1",
+        "uniqueId": "DOC-000001",
+        "speciality": "Clinical Doctor",
+        "operationScope": "INDEPENDENT"
+      },
+      "doctorOrgMobiles": ["8888888801"]
+    },
+    {
+      "mobile": "6666666602",
+      "role": "DOCTOR",
+      "isActive": true,
+      "doctor": {
+        "fullName": "Doctor #2",
+        "uniqueId": "DOC-000002",
+        "speciality": "Clinical Doctor",
+        "operationScope": "INDEPENDENT"
+      },
+      "doctorOrgMobiles": ["8888888802"]
+    },
+    {
+      "mobile": "6666666603",
+      "role": "DOCTOR",
+      "isActive": true,
+      "doctor": {
+        "fullName": "Doctor #3",
+        "uniqueId": "DOC-000003",
+        "speciality": "Clinical Doctor",
+        "operationScope": "INDEPENDENT"
+      },
+      "doctorOrgMobiles": ["8888888803"]
+    },
+    {
+      "mobile": "6666666604",
+      "role": "DOCTOR",
+      "isActive": true,
+      "doctor": {
+        "fullName": "Doctor #4",
+        "uniqueId": "DOC-000004",
+        "speciality": "Clinical Doctor",
+        "operationScope": "INDEPENDENT"
+      },
+      "doctorOrgMobiles": ["8888888804"]
+    },
+    {
+      "mobile": "6666666605",
+      "role": "DOCTOR",
+      "isActive": true,
+      "doctor": {
+        "fullName": "Doctor #5",
+        "uniqueId": "DOC-000005",
+        "speciality": "Clinical Doctor",
+        "operationScope": "INDEPENDENT"
+      },
+      "doctorOrgMobiles": ["8888888805"]
+    },
+    {
+      "mobile": "6666666606",
+      "role": "DOCTOR",
+      "isActive": true,
+      "doctor": {
+        "fullName": "Independent Doctor",
+        "uniqueId": "DOC-000006",
+        "speciality": "Independent Practitioner",
+        "operationScope": "INDEPENDENT"
+      }
+    },
+    {
+      "mobile": "2222220001",
+      "role": "PATIENT",
+      "isActive": true,
+      "patient": {
+        "fullName": "Patient #1",
+        "uniqueId": "PAT-000001",
+        "ageYears": 21,
+        "gender": "Female",
+        "dob": "2005-07-25"
+      },
+      "patientOrgMobiles": ["8888888801"],
+      "patientDoctorMobiles": ["6666666601"]
+    },
+    {
+      "mobile": "2222220002",
+      "role": "PATIENT",
+      "isActive": true,
+      "patient": {
+        "fullName": "Patient #2",
+        "uniqueId": "PAT-000002",
+        "ageYears": 22,
+        "gender": "Male",
+        "dob": "2004-07-25"
+      },
+      "patientOrgMobiles": ["8888888801"],
+      "patientDoctorMobiles": ["6666666601"]
+    },
+    {
+      "mobile": "2222220003",
+      "role": "PATIENT",
+      "isActive": true,
+      "patient": {
+        "fullName": "Patient #3",
+        "uniqueId": "PAT-000003",
+        "ageYears": 23,
+        "gender": "Female",
+        "dob": "2003-07-25"
+      },
+      "patientOrgMobiles": ["8888888802"],
+      "patientDoctorMobiles": ["6666666602"]
+    },
+    {
+      "mobile": "2222220004",
+      "role": "PATIENT",
+      "isActive": true,
+      "patient": {
+        "fullName": "Patient #4",
+        "uniqueId": "PAT-000004",
+        "ageYears": 24,
+        "gender": "Male",
+        "dob": "2002-07-25"
+      },
+      "patientOrgMobiles": ["8888888802"],
+      "patientDoctorMobiles": ["6666666602"]
+    },
+    {
+      "mobile": "2222220005",
+      "role": "PATIENT",
+      "isActive": true,
+      "patient": {
+        "fullName": "Patient #5",
+        "uniqueId": "PAT-000005",
+        "ageYears": 25,
+        "gender": "Female",
+        "dob": "2001-07-25"
+      },
+      "patientOrgMobiles": ["8888888803"],
+      "patientDoctorMobiles": ["6666666603"]
+    },
+    {
+      "mobile": "2222220006",
+      "role": "PATIENT",
+      "isActive": true,
+      "patient": {
+        "fullName": "Patient #6",
+        "uniqueId": "PAT-000006",
+        "ageYears": 26,
+        "gender": "Male",
+        "dob": "2000-07-25"
+      },
+      "patientOrgMobiles": ["8888888803"],
+      "patientDoctorMobiles": ["6666666603"]
+    },
+    {
+      "mobile": "2222220007",
+      "role": "PATIENT",
+      "isActive": true,
+      "patient": {
+        "fullName": "Patient #7",
+        "uniqueId": "PAT-000007",
+        "ageYears": 27,
+        "gender": "Female",
+        "dob": "1999-07-25"
+      },
+      "patientOrgMobiles": ["8888888804"],
+      "patientDoctorMobiles": ["6666666604"]
+    },
+    {
+      "mobile": "2222220008",
+      "role": "PATIENT",
+      "isActive": true,
+      "patient": {
+        "fullName": "Patient #8",
+        "uniqueId": "PAT-000008",
+        "ageYears": 28,
+        "gender": "Male",
+        "dob": "1998-07-25"
+      },
+      "patientOrgMobiles": ["8888888804"],
+      "patientDoctorMobiles": ["6666666604"]
+    },
+    {
+      "mobile": "2222220009",
+      "role": "PATIENT",
+      "isActive": true,
+      "patient": {
+        "fullName": "Patient #9",
+        "uniqueId": "PAT-000009",
+        "ageYears": 29,
+        "gender": "Female",
+        "dob": "1997-07-25"
+      },
+      "patientOrgMobiles": ["8888888805"],
+      "patientDoctorMobiles": ["6666666605"]
+    },
+    {
+      "mobile": "2222220010",
+      "role": "PATIENT",
+      "isActive": true,
+      "patient": {
+        "fullName": "Patient #10",
+        "uniqueId": "PAT-000010",
+        "ageYears": 30,
+        "gender": "Male",
+        "dob": "1996-07-25"
+      },
+      "patientOrgMobiles": ["8888888805"],
+      "patientDoctorMobiles": ["6666666605"]
+    },
+    {
+      "mobile": "6666666666",
+      "role": "SERVICE_PROVIDER",
+      "isActive": false,
+      "serviceProvider": {
+        "providerName": "Default Pharmacy Partner",
+        "providerType": "PHARMACY",
+        "providerTypes": ["PHARMACY"],
+        "address": "Ground Floor, Clinic Wing",
+        "uniqueId": "SP-000002",
+        "operationScope": "INDEPENDENT"
+      }
+    },
+    {
+      "mobile": "7777777701",
+      "role": "SERVICE_PROVIDER",
+      "isActive": true,
+      "serviceProvider": {
+        "providerName": "Default Lab Partner",
+        "providerType": "LAB",
+        "providerTypes": ["LAB", "BED_MANAGER", "PHARMACY", "RADIOLOGY", "PATHOLOGY", "BLOOD_BANK", "AMBULANCE", "ORTHODONTIC_LAB"],
+        "address": "Suite 101, Med Plaza",
+        "uniqueId": "SP-000101",
+        "operationScope": "INDEPENDENT"
+      },
+      "serviceProviderOrgMobiles": ["8888888801"]
+    },
+    {
+      "mobile": "7777777702",
+      "role": "SERVICE_PROVIDER",
+      "isActive": false,
+      "serviceProvider": {
+        "providerName": "Default Bed Manager",
+        "providerType": "BED_MANAGER",
+        "providerTypes": ["BED_MANAGER"],
+        "address": "Ward Accommodation Wing",
+        "uniqueId": "SP-000102",
+        "operationScope": "INDEPENDENT"
+      },
+      "serviceProviderOrgMobiles": ["8888888801"]
+    },
+    {
+      "mobile": "7777777703",
+      "role": "SERVICE_PROVIDER",
+      "isActive": true,
+      "serviceProvider": {
+        "providerName": "Default Pharmacy Partner",
+        "providerType": "PHARMACY",
+        "providerTypes": ["PHARMACY"],
+        "address": "Ground Floor, Clinic Wing",
+        "uniqueId": "SP-000103",
+        "operationScope": "INDEPENDENT"
+      },
+      "serviceProviderOrgMobiles": ["8888888801"]
+    },
+    {
+      "mobile": "7777777704",
+      "role": "SERVICE_PROVIDER",
+      "isActive": true,
+      "serviceProvider": {
+        "providerName": "Default Radiology Partner",
+        "providerType": "RADIOLOGY",
+        "providerTypes": ["RADIOLOGY"],
+        "address": "Basement X-Ray Lab",
+        "uniqueId": "SP-000104",
+        "operationScope": "INDEPENDENT"
+      },
+      "serviceProviderOrgMobiles": ["8888888801"]
+    },
+    {
+      "mobile": "7777777705",
+      "role": "SERVICE_PROVIDER",
+      "isActive": true,
+      "serviceProvider": {
+        "providerName": "Default Pathology Partner",
+        "providerType": "PATHOLOGY",
+        "providerTypes": ["PATHOLOGY"],
+        "address": "First Floor, Diagnostics Wing",
+        "uniqueId": "SP-000105",
+        "operationScope": "INDEPENDENT"
+      },
+      "serviceProviderOrgMobiles": ["8888888801"]
+    },
+    {
+      "mobile": "7777777706",
+      "role": "SERVICE_PROVIDER",
+      "isActive": true,
+      "serviceProvider": {
+        "providerName": "Default Blood Bank Partner",
+        "providerType": "BLOOD_BANK",
+        "providerTypes": ["BLOOD_BANK"],
+        "address": "Red Cross Depot Wing",
+        "uniqueId": "SP-000106",
+        "operationScope": "INDEPENDENT"
+      },
+      "serviceProviderOrgMobiles": ["8888888801"]
+    },
+    {
+      "mobile": "7777777707",
+      "role": "SERVICE_PROVIDER",
+      "isActive": true,
+      "serviceProvider": {
+        "providerName": "Default Ambulance Partner",
+        "providerType": "AMBULANCE",
+        "providerTypes": ["AMBULANCE"],
+        "address": "Emergency Bay, Entrance",
+        "uniqueId": "SP-000107",
+        "operationScope": "INDEPENDENT"
+      },
+      "serviceProviderOrgMobiles": ["8888888801"]
+    },
+    {
+      "mobile": "7777777708",
+      "role": "SERVICE_PROVIDER",
+      "isActive": true,
+      "serviceProvider": {
+        "providerName": "Default Orthodontic Lab Partner",
+        "providerType": "ORTHODONTIC_LAB",
+        "providerTypes": ["ORTHODONTIC_LAB"],
+        "address": "Dental Lab, Block B",
+        "uniqueId": "SP-000108",
+        "operationScope": "INDEPENDENT"
+      },
+      "serviceProviderOrgMobiles": ["8888888801"]
+    },
+    {
+      "mobile": "7777777711",
+      "role": "SERVICE_PROVIDER",
+      "isActive": true,
+      "serviceProvider": {
+        "providerName": "Independent SP",
+        "providerType": "LAB",
+        "providerTypes": ["LAB", "BED_MANAGER", "BLOOD_BANK"],
+        "address": "53 jshg JHdhh rd",
+        "uniqueId": "SP-098344",
+        "operationScope": "INTERNAL"
+      }
+    },
+    {
+      "mobile": "7777777712",
+      "role": "SERVICE_PROVIDER",
+      "isActive": true,
+      "serviceProvider": {
+        "providerName": "Internal SP",
+        "providerType": "LAB",
+        "providerTypes": ["LAB", "BED_MANAGER", "BLOOD_BANK", "RADIOLOGY"],
+        "address": "43 das ds rd",
+        "uniqueId": "SP-912197",
+        "operationScope": "INTERNAL"
+      }
+    },
+    {
+      "mobile": "7777777777",
+      "role": "SERVICE_PROVIDER",
+      "isActive": false,
+      "serviceProvider": {
+        "providerName": "Default Lab Partner",
+        "providerType": "LAB",
+        "providerTypes": ["LAB"],
+        "address": "Suite 101, Med Plaza",
+        "uniqueId": "SP-000001",
+        "operationScope": "INDEPENDENT"
+      }
+    },
+    {
+      "mobile": "7777777788",
+      "role": "SERVICE_PROVIDER",
+      "isActive": true,
+      "serviceProvider": {
+        "providerName": "Multi Specialty Partner 2",
+        "providerType": "BED_MANAGER",
+        "providerTypes": ["BED_MANAGER", "PHARMACY"],
+        "address": "Test Suite 101",
+        "uniqueId": "SP-404600",
+        "operationScope": "INDEPENDENT"
+      }
+    },
+    {
+      "mobile": "7777777799",
+      "role": "SERVICE_PROVIDER",
+      "isActive": true,
+      "serviceProvider": {
+        "providerName": "Multi Specialty Partner",
+        "providerType": "BED_MANAGER",
+        "providerTypes": ["BED_MANAGER", "PHARMACY"],
+        "address": "Test Suite 101",
+        "uniqueId": "SP-013796",
+        "operationScope": "INDEPENDENT"
+      }
+    }
+  ]
+}

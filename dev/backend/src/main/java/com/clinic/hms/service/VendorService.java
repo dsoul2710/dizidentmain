@@ -26,20 +26,29 @@ public class VendorService {
     private final InventoryMovementRepository inventoryMovementRepository;
     private final com.clinic.hms.security.SecurityUtils securityUtils;
     private final com.clinic.hms.repository.UserRepository userRepository;
+    private final com.clinic.hms.repository.OrgHospitalRepository orgHospitalRepository;
+
+    private Long resolveOwnerId() {
+        try {
+            String role = securityUtils.getCurrentUserRole();
+            if (com.clinic.hms.constants.AppConstants.Roles.SERVICE_PROVIDER.equalsIgnoreCase(role)) {
+                return securityUtils.getCurrentUserId();
+            }
+            Long orgId = securityUtils.getActiveOrgId();
+            if (orgId != null) {
+                return orgId;
+            }
+        } catch (Exception e) {
+            // Ignore context exceptions
+        }
+        return securityUtils.getCurrentUserId();
+    }
 
     @Transactional
     public VendorResponse createVendor(VendorCreateRequest req) {
         LocalDateTime now = LocalDateTime.now();
-
-        com.clinic.hms.entity.User org = null;
-        try {
-            Long orgId = securityUtils.getActiveOrgId();
-            if (orgId != null) {
-                org = userRepository.findById(orgId).orElse(null);
-            }
-        } catch (Exception e) {
-            // Ignore if no security context exists (e.g. seeding)
-        }
+        Long ownerId = resolveOwnerId();
+        com.clinic.hms.entity.User owner = ownerId != null ? userRepository.findById(ownerId).orElse(null) : null;
 
         Vendor vendor = Vendor.builder()
                 .name(req.getName())
@@ -47,7 +56,7 @@ public class VendorService {
                 .mobile(req.getMobile())
                 .category(req.getCategory())
                 .gstNo(req.getGstNo())
-                .org(org)
+                .owner(owner)
                 .isActive(true)
                 .createdAt(now)
                 .updatedAt(now)
@@ -59,16 +68,11 @@ public class VendorService {
 
     @Transactional(readOnly = true)
     public List<VendorResponse> listVendors() {
-        Long orgId = null;
-        try {
-            orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore
-        }
+        Long ownerId = resolveOwnerId();
 
         List<Vendor> vendors;
-        if (orgId != null) {
-            vendors = vendorRepository.findByOrg_Id(orgId);
+        if (ownerId != null) {
+            vendors = vendorRepository.findByOwner_Id(ownerId);
         } else {
             vendors = vendorRepository.findAll();
         }
@@ -84,16 +88,11 @@ public class VendorService {
         int safeSize = Math.max(pageSize, 1);
         PageRequest pageable = PageRequest.of(safePage - 1, safeSize, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Long orgId = null;
-        try {
-            orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore
-        }
+        Long ownerId = resolveOwnerId();
 
         Page<Vendor> result;
-        if (orgId != null) {
-            result = vendorRepository.searchVendorsByOrg(orgId, search, pageable);
+        if (ownerId != null) {
+            result = vendorRepository.searchVendorsByOrg(ownerId, search, pageable);
         } else {
             result = vendorRepository.searchVendors(search, pageable);
         }
@@ -116,14 +115,9 @@ public class VendorService {
         Vendor vendor = vendorRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Vendor not found: " + id));
 
-        Long orgId = null;
-        try {
-            orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore
-        }
+        Long ownerId = resolveOwnerId();
 
-        if (orgId != null && vendor.getOrg() != null && !vendor.getOrg().getId().equals(orgId)) {
+        if (ownerId != null && vendor.getOwner() != null && !vendor.getOwner().getId().equals(ownerId)) {
             throw new SecurityException("Access denied");
         }
 

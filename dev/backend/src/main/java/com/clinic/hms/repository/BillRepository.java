@@ -1,5 +1,6 @@
 package com.clinic.hms.repository;
 
+import com.clinic.hms.constants.QueryConstants;
 import com.clinic.hms.entity.Bill;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -21,6 +22,8 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
     List<Bill> findTop50ByDoctor_IdOrderByCreatedAtDesc(Long doctorUserId);
 
     @Modifying
-    @Query("update Bill b set b.doctor = null where b.doctor.id = :doctorUserId")
+    @Query(QueryConstants.Bill.CLEAR_DOCTOR)
     int clearDoctorByDoctorId(@Param("doctorUserId") Long doctorUserId);
+
+    List<Bill> findByOwner_Id(Long ownerId);
 }

@@ -25,6 +25,14 @@ public class TreatmentPlanController {
         return ResponseEntity.ok(treatmentPlanService.getDetailPayload(visitId));
     }
 
+    @GetMapping("/treatments/resolve-price")
+    public ResponseEntity<Double> resolveProcedurePrice(
+            @RequestParam String categoryKey,
+            @RequestParam String procedureName
+    ) {
+        return ResponseEntity.ok(treatmentPlanService.resolvePrice(categoryKey, procedureName));
+    }
+
     @PostMapping("/visits/{visitId}/treatment-plan")
     public ResponseEntity<TreatmentPlanResponse> savePlanForVisit(
             @PathVariable Long visitId,

@@ -9,15 +9,15 @@ import java.util.Optional;
 
 public interface InventoryItemRepository extends JpaRepository<InventoryItem, Long> {
 
-    Optional<InventoryItem> findByItemCode(String itemCode);
+    Optional<InventoryItem> findByOwner_IdAndItemCode(Long ownerId, String itemCode);
 
-    List<InventoryItem> findByOrg_Id(Long orgId);
+    List<InventoryItem> findByOwner_Id(Long ownerId);
 
-    List<InventoryItem> findByCategoryAndIsActiveTrueOrderByNameAsc(String category);
+    List<InventoryItem> findByOwner_IdAndCategoryAndIsActiveTrueOrderByNameAsc(Long ownerId, String category);
 
-    List<InventoryItem> findByIsActiveTrueOrderByNameAsc();
+    List<InventoryItem> findByOwner_IdAndIsActiveTrueOrderByNameAsc(Long ownerId);
 
-    Optional<InventoryItem> findFirstByNameIgnoreCase(String name);
+    Optional<InventoryItem> findFirstByOwner_IdAndNameIgnoreCase(Long ownerId, String name);
 
     long deleteByVendor_Id(Long vendorId);
 }

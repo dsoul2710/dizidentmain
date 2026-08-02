@@ -23,15 +23,13 @@ public class Bill {
     @JoinColumn(name = "visit_id", nullable = false)
     private Visit visit;
 
-    // patient_user_id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_user_id", nullable = false)
-    private User patient;
+    private Patient patient;
 
-    // doctor_user_id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_user_id")
-    private User doctor;
+    private Doctor doctor;
 
     @Column(name = "bill_no", nullable = false, length = 50, unique = true)
     private String billNo;
@@ -67,8 +65,8 @@ public class Bill {
     private Long createdByUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "org_user_id")
-    private User org;
+    @JoinColumn(name = "owner_user_id")
+    private User owner;
 
     @PrePersist
     public void onCreate() {

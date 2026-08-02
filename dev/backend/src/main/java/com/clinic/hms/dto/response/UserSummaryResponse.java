@@ -11,4 +11,6 @@ public class UserSummaryResponse {
     private String name;
     private String mobile;
     private String role;
+    private Boolean isActive;
 }
+

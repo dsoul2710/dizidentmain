@@ -1,10 +1,7 @@
 package com.clinic.hms.service;
 
 import com.clinic.hms.dto.response.EventResponse;
-import com.clinic.hms.entity.Appointment;
-import com.clinic.hms.entity.Bill;
-import com.clinic.hms.entity.User;
-import com.clinic.hms.entity.Visit;
+import com.clinic.hms.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -33,7 +30,7 @@ public class EventPushService {
         publishToTargets(payload, bill != null ? bill.getPatient() : null, bill != null ? bill.getDoctor() : null);
     }
 
-    private void publishToTargets(EventResponse payload, User patient, User doctor) {
+    private void publishToTargets(EventResponse payload, Patient patient, Doctor doctor) {
         if (payload == null) return;
 
         if (patient != null && patient.getId() != null) {

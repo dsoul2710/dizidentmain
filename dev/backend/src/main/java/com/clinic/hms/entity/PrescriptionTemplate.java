@@ -50,10 +50,9 @@ public class PrescriptionTemplate {
     @Column(length = 255)
     private String instructions;
 
-    // doctor_user_id (nullable for global templates)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_user_id")
-    private User doctor;
+    private Doctor doctor;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

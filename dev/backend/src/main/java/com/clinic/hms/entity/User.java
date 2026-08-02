@@ -20,11 +20,12 @@ public class User {
     @Column(nullable = false, length = 15, unique = true)
     private String mobile;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 100)
     private String password;
 
-    @Column(nullable = false, length = 20)
-    private String role; // PATIENT / DOCTOR / ORG
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private UserRole role;
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
@@ -34,4 +35,12 @@ public class User {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @Column(name = "logto_user_id", unique = true, length = 64)
+    private String logtoUserId;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    private java.util.List<ModulePermission> permissions = new java.util.ArrayList<>();
 }
+

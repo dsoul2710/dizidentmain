@@ -44,23 +44,35 @@ public class InventoryService {
     private final VendorRepository vendorRepository;
     private final com.clinic.hms.security.SecurityUtils securityUtils;
     private final com.clinic.hms.repository.UserRepository userRepository;
+    private final com.clinic.hms.repository.OrgHospitalRepository orgHospitalRepository;
 
     // =============================
     // ITEMS
     // =============================
 
+    private Long resolveOwnerId() {
+        try {
+            String role = securityUtils.getCurrentUserRole();
+            if (com.clinic.hms.constants.AppConstants.Roles.SERVICE_PROVIDER.equalsIgnoreCase(role)) {
+                return securityUtils.getCurrentUserId();
+            }
+            Long orgId = securityUtils.getActiveOrgId();
+            if (orgId != null) {
+                return orgId;
+            }
+        } catch (Exception e) {
+            // Ignore context exceptions
+        }
+        return securityUtils.getCurrentUserId();
+    }
+
     @Transactional(readOnly = true)
     public List<InventoryItemResponse> getAllItems() {
-        Long orgId = null;
-        try {
-            orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore
-        }
+        Long ownerId = resolveOwnerId();
 
         List<InventoryItem> items;
-        if (orgId != null) {
-            items = itemRepository.findByOrg_Id(orgId);
+        if (ownerId != null) {
+            items = itemRepository.findByOwner_Id(ownerId);
         } else {
             items = itemRepository.findAll();
         }
@@ -74,16 +86,8 @@ public class InventoryService {
     public InventoryItemResponse createItem(InventoryItemCreateRequest req) {
 
         LocalDateTime now = LocalDateTime.now();
-
-        com.clinic.hms.entity.User org = null;
-        try {
-            Long orgId = securityUtils.getActiveOrgId();
-            if (orgId != null) {
-                org = userRepository.findById(orgId).orElse(null);
-            }
-        } catch (Exception e) {
-            // Ignore
-        }
+        Long ownerId = resolveOwnerId();
+        com.clinic.hms.entity.User owner = ownerId != null ? userRepository.findById(ownerId).orElse(null) : null;
 
         BigDecimal opening = BigDecimal.valueOf(
                 req.getOpeningQty() != null ? req.getOpeningQty() : 0d
@@ -96,20 +100,19 @@ public class InventoryService {
         );
 
         Vendor vendor = null;
-        final com.clinic.hms.entity.User finalOrg = org;
         if (req.getVendorId() != null) {
             vendor = vendorRepository.findById(req.getVendorId())
-                    .filter(v -> finalOrg == null || v.getOrg() == null || v.getOrg().getId().equals(finalOrg.getId()))
+                    .filter(v -> ownerId == null || v.getOwner() == null || v.getOwner().getId().equals(ownerId))
                     .orElse(null);
         } else if (req.getVendorName() != null && !req.getVendorName().isBlank()) {
             String cleanName = req.getVendorName().trim();
-            List<Vendor> existingVendors = org != null ? vendorRepository.findByOrg_Id(org.getId()) : vendorRepository.findAll();
+            List<Vendor> existingVendors = ownerId != null ? vendorRepository.findByOwner_Id(ownerId) : vendorRepository.findAll();
             vendor = existingVendors.stream()
                     .filter(v -> v.getName() != null && v.getName().equalsIgnoreCase(cleanName))
                     .findFirst()
                     .orElseGet(() -> vendorRepository.save(Vendor.builder()
                             .name(cleanName)
-                            .org(finalOrg)
+                            .owner(owner)
                             .isActive(true)
                             .createdAt(now)
                             .updatedAt(now)
@@ -132,7 +135,7 @@ public class InventoryService {
                 .vendor(vendor)
                 .notes(req.getNotes())
                 .isActive(true)
-                .org(org)
+                .owner(owner)
                 .gstPercent(BigDecimal.ZERO)
                 .createdAt(now)
                 .updatedAt(now)
@@ -194,16 +197,11 @@ public class InventoryService {
 
     @Transactional(readOnly = true)
     public List<InventoryMovementResponse> getAllMovements() {
-        Long orgId = null;
-        try {
-            orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore
-        }
+        Long ownerId = resolveOwnerId();
 
-        final Long finalOrgId = orgId;
+        final Long finalOwnerId = ownerId;
         return movementRepository.findAll().stream()
-                .filter(m -> finalOrgId == null || m.getItem() == null || m.getItem().getOrg() == null || m.getItem().getOrg().getId().equals(finalOrgId))
+                .filter(m -> finalOwnerId == null || m.getItem() == null || m.getItem().getOwner() == null || m.getItem().getOwner().getId().equals(finalOwnerId))
                 .sorted(
                         Comparator
                                 .comparing(InventoryMovement::getMovementDate,

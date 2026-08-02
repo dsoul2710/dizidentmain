@@ -1,5 +1,6 @@
 package com.clinic.hms.service;
 
+import com.clinic.hms.constants.AppConstants;
 import com.clinic.hms.dto.request.ChatMessageSendRequest;
 import com.clinic.hms.dto.request.ChatThreadResolveRequest;
 import com.clinic.hms.dto.response.ChatAttachmentResponse;
@@ -7,16 +8,8 @@ import com.clinic.hms.dto.response.ChatMessageResponse;
 import com.clinic.hms.dto.response.ChatThreadResponse;
 import com.clinic.hms.dto.response.UnreadCountResponse;
 import com.clinic.hms.dto.response.UnreadSenderCountResponse;
-import com.clinic.hms.entity.ChatAttachment;
-import com.clinic.hms.entity.ChatMessage;
-import com.clinic.hms.entity.ChatThread;
-import com.clinic.hms.entity.User;
-import com.clinic.hms.entity.UserDetails;
-import com.clinic.hms.repository.ChatAttachmentRepository;
-import com.clinic.hms.repository.ChatMessageRepository;
-import com.clinic.hms.repository.ChatThreadRepository;
-import com.clinic.hms.repository.UserDetailsRepository;
-import com.clinic.hms.repository.UserRepository;
+import com.clinic.hms.entity.*;
+import com.clinic.hms.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -44,15 +37,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChatService {
 
-    private static final String TYPE_ORG_DOCTOR = "ORG_DOCTOR";
-    private static final String TYPE_ORG_PATIENT = "ORG_PATIENT";
-    private static final String TYPE_DOCTOR_PATIENT = "DOCTOR_PATIENT";
 
     private final ChatThreadRepository chatThreadRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final ChatAttachmentRepository chatAttachmentRepository;
     private final UserRepository userRepository;
-    private final UserDetailsRepository userDetailsRepository;
+    
+    private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
+    private final OrgHospitalRepository orgHospitalRepository;
+    private final ServiceProviderRepository serviceProviderRepository;
+    private final SuperAdminRepository superAdminRepository;
+
     private final SimpMessagingTemplate messagingTemplate;
 
     @Value("${file.upload.base-dir}")
@@ -67,11 +63,11 @@ public class ChatService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        if (TYPE_ORG_DOCTOR.equals(type)) {
+        if (AppConstants.ChatType.ORG_DOCTOR.equals(type)) {
             Long orgId = requireId(req.getOrgUserId(), "orgUserId");
             Long doctorId = requireId(req.getDoctorUserId(), "doctorUserId");
 
-            List<ChatThread> existing = chatThreadRepository.findByTypeAndOrg_IdAndDoctor_IdOrderByUpdatedAtDesc(
+            List<ChatThread> existing = chatThreadRepository.findByTypeAndOwner_IdAndDoctor_IdOrderByUpdatedAtDesc(
                     type,
                     orgId,
                     doctorId
@@ -81,14 +77,14 @@ public class ChatService {
                 return toThreadResponse(existing.get(0));
             }
 
-            User org = userRepository.findById(orgId)
-                    .orElseThrow(() -> new IllegalArgumentException("Org user not found: " + orgId));
-            User doctor = userRepository.findById(doctorId)
-                    .orElseThrow(() -> new IllegalArgumentException("Doctor user not found: " + doctorId));
+            OrgHospital org = orgHospitalRepository.findById(orgId)
+                    .orElseThrow(() -> new IllegalArgumentException("Org hospital profile not found: " + orgId));
+            Doctor doctor = doctorRepository.findByIdAndIsDeletedFalse(doctorId)
+                    .orElseThrow(() -> new IllegalArgumentException("Doctor profile not found: " + doctorId));
 
             ChatThread thread = ChatThread.builder()
                     .type(type)
-                    .org(org)
+                    .owner(org.getUser())
                     .doctor(doctor)
                     .createdAt(now)
                     .updatedAt(now)
@@ -97,10 +93,10 @@ public class ChatService {
             return toThreadResponse(chatThreadRepository.save(thread));
         }
 
-        if (TYPE_ORG_PATIENT.equals(type)) {
+        if (AppConstants.ChatType.ORG_PATIENT.equals(type)) {
             Long orgId = requireId(req.getOrgUserId(), "orgUserId");
             Long patientId = requireId(req.getPatientUserId(), "patientUserId");
-            List<ChatThread> existing = chatThreadRepository.findByTypeAndOrg_IdAndPatient_IdOrderByUpdatedAtDesc(
+            List<ChatThread> existing = chatThreadRepository.findByTypeAndOwner_IdAndPatient_IdOrderByUpdatedAtDesc(
                     type,
                     orgId,
                     patientId
@@ -110,13 +106,13 @@ public class ChatService {
                 return toThreadResponse(existing.get(0));
             }
 
-            User org = userRepository.findById(orgId)
-                    .orElseThrow(() -> new IllegalArgumentException("Org user not found: " + orgId));
-            User patient = userRepository.findById(patientId)
-                    .orElseThrow(() -> new IllegalArgumentException("Patient user not found: " + patientId));
+            OrgHospital org = orgHospitalRepository.findById(orgId)
+                    .orElseThrow(() -> new IllegalArgumentException("Org hospital profile not found: " + orgId));
+            Patient patient = patientRepository.findByIdAndIsDeletedFalse(patientId)
+                    .orElseThrow(() -> new IllegalArgumentException("Patient profile not found: " + patientId));
             ChatThread thread = ChatThread.builder()
                     .type(type)
-                    .org(org)
+                    .owner(org.getUser())
                     .patient(patient)
                     .createdAt(now)
                     .updatedAt(now)
@@ -125,7 +121,7 @@ public class ChatService {
             return toThreadResponse(chatThreadRepository.save(thread));
         }
 
-        if (TYPE_DOCTOR_PATIENT.equals(type)) {
+        if (AppConstants.ChatType.DOCTOR_PATIENT.equals(type)) {
             Long doctorId = requireId(req.getDoctorUserId(), "doctorUserId");
             Long patientId = requireId(req.getPatientUserId(), "patientUserId");
             List<ChatThread> existing = chatThreadRepository.findByTypeAndDoctor_IdAndPatient_IdOrderByUpdatedAtDesc(
@@ -138,10 +134,10 @@ public class ChatService {
                 return toThreadResponse(existing.get(0));
             }
 
-            User doctor = userRepository.findById(doctorId)
-                    .orElseThrow(() -> new IllegalArgumentException("Doctor user not found: " + doctorId));
-            User patient = userRepository.findById(patientId)
-                    .orElseThrow(() -> new IllegalArgumentException("Patient user not found: " + patientId));
+            Doctor doctor = doctorRepository.findByIdAndIsDeletedFalse(doctorId)
+                    .orElseThrow(() -> new IllegalArgumentException("Doctor profile not found: " + doctorId));
+            Patient patient = patientRepository.findByIdAndIsDeletedFalse(patientId)
+                    .orElseThrow(() -> new IllegalArgumentException("Patient profile not found: " + patientId));
             ChatThread thread = ChatThread.builder()
                     .type(type)
                     .doctor(doctor)
@@ -334,7 +330,7 @@ public class ChatService {
                 .type(thread.getType())
                 .patientUserId(thread.getPatient() != null ? thread.getPatient().getId() : null)
                 .doctorUserId(thread.getDoctor() != null ? thread.getDoctor().getId() : null)
-                .orgUserId(thread.getOrg() != null ? thread.getOrg().getId() : null)
+                .orgUserId(thread.getOwner() != null ? thread.getOwner().getId() : null)
                 .createdAt(thread.getCreatedAt() != null ? thread.getCreatedAt().toString() : null)
                 .updatedAt(thread.getUpdatedAt() != null ? thread.getUpdatedAt().toString() : null)
                 .build();
@@ -352,8 +348,8 @@ public class ChatService {
                         try {
                             Long id = Long.parseLong(idStr);
                             chatAttachmentRepository.findById(id)
-                                    .map(this::toAttachmentResponse)
-                                    .ifPresent(attachments::add);
+                                     .map(this::toAttachmentResponse)
+                                     .ifPresent(attachments::add);
                         } catch (NumberFormatException ignored) {
                             // ignore invalid ids
                         }
@@ -367,7 +363,7 @@ public class ChatService {
                 .threadId(message.getThread().getId())
                 .senderUserId(sender.getId())
                 .senderName(senderName)
-                .senderRole(sender.getRole())
+                .senderRole(sender.getRole().name())
                 .receiverUserId(message.getReceiver() != null ? message.getReceiver().getId() : null)
                 .content(message.getContent())
                 .messageType(message.getMessageType())
@@ -389,9 +385,19 @@ public class ChatService {
     }
 
     private String resolveUserName(User user) {
-        return userDetailsRepository.findByUser(user)
-                .map(UserDetails::getFullName)
-                .orElse(user.getMobile());
+        if (user == null) return null;
+        if (user.getRole() == UserRole.PATIENT) {
+            return patientRepository.findById(user.getId()).map(Patient::getFullName).orElse(user.getMobile());
+        } else if (user.getRole() == UserRole.DOCTOR) {
+            return doctorRepository.findById(user.getId()).map(Doctor::getFullName).orElse(user.getMobile());
+        } else if (user.getRole() == UserRole.ORG_HOSPITAL) {
+            return orgHospitalRepository.findById(user.getId()).map(OrgHospital::getOrgName).orElse(user.getMobile());
+        } else if (user.getRole() == UserRole.SERVICE_PROVIDER) {
+            return serviceProviderRepository.findById(user.getId()).map(ServiceProvider::getProviderName).orElse(user.getMobile());
+        } else if (user.getRole() == UserRole.SUPER_ADMIN) {
+            return superAdminRepository.findById(user.getId()).map(SuperAdmin::getFullName).orElse(user.getMobile());
+        }
+        return user.getMobile();
     }
 
     private ChatAttachmentResponse toAttachmentResponse(ChatAttachment attachment) {

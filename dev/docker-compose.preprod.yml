@@ -1,0 +1,78 @@
+# Pre-production Docker stack (no data seeding)
+# Usage: docker compose -f docker-compose.preprod.yml --env-file .env.preprod up --build -d
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: preprod-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: clinic_hms
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
+    ports:
+      - "5432:5432"
+    volumes:
+      - preprod-postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: preprod-backend
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: preprod
+      SPRING_APPLICATION_NAME: clinic-hms-preprod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_hms
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      APP_SEED_ENABLED: "false"
+      SERVER_PORT: 8080
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS:-http://localhost:3000}
+      APP_LOGTO_ENABLED: ${APP_LOGTO_ENABLED:-true}
+      APP_AUTH_LEGACY_ENABLED: "false"
+      LOGTO_ENDPOINT: ${LOGTO_ENDPOINT:-}
+      LOGTO_ISSUER_URI: ${LOGTO_ISSUER_URI:-}
+      LOGTO_APP_ID: ${LOGTO_APP_ID:-}
+      LOGTO_API_RESOURCE: ${LOGTO_API_RESOURCE:-}
+      FILE_UPLOAD_BASE_DIR: /app/uploads
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./uploads:/app/uploads
+    networks:
+      - app-network
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE: ${VITE_API_BASE:-http://localhost:8080}
+        VITE_CLIENT_ID: preprod
+        VITE_CLIENT_NAME: "Pre-Prod Environment"
+        VITE_LOGTO_ENABLED: ${VITE_LOGTO_ENABLED:-true}
+        VITE_LEGACY_AUTH_ENABLED: "false"
+        VITE_APP_ENV: preprod
+    container_name: preprod-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+
+volumes:
+  preprod-postgres-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

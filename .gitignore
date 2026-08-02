@@ -123,3 +123,12 @@ bin/
 
 # Custom/local configuration overrides
 **/src/main/resources/application-dev.properties
+
+# Understand Anything — commit knowledge-graph.json; ignore local scratch
+**/.understand-anything/intermediate/
+**/.understand-anything/tmp/
+**/.understand-anything/diff-overlay.json
+**/.understand-anything/.trash-*/
+
+# AI-DLC — experimental AI-assisted rule download (standard setup uses .aidlc-rule-details/)
+**/.aidlc/

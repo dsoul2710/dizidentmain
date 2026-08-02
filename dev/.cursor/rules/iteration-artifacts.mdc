@@ -1,0 +1,73 @@
+---
+description: Iteration artifact folder naming and layout for AIdLC docs
+alwaysApply: true
+---
+
+# Iteration Artifacts Convention
+
+All AIdLC and planned-iteration **documentation** lives in the **aidlc-workflows** repo under:
+
+```text
+aidlc-workflows/aidlc-docs/artifacts/iteration/{timestamp}-{micro-description}/
+```
+
+From the DiziDental workspace root (`DiziDental/`), that path is a sibling of `dizidentmain/`.
+
+**Do not** write iteration docs under `dizidentmain/dev/artifacts/` or `dizidentmain/dev/aidlc-docs/`.
+
+## Folder naming
+
+| Part | Rule | Example |
+|------|------|---------|
+| `{timestamp}` | Unix epoch seconds (10 digits) at iteration start | `1783016581` |
+| `{micro-description}` | Lowercase kebab-case, 2–5 words, no spaces | `code-quality-security-hardening` |
+
+**Full example:** `1783016581-code-quality-security-hardening`
+
+Generate timestamp at folder creation:
+
+```powershell
+$ts = [int][double]::Parse((Get-Date -UFormat %s))
+$folder = "aidlc-workflows/aidlc-docs/artifacts/iteration/${ts}-your-short-name"
+```
+
+## Required layout (inside each iteration folder)
+
+```text
+{timestamp}-{micro-description}/
+  README.md              # Iteration summary (scope, dates, status)
+  aidlc-state.md         # Workflow state for THIS iteration only
+  audit.md               # Append-only interaction log
+  inception/             # Requirements, design, plans
+  construction/          # Units, build-and-test, sign-off
+  operations/            # Optional placeholder
+```
+
+## `aidlc-state.md` location (canonical)
+
+**Store workflow state under the iteration folder — never at `aidlc-docs/` root.**
+
+| Correct | Incorrect |
+|---------|-----------|
+| `aidlc-workflows/aidlc-docs/artifacts/iteration/{timestamp}-{slug}/aidlc-state.md` | `aidlc-docs/aidlc-state.md` |
+| | `dizidentmain/dev/artifacts/.../aidlc-state.md` |
+| One state file per iteration | A shared/global state file |
+
+- Resume work by reading `aidlc-state.md` from the **active** iteration folder (the one linked from `aidlc-workflows/aidlc-docs/README.md`).
+- Starting a new iteration creates a **new** `aidlc-state.md` in that iteration folder; do not reuse or move the previous iteration’s state file.
+- Upstream rule-detail paths that say `aidlc-docs/aidlc-state.md` mean the current iteration’s `aidlc-state.md` under `aidlc-workflows/aidlc-docs/artifacts/iteration/{timestamp}-{slug}/`.
+
+## Rules
+
+1. **Never** put application code in iteration folders — only docs/markdown. App code stays in `dizidentmain/dev/`.
+2. **One folder per iteration** — do not mix two iterations in one directory.
+3. **New iteration = new folder** — do not overwrite a completed iteration folder.
+4. **audit.md** — append only; never overwrite entire file.
+5. **aidlc-state.md** — always inside the iteration folder; never create or update `aidlc-docs/aidlc-state.md` at repo root of docs.
+6. Point `aidlc-workflows/aidlc-docs/README.md` to the current/latest iteration path.
+
+## When starting work
+
+1. Create `aidlc-workflows/aidlc-docs/artifacts/iteration/{timestamp}-{slug}/` first.
+2. Initialize `aidlc-state.md` and `audit.md` **inside that folder**.
+3. Log all workflow output under that folder, not under `dizidentmain/dev/` or an `aidlc-docs/` docs root.

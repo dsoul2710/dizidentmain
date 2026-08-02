@@ -10,13 +10,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class VisitDiagnosisService {
 
-    private final UserRepository userRepository;
+    private final PatientRepository patientRepository;
     private final VisitRepository visitRepository;
     private final VisitExaminationItemRepository visitExamRepo;
     private final ExamItemMasterRepository examMasterRepo;
@@ -30,7 +33,7 @@ public class VisitDiagnosisService {
             visit = visitRepository.findById(req.getVisitId())
                     .orElseThrow(() -> new IllegalArgumentException("Visit not found: " + req.getVisitId()));
         } else {
-            User patient = userRepository.findById(req.getPatientUserId())
+            Patient patient = patientRepository.findById(req.getPatientUserId())
                     .orElseThrow(() -> new IllegalArgumentException("Patient user not found: " + req.getPatientUserId()));
 
             visit = new Visit();
@@ -107,6 +110,34 @@ public class VisitDiagnosisService {
         }
 
         return visit;
+    }
+
+    @Transactional(readOnly = true)
+    public VisitDiagnosisRequest getDiagnosisDetail(Long visitId) {
+        return visitRepository.findById(visitId)
+                .map(visit -> {
+                    VisitDiagnosisRequest dto = new VisitDiagnosisRequest();
+                    dto.setVisitId(visit.getId());
+                    dto.setPatientUserId(visit.getPatient().getId());
+                    dto.setOdontogramMode(visit.getOdontogramMode());
+                    dto.setSelectedTeeth(parseCsv(visit.getOdontogramTeethJson()));
+                    dto.setFreeDescription(visit.getDiagnosisFreeText());
+                    dto.setFinalDescription(visit.getDiagnosisFinalText());
+                    dto.setReportType(visit.getDiagnosisReportType());
+                    dto.setReportNote(visit.getDiagnosisReportNote());
+                    return dto;
+                })
+                .orElseGet(VisitDiagnosisRequest::new);
+    }
+
+    private List<String> parseCsv(String csv) {
+        if (csv == null || csv.isBlank()) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(csv.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
     }
 
 }

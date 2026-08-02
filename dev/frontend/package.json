@@ -4,12 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "vite --mode development",
+    "build": "vite build --mode production",
+    "build:preprod": "vite build --mode preprod",
+    "build:prod": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@logto/react": "^4.0.14",
     "@stomp/stompjs": "^7.1.0",
     "axios": "^1.13.2",
     "html2canvas": "^1.4.1",

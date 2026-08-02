@@ -1,9 +1,12 @@
 .wowdash-users {
-  --wow-primary-600: #487FFF;
+  --wow-primary-600: #2563eb;
   --wow-neutral-50: #F5F6FA;
   --wow-neutral-200: #EBECEF;
   --wow-neutral-600: #4B5563;
   --wow-neutral-900: #111827;
+  --wow-success-600: #16a34a;
+  --wow-warning-600: #ca8a04;
+  --wow-danger-600: #dc2626;
   --wow-border-color: #d1d5db80;
   --wow-input-form-light: #E5E7EB;
   --wow-white: #ffffff;
@@ -177,6 +180,113 @@
   background-color: var(--wow-primary-600);
   color: #fff;
   border-color: var(--wow-primary-600);
+}
+
+.wowdash-users .btn-success {
+  background-color: var(--wow-success-600);
+  color: #fff !important;
+  border-color: var(--wow-success-600);
+}
+
+.wowdash-users .btn-success:hover,
+.wowdash-users .btn-success:active,
+.wowdash-users .btn-success:focus {
+  background-color: #15803d;
+  color: #fff !important;
+  border-color: #15803d;
+}
+
+.wowdash-users .btn-secondary {
+  background-color: var(--wow-neutral-600);
+  color: #fff !important;
+  border-color: var(--wow-neutral-600);
+}
+
+.wowdash-users .btn-secondary:hover,
+.wowdash-users .btn-secondary:active,
+.wowdash-users .btn-secondary:focus {
+  background-color: #374151;
+  color: #fff !important;
+  border-color: #374151;
+}
+
+.wowdash-users .btn-warning {
+  background-color: var(--wow-warning-600);
+  color: #fff !important;
+  border-color: var(--wow-warning-600);
+}
+
+.wowdash-users .btn-warning:hover,
+.wowdash-users .btn-warning:active,
+.wowdash-users .btn-warning:focus {
+  background-color: #a16207;
+  color: #fff !important;
+  border-color: #a16207;
+}
+
+.wowdash-users .btn-danger {
+  background-color: var(--wow-danger-600);
+  color: #fff !important;
+  border-color: var(--wow-danger-600);
+}
+
+.wowdash-users .btn-danger:hover,
+.wowdash-users .btn-danger:active,
+.wowdash-users .btn-danger:focus {
+  background-color: #b91c1c;
+  color: #fff !important;
+  border-color: #b91c1c;
+}
+
+.wowdash-users .btn-outline-primary {
+  border: 1px solid var(--wow-primary-600) !important;
+  color: var(--wow-primary-600) !important;
+  background-color: transparent !important;
+}
+
+.wowdash-users .btn-outline-primary:hover,
+.wowdash-users .btn-outline-primary:active,
+.wowdash-users .btn-outline-primary:focus {
+  background-color: var(--wow-primary-600) !important;
+  color: #fff !important;
+  border-color: var(--wow-primary-600) !important;
+}
+
+.wowdash-users .btn-outline-secondary {
+  border: 1px solid var(--wow-neutral-600) !important;
+  color: var(--wow-neutral-600) !important;
+  background-color: transparent !important;
+}
+
+.wowdash-users .btn-outline-secondary:hover,
+.wowdash-users .btn-outline-secondary:active,
+.wowdash-users .btn-outline-secondary:focus {
+  background-color: var(--wow-neutral-600) !important;
+  color: #fff !important;
+  border-color: var(--wow-neutral-600) !important;
+}
+
+.wowdash-users .btn-outline-danger {
+  border: 1px solid var(--wow-danger-600) !important;
+  color: var(--wow-danger-600) !important;
+  background-color: transparent !important;
+}
+
+.wowdash-users .btn-outline-danger:hover,
+.wowdash-users .btn-outline-danger:active,
+.wowdash-users .btn-outline-danger:focus {
+  background-color: var(--wow-danger-600) !important;
+  color: #fff !important;
+  border-color: var(--wow-danger-600) !important;
+}
+
+.wowdash-users .btn:disabled,
+.wowdash-users .btn.disabled {
+  background-color: var(--wow-neutral-200) !important;
+  color: var(--wow-neutral-600) !important;
+  border-color: var(--wow-neutral-200) !important;
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .wowdash-users .form-select,

@@ -28,7 +28,12 @@ Run backend and frontend separately (requires PostgreSQL installed):
 **Terminal 1 - Backend:**
 ```bash
 cd dev/backend
-./gradlew bootRun       # Windows: .\gradlew.bat bootRun
+# Windows PowerShell:
+$env:SPRING_PROFILES_ACTIVE="dev"
+.\gradlew.bat bootRun
+
+# Linux/macOS:
+SPRING_PROFILES_ACTIVE=dev ./gradlew bootRun
 ```
 
 **Terminal 2 - Frontend:**

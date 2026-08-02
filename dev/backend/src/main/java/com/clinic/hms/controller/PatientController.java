@@ -4,8 +4,6 @@ import com.clinic.hms.dto.request.PatientCreateRequest;
 import com.clinic.hms.dto.request.PatientUpdateRequest;
 import com.clinic.hms.dto.response.PatientResponse;
 import com.clinic.hms.dto.response.PagedResponse;
-import com.clinic.hms.entity.UserDetails;
-import com.clinic.hms.repository.UserDetailsRepository;
 import com.clinic.hms.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -21,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -30,12 +27,41 @@ import java.util.List;
 public class PatientController {
 
     private final PatientService patientService;
-    private final UserDetailsRepository userDetailsRepository;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PatientResponse create(@RequestBody PatientCreateRequest req) {
         return patientService.createPatient(req);
+    }
+
+    /**
+     * Platform-wide patient lookup by unique ID (PAT-XXXXXX).
+     * Used by the "Import Existing Patient" feature.
+     */
+    @GetMapping("/lookup")
+    public ResponseEntity<PatientResponse> lookupByUniqueId(@RequestParam("uniqueId") String uniqueId) {
+        PatientResponse found = patientService.lookupPatientByUniqueId(uniqueId);
+        if (found == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(found);
+    }
+
+    /**
+     * Import an existing patient into the caller's org/doctor scope.
+     * Creates PatientOrgMapping and/or PatientDoctorMapping.
+     */
+    @PostMapping("/import")
+    public ResponseEntity<PatientResponse> importPatient(@RequestBody ImportPatientRequest req) {
+        PatientResponse result = patientService.importExistingPatient(
+                req.getPatientUserId(), req.getAssignedDoctorId());
+        return ResponseEntity.ok(result);
+    }
+
+    @lombok.Data
+    static class ImportPatientRequest {
+        private Long patientUserId;
+        private Long assignedDoctorId; // optional
     }
 
     @GetMapping
@@ -55,6 +81,11 @@ public class PatientController {
         PagedResponse<PatientResponse> response =
                 patientService.listPatientsPaged(doctorId, search, resolvedPage, resolvedPageSize);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public PatientResponse getById(@PathVariable Long id) {
+        return patientService.getPatientById(id);
     }
 
     @DeleteMapping("/{id}")
@@ -99,22 +130,12 @@ public class PatientController {
     // GET /api/patients/{id}/reports-files
     @GetMapping("/{id}/reports-files")
     public ResponseEntity<List<String>> listReportsFiles(@PathVariable Long id) {
-        UserDetails details = userDetailsRepository.findFirstByUser_Id(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid patient details id"));
-
-        List<String> paths = splitPaths(details.getPastReportsFilePath());
-        List<String> names = paths.stream()
-                .map(p -> Paths.get(p).getFileName().toString())
-                .toList();
-        return ResponseEntity.ok(names);
+        return ResponseEntity.ok(patientService.listReportFileNames(id));
     }
 
     @GetMapping("/{id}/id-file")
     public ResponseEntity<Resource> viewIdFile(@PathVariable Long id) throws Exception {
-        UserDetails details = userDetailsRepository.findFirstByUser_Id(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid patient details id"));
-
-        String filePath = details.getIdInsuranceFilePath();
+        String filePath = patientService.getIdInsuranceFilePath(id);
         if (filePath == null || filePath.isBlank()) {
             return ResponseEntity.notFound().build();
         }
@@ -142,27 +163,7 @@ public class PatientController {
             @PathVariable Long id,
             @RequestParam(value = "fileName", required = false) String fileName
     ) throws Exception {
-        UserDetails details = userDetailsRepository.findFirstByUser_Id(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid patient details id"));
-
-        List<String> paths = splitPaths(details.getPastReportsFilePath());
-        if (paths.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Path path = null;
-        if (fileName != null && !fileName.isBlank()) {
-            for (String p : paths) {
-                Path candidate = Paths.get(p);
-                if (candidate.getFileName().toString().equals(fileName)) {
-                    path = candidate;
-                    break;
-                }
-            }
-        }
-        if (path == null) {
-            path = Paths.get(paths.get(0));
-        }
+        Path path = patientService.resolveReportFilePath(id, fileName);
         if (!Files.exists(path)) {
             return ResponseEntity.notFound().build();
         }
@@ -178,13 +179,5 @@ public class PatientController {
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "inline; filename=\"" + path.getFileName().toString() + "\"")
                 .body(resource);
-    }
-
-    private List<String> splitPaths(String csv) {
-        if (csv == null || csv.isBlank()) return List.of();
-        return Arrays.stream(csv.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .toList();
     }
 }

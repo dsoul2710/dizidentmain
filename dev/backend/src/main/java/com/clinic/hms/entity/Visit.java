@@ -20,11 +20,11 @@ public class Visit {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_user_id", nullable = false)
-    private User patient;
+    private Patient patient;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_user_id")
-    private User doctor;
+    private Doctor doctor;
 
     @Column(name = "visit_date", nullable = false)
     private LocalDateTime visitDate;
@@ -70,6 +70,11 @@ public class Visit {
     private Long createdByUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "org_user_id")
-    private User org;
+    @JoinColumn(name = "owner_user_id")
+    private User owner;
+
+    /** Hospital that originated this visit when created under org context. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_org_id")
+    private OrgHospital sourceOrg;
 }

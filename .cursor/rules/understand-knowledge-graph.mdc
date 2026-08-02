@@ -1,0 +1,26 @@
+---
+description: Use Understand Anything knowledge graph before exploring dev codebase
+globs: dev/**
+alwaysApply: false
+---
+
+# Understand Anything — dev knowledge graph
+
+Before exploring code under `dev/`, search `dev/.understand-anything/knowledge-graph.json` for relevant nodes (by `filePath`, `name`, `tags`, `summary`). Follow edges (`imports`, `calls`, `depends_on`) to find related files. Then read only those source files.
+
+## Workflow
+
+1. Grep the graph for keywords, file paths, or component names related to the task.
+2. Collect matched node IDs and read connected edges (1-hop upstream/downstream).
+3. Use `layers[]` and `tour[]` for architectural context when helpful.
+4. Open and edit only the source files identified — do not scan the whole repo blindly.
+
+## Graph location
+
+- Primary: `dev/.understand-anything/knowledge-graph.json`
+- If missing, tell the user to run `/understand dev` first.
+
+## Do not use as task input
+
+- `dev/.understand-anything/intermediate/` — build scratch
+- `dev/.understand-anything/tmp/` — temporary analysis files

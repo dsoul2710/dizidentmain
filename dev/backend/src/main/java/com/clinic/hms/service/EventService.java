@@ -1,5 +1,6 @@
 package com.clinic.hms.service;
 
+import com.clinic.hms.constants.AppConstants;
 import com.clinic.hms.dto.response.EventResponse;
 import com.clinic.hms.entity.Appointment;
 import com.clinic.hms.entity.Bill;
@@ -40,18 +41,18 @@ public class EventService {
         List<Bill> bills;
 
         switch (normalizedRole) {
-            case "ORG" -> {
+            case "ORG", "ORG_HOSPITAL" -> {
                 appointments = appointmentRepository.findTop50ByOrderByCreatedAtDesc();
                 visits = visitRepository.findTop50ByOrderByCreatedAtDesc();
                 bills = billRepository.findTop50ByOrderByCreatedAtDesc();
             }
-            case "DOCTOR" -> {
+            case AppConstants.Roles.DOCTOR -> {
                 if (userId == null) return Collections.emptyList();
                 appointments = appointmentRepository.findTop50ByDoctor_IdOrderByCreatedAtDesc(userId);
                 visits = visitRepository.findTop50ByDoctor_IdOrderByCreatedAtDesc(userId);
                 bills = billRepository.findTop50ByDoctor_IdOrderByCreatedAtDesc(userId);
             }
-            case "PATIENT" -> {
+            case AppConstants.Roles.PATIENT -> {
                 if (userId == null) return Collections.emptyList();
                 appointments = appointmentRepository.findTop50ByPatient_IdOrderByCreatedAtDesc(userId);
                 visits = visitRepository.findTop50ByPatient_IdOrderByCreatedAtDesc(userId);

@@ -2,12 +2,10 @@ package com.clinic.hms.service;
 
 import com.clinic.hms.dto.request.TreatmentPlanRequest;
 import com.clinic.hms.dto.response.TreatmentPlanResponse;
-import com.clinic.hms.entity.Visit;
-import com.clinic.hms.entity.User;
-import com.clinic.hms.entity.VisitTreatmentItem;
+import com.clinic.hms.entity.*;
+import com.clinic.hms.repository.PatientRepository;
 import com.clinic.hms.repository.VisitRepository;
 import com.clinic.hms.repository.VisitTreatmentItemRepository;
-import com.clinic.hms.repository.UserRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +22,12 @@ public class TreatmentPlanService {
 
     private final VisitRepository visitRepository;
     private final VisitTreatmentItemRepository treatmentItemRepository;
-    private final UserRepository userRepository;
+    private final PatientRepository patientRepository;
     private final ObjectMapper objectMapper;
+    private final com.clinic.hms.repository.ProcedurePriceListRepository priceListRepository;
+    private final com.clinic.hms.repository.TreatmentProcedureMasterRepository procedureRepository;
+    private final com.clinic.hms.repository.TreatmentCategoryMasterRepository categoryRepository;
+    private final com.clinic.hms.security.SecurityUtils securityUtils;
 
     private static final TypeReference<List<String>> LIST_STRING = new TypeReference<>() {};
     private static final TypeReference<List<TreatmentPlanRequest.BillLine>> BILL_LINES =
@@ -205,7 +207,7 @@ public class TreatmentPlanService {
             throw new IllegalArgumentException("patientUserId is required when visitId is not provided");
         }
 
-        User patient = userRepository.findById(req.getPatientUserId())
+        Patient patient = patientRepository.findById(req.getPatientUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Patient user not found: " + req.getPatientUserId()));
 
         Visit visit = new Visit();
@@ -283,7 +285,13 @@ public class TreatmentPlanService {
                         ? reqProcedureBills.get(mapKey)
                         : readJson(item != null ? item.getExtrasJson() : null, BILL_LINES, Collections.emptyList());
 
-                Double price = reqProcedurePrices.getOrDefault(mapKey, item != null ? item.getPrice() : null);
+                Double price = reqProcedurePrices.get(mapKey);
+                if (price == null) {
+                    price = (item != null) ? item.getPrice() : null;
+                }
+                if (price == null) {
+                    price = resolvePrice(catKey, procName);
+                }
 
                 if (item == null) {
                     item = buildItem(
@@ -406,5 +414,37 @@ public class TreatmentPlanService {
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
+    }
+
+    public Double resolvePrice(String categoryKey, String procedureName) {
+        if (categoryKey == null || procedureName == null) {
+            return null;
+        }
+        Long ownerId = null;
+        try {
+            String role = securityUtils.getCurrentUserRole();
+            if (com.clinic.hms.constants.AppConstants.Roles.SERVICE_PROVIDER.equalsIgnoreCase(role)) {
+                ownerId = securityUtils.getCurrentUserId();
+            } else {
+                Long orgId = securityUtils.getActiveOrgId();
+                if (orgId != null) {
+                    ownerId = orgId;
+                }
+            }
+        } catch (Exception e) {
+            // ignore context exceptions
+        }
+        if (ownerId == null) {
+            ownerId = securityUtils.getCurrentUserId();
+        }
+        if (ownerId == null) {
+            return null;
+        }
+        final Long finalOwnerId = ownerId;
+        return categoryRepository.findByCategoryKey(categoryKey)
+                .flatMap(category -> procedureRepository.findByCategoryAndNameIgnoreCase(category, procedureName))
+                .flatMap(procedure -> priceListRepository.findByOwner_IdAndProcedure_Id(finalOwnerId, procedure.getId()))
+                .map(priceList -> priceList.getPrice().doubleValue())
+                .orElse(null);
     }
 }

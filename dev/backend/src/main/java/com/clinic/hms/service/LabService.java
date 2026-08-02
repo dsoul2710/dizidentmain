@@ -22,26 +22,35 @@ public class LabService {
     private final LabRepository labRepository;
     private final com.clinic.hms.security.SecurityUtils securityUtils;
     private final com.clinic.hms.repository.UserRepository userRepository;
+    private final com.clinic.hms.repository.OrgHospitalRepository orgHospitalRepository;
+
+    private Long resolveOwnerId() {
+        try {
+            String role = securityUtils.getCurrentUserRole();
+            if (com.clinic.hms.constants.AppConstants.Roles.SERVICE_PROVIDER.equalsIgnoreCase(role)) {
+                return securityUtils.getCurrentUserId();
+            }
+            Long orgId = securityUtils.getActiveOrgId();
+            if (orgId != null) {
+                return orgId;
+            }
+        } catch (Exception e) {
+            // Ignore context exceptions
+        }
+        return securityUtils.getCurrentUserId();
+    }
 
     @Transactional
     public LabResponse createLab(LabCreateRequest req) {
         LocalDateTime now = LocalDateTime.now();
-
-        com.clinic.hms.entity.User org = null;
-        try {
-            Long orgId = securityUtils.getActiveOrgId();
-            if (orgId != null) {
-                org = userRepository.findById(orgId).orElse(null);
-            }
-        } catch (Exception e) {
-            // Ignore if no security context exists (e.g. seeding)
-        }
+        Long ownerId = resolveOwnerId();
+        com.clinic.hms.entity.User owner = ownerId != null ? userRepository.findById(ownerId).orElse(null) : null;
 
         Lab lab = Lab.builder()
                 .name(req.getName())
                 .address(req.getAddress())
                 .mobile(req.getMobile())
-                .org(org)
+                .owner(owner)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
@@ -53,16 +62,11 @@ public class LabService {
 
     @Transactional(readOnly = true)
     public List<LabResponse> listLabs() {
-        Long orgId = null;
-        try {
-            orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore
-        }
+        Long ownerId = resolveOwnerId();
 
         List<Lab> labs;
-        if (orgId != null) {
-            labs = labRepository.findByOrg_Id(orgId);
+        if (ownerId != null) {
+            labs = labRepository.findByOwner_Id(ownerId);
         } else {
             labs = labRepository.findAll();
         }
@@ -78,16 +82,11 @@ public class LabService {
         int safeSize = Math.max(pageSize, 1);
         PageRequest pageable = PageRequest.of(safePage - 1, safeSize, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Long orgId = null;
-        try {
-            orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore
-        }
+        Long ownerId = resolveOwnerId();
 
         Page<Lab> result;
-        if (orgId != null) {
-            result = labRepository.searchLabsByOrg(orgId, search, pageable);
+        if (ownerId != null) {
+            result = labRepository.searchLabsByOrg(ownerId, search, pageable);
         } else {
             result = labRepository.searchLabs(search, pageable);
         }
@@ -110,14 +109,9 @@ public class LabService {
         Lab lab = labRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Lab not found: " + id));
 
-        Long orgId = null;
-        try {
-            orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore
-        }
+        Long ownerId = resolveOwnerId();
 
-        if (orgId != null && lab.getOrg() != null && !lab.getOrg().getId().equals(orgId)) {
+        if (ownerId != null && lab.getOwner() != null && !lab.getOwner().getId().equals(ownerId)) {
             throw new SecurityException("Access denied");
         }
 
@@ -129,14 +123,9 @@ public class LabService {
         Lab lab = labRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Lab not found: " + id));
 
-        Long orgId = null;
-        try {
-            orgId = securityUtils.getActiveOrgId();
-        } catch (Exception e) {
-            // Ignore
-        }
+        Long ownerId = resolveOwnerId();
 
-        if (orgId != null && lab.getOrg() != null && !lab.getOrg().getId().equals(orgId)) {
+        if (ownerId != null && lab.getOwner() != null && !lab.getOwner().getId().equals(ownerId)) {
             throw new SecurityException("Access denied");
         }
 

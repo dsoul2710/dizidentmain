@@ -1,8 +1,9 @@
-// src/main/java/com/clinic/hms/service/PrescriptionService.java
 package com.clinic.hms.service;
 
+import com.clinic.hms.constants.AppConstants;
 import com.clinic.hms.dto.request.PrescriptionItemRequest;
 import com.clinic.hms.dto.request.PrescriptionRequest;
+import com.clinic.hms.dto.request.PrescriptionTemplateRequest;
 import com.clinic.hms.dto.response.PrescriptionItemResponse;
 import com.clinic.hms.dto.response.PrescriptionResponse;
 import com.clinic.hms.entity.*;
@@ -21,9 +22,51 @@ public class PrescriptionService {
 
     private final UserRepository userRepository;
     private final VisitRepository visitRepository;
-    private final UserDetailsRepository userDetailsRepository;
+    private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
+    private final PatientDoctorMappingRepository patientDoctorMappingRepository;
     private final PrescriptionRepository prescriptionRepository;
     private final PrescriptionItemRepository prescriptionItemRepository;
+    private final PrescriptionTemplateRepository templateRepository;
+
+    @Transactional(readOnly = true)
+    public List<PrescriptionTemplate> listTemplates(Long doctorUserId) {
+        if (doctorUserId != null) {
+            return templateRepository.findByDoctor_IdOrDoctorIsNull(doctorUserId);
+        }
+        return templateRepository.findAll();
+    }
+
+    @Transactional
+    public PrescriptionTemplate createTemplate(PrescriptionTemplateRequest request) {
+        if (request.getMedicineName() == null || request.getMedicineName().isBlank()) {
+            throw new IllegalArgumentException("Medicine name is required");
+        }
+
+        Doctor doctor = null;
+        if (request.getDoctorUserId() != null) {
+            doctor = doctorRepository.findById(request.getDoctorUserId())
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Doctor user not found: " + request.getDoctorUserId()));
+        }
+
+        PrescriptionTemplate template = PrescriptionTemplate.builder()
+                .name(request.getName() != null ? request.getName() : request.getMedicineName())
+                .medicineName(request.getMedicineName())
+                .medicineContents(request.getMedicineContents())
+                .medicineType(request.getMedicineType() != null ? request.getMedicineType() : "tab")
+                .volume(request.getVolume() != null ? request.getVolume() : "")
+                .dose(request.getDose() != null ? request.getDose() : "")
+                .days(request.getDays())
+                .timings(request.getTimings())
+                .duration(request.getDuration())
+                .instructions(request.getInstructions())
+                .doctor(doctor)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        return templateRepository.save(template);
+    }
 
     @Transactional(readOnly = true)
     public PrescriptionResponse getLatestByVisit(Long visitId) {
@@ -38,22 +81,18 @@ public class PrescriptionService {
     @Transactional
     public PrescriptionResponse createPrescription(PrescriptionRequest req) {
 
-        // 1) Load patient user
-        User patient = userRepository.findById(req.getPatientUserId())
+        // 1) Load patient profile
+        Patient patient = patientRepository.findByIdAndIsDeletedFalse(req.getPatientUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid patient user id"));
 
-        // 2) Load patient details (for assignedDoctor)
-        UserDetails patientDetails = userDetailsRepository.findFirstByUser_Id(patient.getId())
-                .orElseThrow(() -> new IllegalArgumentException("UserDetails not found for patient"));
-
-        // 3) Load visit
+        // 2) Load visit
         Visit visit = visitRepository.findById(req.getVisitId())
                 .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
 
-        // 4) Resolve doctor
-        User doctor = resolveDoctor(req, visit, patientDetails);
+        // 3) Resolve doctor
+        Doctor doctor = resolveDoctor(req, visit, patient);
 
-        // 5) Create prescription
+        // 4) Create prescription
         Prescription prescription = Prescription.builder()
                 .visit(visit)
                 .patient(patient)
@@ -65,7 +104,7 @@ public class PrescriptionService {
 
         prescription = prescriptionRepository.save(prescription);
 
-        // 6) Create items
+        // 5) Create items
         if (req.getItems() != null) {
             for (PrescriptionItemRequest itemReq : req.getItems()) {
                 PrescriptionItem item = PrescriptionItem.builder()
@@ -90,7 +129,7 @@ public class PrescriptionService {
             }
         }
 
-        // 7) Load items for response
+        // 6) Load items for response
         List<PrescriptionItem> items =
                 prescriptionItemRepository.findByPrescription_Id(prescription.getId());
 
@@ -101,17 +140,17 @@ public class PrescriptionService {
      * 🔍 Doctor resolution logic:
      *  1) If doctorUserId sent in request → use it
      *  2) Else if visit already has doctor → use that
-     *  3) Else if patient has assignedDoctor → use that
+     *  3) Else if patient has assignedDoctor mapping → use that
      *  4) Else → throw clear error
      */
-    private User resolveDoctor(
+    private Doctor resolveDoctor(
             PrescriptionRequest req,
             Visit visit,
-            UserDetails patientDetails
+            Patient patient
     ) {
         // 1) If doctorUserId explicitly sent (doctor panel / future org dropdown)
         if (req.getDoctorUserId() != null) {
-            return userRepository.findById(req.getDoctorUserId())
+            return doctorRepository.findByIdAndIsDeletedFalse(req.getDoctorUserId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid doctor user id"));
         }
 
@@ -120,15 +159,21 @@ public class PrescriptionService {
             return visit.getDoctor();
         }
 
-        // 3) If patient has assignedDoctor → use that (ORG flow)
-        if (patientDetails != null && patientDetails.getAssignedDoctor() != null) {
-            return patientDetails.getAssignedDoctor();
+        // 3) If patient has assignedDoctor mapping → use that (ORG flow)
+        Doctor assignedDoctor = patientDoctorMappingRepository.findByPatient(patient)
+                .stream()
+                .filter(m -> AppConstants.Status.ACTIVE.equalsIgnoreCase(m.getStatus()))
+                .map(m -> m.getDoctor())
+                .findFirst()
+                .orElse(null);
+        if (assignedDoctor != null) {
+            return assignedDoctor;
         }
 
         // 4) Still nothing → clear error message
         throw new IllegalArgumentException(
                 "Cannot resolve doctor user: doctorUserId not provided, " +
-                        "visit has no doctor, and patient has no assignedDoctor."
+                        "visit has no doctor, and patient has no assignedDoctor mapping."
         );
     }
 
@@ -145,14 +190,9 @@ public class PrescriptionService {
         dto.setPatientUserId(p.getPatient() != null ? p.getPatient().getId() : null);
         dto.setDoctorUserId(p.getDoctor() != null ? p.getDoctor().getId() : null);
         
-        // Get doctor name from UserDetails
+        // Get doctor name directly from Doctor profile
         if (p.getDoctor() != null) {
-            UserDetails doctorDetails = userDetailsRepository
-                    .findFirstByUser_Id(p.getDoctor().getId())
-                    .orElse(null);
-            if (doctorDetails != null) {
-                dto.setDoctorName(doctorDetails.getFullName());
-            }
+            dto.setDoctorName(p.getDoctor().getFullName());
         }
 
         dto.setItems(

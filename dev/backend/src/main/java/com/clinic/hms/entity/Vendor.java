@@ -43,6 +43,6 @@ public class Vendor {
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "org_user_id")
-    private User org;
+    @JoinColumn(name = "owner_user_id")
+    private User owner;
 }

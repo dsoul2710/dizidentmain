@@ -1,6 +1,7 @@
 // src/main/java/com/clinic/hms/repository/VisitRepository.java
 package com.clinic.hms.repository;
 
+import com.clinic.hms.constants.QueryConstants;
 import com.clinic.hms.entity.User;
 import com.clinic.hms.entity.Visit;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface VisitRepository extends JpaRepository<Visit, Long> {
@@ -28,7 +30,18 @@ public interface VisitRepository extends JpaRepository<Visit, Long> {
     List<Visit> findTop50ByDoctor_IdOrderByCreatedAtDesc(Long doctorUserId);
 
     @Modifying
-    @Query("update Visit v set v.doctor = null where v.doctor.id = :doctorUserId")
+    @Query(QueryConstants.Visit.CLEAR_DOCTOR)
     int clearDoctorByDoctorId(@Param("doctorUserId") Long doctorUserId);
+
+    boolean existsByPatient_IdAndOwner_Id(Long patientId, Long ownerId);
+
+    boolean existsByPatient_IdAndDoctor_Id(Long patientId, Long doctorId);
+
+    List<Visit> findByOwner_Id(Long ownerId);
+
+    List<Visit> findByDoctor_Id(Long doctorId);
+
+    @Query("SELECT v FROM Visit v WHERE v.patient.id IN :patientIds")
+    List<Visit> findByPatient_IdIn(@Param("patientIds") Collection<Long> patientIds);
 
 }

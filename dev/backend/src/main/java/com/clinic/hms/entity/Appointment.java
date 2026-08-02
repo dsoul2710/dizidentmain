@@ -19,15 +19,13 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // patient_user_id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_user_id")
-    private User patient;
+    private Patient patient;
 
-    // doctor_user_id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_user_id")
-    private User doctor;
+    private Doctor doctor;
 
     // visit_id (optional)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -62,6 +60,11 @@ public class Appointment {
     private Long createdByUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "org_user_id")
-    private User org;
+    @JoinColumn(name = "owner_user_id")
+    private User owner;
+
+    /** Hospital that originated this appointment when created under org context. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_org_id")
+    private OrgHospital sourceOrg;
 }

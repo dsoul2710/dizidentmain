@@ -1,12 +1,7 @@
 package com.clinic.hms.service;
 
 import com.clinic.hms.dto.response.EventResponse;
-import com.clinic.hms.entity.Appointment;
-import com.clinic.hms.entity.Bill;
-import com.clinic.hms.entity.User;
-import com.clinic.hms.entity.UserDetails;
-import com.clinic.hms.entity.Visit;
-import com.clinic.hms.repository.UserDetailsRepository;
+import com.clinic.hms.entity.*;
 import com.clinic.hms.utill.TimeFormatUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,8 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class EventMapper {
-
-    private final UserDetailsRepository userDetailsRepository;
 
     public EventResponse fromAppointment(Appointment appointment) {
         if (appointment == null) return null;
@@ -28,8 +21,8 @@ public class EventMapper {
                 .appointmentId(appointment.getId())
                 .actorUserId(appointment.getCreatedByUserId())
                 .visitId(appointment.getVisit() != null ? appointment.getVisit().getId() : null)
-                .patientName(resolveName(appointment.getPatient()))
-                .doctorName(resolveName(appointment.getDoctor()))
+                .patientName(resolvePatientName(appointment.getPatient()))
+                .doctorName(resolveDoctorName(appointment.getDoctor()))
                 .appointmentDate(appointment.getAppointmentDate() != null ? appointment.getAppointmentDate().toString() : null)
                 .appointmentTime(appointment.getStartTime() != null ? TimeFormatUtil.formatSlot(appointment.getStartTime()) : null)
                 .build();
@@ -45,8 +38,8 @@ public class EventMapper {
                 .timestamp(visit.getCreatedAt() != null ? visit.getCreatedAt().toString() : null)
                 .visitId(visit.getId())
                 .actorUserId(visit.getCreatedByUserId())
-                .patientName(resolveName(visit.getPatient()))
-                .doctorName(resolveName(visit.getDoctor()))
+                .patientName(resolvePatientName(visit.getPatient()))
+                .doctorName(resolveDoctorName(visit.getDoctor()))
                 .build();
     }
 
@@ -61,19 +54,26 @@ public class EventMapper {
                 .billId(bill.getId())
                 .actorUserId(bill.getCreatedByUserId())
                 .visitId(bill.getVisit() != null ? bill.getVisit().getId() : null)
-                .patientName(resolveName(bill.getPatient()))
-                .doctorName(resolveName(bill.getDoctor()))
+                .patientName(resolvePatientName(bill.getPatient()))
+                .doctorName(resolveDoctorName(bill.getDoctor()))
                 .amount(bill.getNetAmount())
                 .build();
     }
 
-    private String resolveName(User user) {
-        if (user == null) return null;
-        UserDetails details = userDetailsRepository.findFirstByUser_Id(user.getId()).orElse(null);
-        if (details != null && details.getFullName() != null && !details.getFullName().isBlank()) {
-            return details.getFullName();
+    private String resolvePatientName(Patient p) {
+        if (p == null) return null;
+        if (p.getFullName() != null && !p.getFullName().isBlank()) {
+            return p.getFullName();
         }
-        return user.getMobile();
+        return p.getUser() != null ? p.getUser().getMobile() : null;
+    }
+
+    private String resolveDoctorName(Doctor d) {
+        if (d == null) return null;
+        if (d.getFullName() != null && !d.getFullName().isBlank()) {
+            return d.getFullName();
+        }
+        return d.getUser() != null ? d.getUser().getMobile() : null;
     }
 
     private String buildAppointmentSubtitle(Appointment appointment) {
