@@ -58,11 +58,26 @@
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="LOCAL_FILE"/>
         </root>
-        <!-- Log specific application packages in DEBUG for dev -->
         <logger name="com.clinic.hms" level="DEBUG"/>
     </springProfile>
 
-    <springProfile name="!dev">
+    <springProfile name="preprod">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="PROD_FILE"/>
+        </root>
+        <logger name="com.clinic.hms" level="INFO"/>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="WARN">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="PROD_FILE"/>
+        </root>
+        <logger name="com.clinic.hms" level="INFO"/>
+    </springProfile>
+
+    <springProfile name="default">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="PROD_FILE"/>

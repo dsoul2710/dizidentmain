@@ -8,6 +8,8 @@ ARG VITE_API_BASE=http://localhost:8080
 ARG VITE_CLIENT_ID=dev
 ARG VITE_CLIENT_NAME="Dev Environment"
 ARG VITE_LOGTO_ENABLED=false
+ARG VITE_LEGACY_AUTH_ENABLED=true
+ARG VITE_APP_ENV=development
 
 # Copy package files
 COPY package.json package-lock.json* ./
@@ -23,7 +25,9 @@ RUN echo "VITE_API_BASE=${VITE_API_BASE}" > .env && \
     echo "VITE_API_BASE_URL=${VITE_API_BASE}/api" >> .env && \
     echo "VITE_CLIENT_ID=${VITE_CLIENT_ID}" >> .env && \
     echo "VITE_CLIENT_NAME=${VITE_CLIENT_NAME}" >> .env && \
-    echo "VITE_LOGTO_ENABLED=${VITE_LOGTO_ENABLED}" >> .env
+    echo "VITE_LOGTO_ENABLED=${VITE_LOGTO_ENABLED}" >> .env && \
+    echo "VITE_LEGACY_AUTH_ENABLED=${VITE_LEGACY_AUTH_ENABLED}" >> .env && \
+    echo "VITE_APP_ENV=${VITE_APP_ENV}" >> .env
 
 # Build the application
 RUN npm run build

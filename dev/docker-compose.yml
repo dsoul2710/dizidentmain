@@ -31,6 +31,7 @@ services:
     container_name: dev-backend
     restart: unless-stopped
     environment:
+      SPRING_PROFILES_ACTIVE: dev
       SPRING_APPLICATION_NAME: clinic-hms-dev
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/clinic_hms
       SPRING_DATASOURCE_USERNAME: postgres
@@ -64,10 +65,12 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_BASE: http://localhost:8080
+        VITE_API_BASE: http://localhost:8081
         VITE_CLIENT_ID: dev
         VITE_CLIENT_NAME: "Dev Environment"
         VITE_LOGTO_ENABLED: "false"
+        VITE_LEGACY_AUTH_ENABLED: "true"
+        VITE_APP_ENV: development
     container_name: dev-frontend
     restart: unless-stopped
     ports:
